@@ -92,13 +92,27 @@ class Puzzle {
 
             if (this.checkWin()) {
                 setTimeout(() => {
+                    const victoryDiv = document.createElement('div');
+                    victoryDiv.style.animation = 'fadeIn 1s ease';
+                    
                     const victoryText = document.createElement('p');
                     victoryText.style.color = '#ff4081';
                     victoryText.style.fontSize = '1.2rem';
                     victoryText.style.margin = '20px 0';
-                    victoryText.style.animation = 'fadeIn 1s ease';
                     victoryText.innerHTML = 'Our first pic together... ❤️<br>I felt the closest to you for the first time at that moment';
-                    document.querySelector('h1').insertAdjacentElement('afterend', victoryText);
+                    
+                    const surpriseLink = document.createElement('a');
+                    surpriseLink.href = 'surprise.html';
+                    surpriseLink.style.color = '#ff4081';
+                    surpriseLink.style.display = 'block';
+                    surpriseLink.style.marginTop = '10px';
+                    surpriseLink.style.textDecoration = 'none';
+                    surpriseLink.style.fontSize = '1.1rem';
+                    surpriseLink.innerHTML = 'Click here for the real real real surprise... 💝';
+                    
+                    victoryDiv.appendChild(victoryText);
+                    victoryDiv.appendChild(surpriseLink);
+                    document.querySelector('h1').insertAdjacentElement('afterend', victoryDiv);
                 }, 500);
             }
         }
