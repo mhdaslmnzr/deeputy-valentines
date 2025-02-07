@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Week ❤️</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #f06292;
+            --background: #fff0f3;
+            --text: #2c1810;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--background);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .day-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .day-card:active {
+            transform: scale(0.98);
+        }
+
+        .day-card h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .day-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 90%;
+            width: 500px;
+            text-align: center;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--text);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .choice-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .choice-btn:active {
+            transform: scale(0.95);
+        }
+
+        .yes-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .no-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            text-align: center;
+            color: white;
+            display: none;
+            z-index: 1100;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            animation: celebrationPop 0.3s ease;
+        }
+
+        @keyframes celebrationPop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            70% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: var(--primary);
+            animation: floatHeart 4s ease-in infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .days-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .days-grid {
+                grid-template-columns: 1fr;
+                padding: 10px;
+                gap: 15px;
+            }
+
+            .day-card {
+                padding: 15px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .choice-btn {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts"></div>
+    <div class="container">
+        <h1>❤️ Happy Valentine's Week Deeputty ❤️</h1>
+        <div class="subtitle">A week of love, just for you!</div>
+        <div class="days-grid">
+            <!-- Day cards will be generated here -->
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modal-text"></div>
+            <div id="button-container" class="button-container"></div>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration"></div>
+
+    <script>
+        const daysData = [
+            {
+                name: 'Rose Day',
+                image: 'images/1.jpg',
+                message: 'Happy Rose Day, baby! 🌹 Just like this rose, my love for you blooms more beautiful each day. Hope you like these roses as much as I cherish your smile!'
+            },
+            {
+                name: 'Propose Day',
+                image: 'images/2.jpg',
+                message: 'Will you be my girlfriend?',
+                isProposal: true
+            },
+            {
+                name: 'Chocolate Day',
+                image: 'images/3.jpg',
+                message: 'Sweet like chocolate, precious like gold - that\'s what you are to me! Enjoy your chocolates, my love! 🍫'
+            },
+            {
+                name: 'Teddy Day',
+                image: 'images/4.jpg',
+                message: 'Remember our first talks? I fell in love with those panda eyes of yours! 🐼 Since I couldn\'t get you a red panda from the Himalayas (tried but couldn\'t find time to hunt and stuff one 😂), here\'s a China-imported normal panda instead! Love you, my favorite panda kunje!'
+            },
+            {
+                name: 'Promise Day',
+                image: 'images/5.jpg',
+                message: 'I, Mohammed Aslam, hereby solemnly promise to:\n\n1. Love you unconditionally\n2. Always make you smile\n3. Be your strength in tough times\n4. Never give up on us\n5. Keep you happy forever\n\nSigned with love ❤️'
+            },
+            {
+                name: 'Hug Day',
+                image: 'images/6.jpg',
+                message: 'Your warmth is worth the wait, and no words can ever express how much comfort I find in your embrace. Can\'t wait to hug you tight! 🤗'
+            },
+            {
+                name: 'Kiss Day',
+                image: 'images/7.jpg',
+                message: 'Meet me here: <a href="https://goo.gl/maps/YOUR-IIM-MUMBAI-LINK" target="_blank">IIM Mumbai</a> 💋'
+            },
+            {
+                name: 'Valentine\'s Day',
+                image: 'images/8.jpg',
+                message: 'My dearest Deeputy,\n\nWords fall short when I try to express how much you mean to me. Every moment spent with you is a treasure, every smile of yours lights up my world. You\'re not just my love, you\'re my best friend, my strength, my inspiration.\n\nI want to spend eternity with you, growing old together, creating countless memories, and falling in love with you more each day. You make my life complete, and I promise to always be there for you, through thick and thin.\n\nI love you more than words can express.\n\nForever yours,\nAslam ❤️'
+            }
+        ];
+
+        function createDayCards() {
+            const grid = document.querySelector('.days-grid');
+            
+            daysData.forEach(day => {
+                const card = document.createElement('div');
+                card.className = 'day-card';
+                card.innerHTML = `
+                    <h3>${day.name}</h3>
+                    <img src="${day.image}" alt="${day.name}">
+                `;
+                
+                card.addEventListener('click', () => showMessage(day));
+                grid.appendChild(card);
+            });
+        }
+
+        function showMessage(day) {
+            const modal = document.getElementById('modal');
+            const modalText = document.getElementById('modal-text');
+            const buttonContainer = document.getElementById('button-container');
+
+            modalText.innerHTML = day.message;
+            buttonContainer.innerHTML = '';
+
+            if (day.isProposal) {
+                const yesBtn = document.createElement('button');
+                yesBtn.className = 'choice-btn yes-btn';
+                yesBtn.textContent = 'Yes';
+                yesBtn.onclick = () => showCelebration('YAAAAAAAY! I love you too kunja... UMMAAA! 💕');
+
+                const noBtn = document.createElement('button');
+                noBtn.className = 'choice-btn no-btn';
+                noBtn.textContent = 'No';
+                noBtn.onclick = () => showCelebration('YAAAAAAAY! You have no choice beeeeeeech... I love you... UMMAAA! 😘');
+
+                buttonContainer.appendChild(yesBtn);
+                buttonContainer.appendChild(noBtn);
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function showCelebration(text) {
+            const celebration = document.getElementById('celebration');
+            celebration.textContent = text;
+            celebration.style.display = 'block';
+            
+            setTimeout(() => {
+                celebration.style.display = 'none';
+                document.getElementById('modal').style.display = 'none';
+            }, 3000);
+        }
+
+        // Close modal when clicking the close button
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            document.getElementById('modal').style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('modal');
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Create floating hearts animation
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.querySelector('.floating-hearts').appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        // Create hearts frequently
+        setInterval(createHeart, 100);
+
+        // Initialize the cards
+        createDayCards();
+    </script>
+</body>
+</html>
