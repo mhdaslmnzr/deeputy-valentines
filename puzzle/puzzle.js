@@ -105,7 +105,6 @@ class Puzzle {
                     surpriseLink.href = 'surprise.html';
                     surpriseLink.style.color = '#ff4081';
                     surpriseLink.style.display = 'block';
-                    surpriseLink.style.marginTop = '10px';
                     surpriseLink.style.textDecoration = 'none';
                     surpriseLink.style.fontSize = '1.1rem';
                     surpriseLink.innerHTML = 'Click here for the real real real surprise... 💝';
