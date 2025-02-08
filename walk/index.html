@@ -1,182 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Hunt My Hearts 💝</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Collector</title>
     <style>
-        /* Keep your existing styles but add these debug elements */
-        .debug-info {
-            position: fixed;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            font-family: monospace;
-            font-size: 12px;
-            z-index: 1000;
-            display: none;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        /* Keep all your existing styles */
-        .ui-overlay {
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #heart {
+            position: absolute;
+            font-size: 48px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            user-select: none;
+        }
+
+        #heart:hover {
+            transform: scale(1.1);
+        }
+
+        #score {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.9);
+            background: white;
             padding: 10px 20px;
-            border-radius: 25px;
-            z-index: 1000;
-            font-family: Arial, sans-serif;
-            font-size: 18px;
+            border-radius: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        
-        /* Keep rest of your styles... */
+
+        #permission-prompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 1000;
+        }
+
+        #start-button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #ff4081;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .pop-animation {
+            animation: pop 0.3s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(0); }
+        }
     </style>
 </head>
 <body>
-    <!-- Keep your existing UI elements -->
-    <div class="start-screen" id="startScreen">
-        <h1>Find My Hearts! 💝</h1>
-        <p>I've hidden special hearts around you...</p>
-        <p>Each one holds a memory of us!</p>
-        <button onclick="startGame()" class="start-button">Start Heart Hunt!</button>
+    <div id="permission-prompt">
+        <h2>Please allow camera access to play</h2>
+        <button id="start-button">Enable Camera</button>
     </div>
 
-    <div class="ui-overlay">
-        Hearts: <span id="heartCount">0</span>/<span id="totalHearts">8</span>
-    </div>
+    <div id="score">❤️ <span id="count">0</span></div>
 
-    <div class="hint" id="hint">
-        Look around to find floating hearts! 💝
+    <div id="container">
+        <video id="video" autoplay playsinline></video>
+        <div id="heart">❤️</div>
     </div>
-
-    <div class="debug-info" id="debugInfo">
-        Camera Status: Initializing...
-    </div>
-
-    <div class="complete-screen" id="completeScreen">
-        <div class="complete-content">
-            <h2>You Found All Hearts! 💝</h2>
-            <p>The path you traced spells something special...</p>
-            <p>I ❤️ U!</p>
-        </div>
-    </div>
-
-    <!-- Simplified AR Scene -->
-    <a-scene 
-        embedded
-        arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix;'
-        renderer='antialias: true; alpha: true'
-        vr-mode-ui="enabled: false">
-        
-        <!-- Simple camera setup -->
-        <a-camera position="0 0 0" look-controls="enabled: true">
-            <a-cursor></a-cursor>
-        </a-camera>
-    </a-scene>
 
     <script>
-        // Game state
-        let heartsCollected = 0;
-        const totalHearts = 8;
-        let gameStarted = false;
+        const video = document.getElementById('video');
+        const heart = document.getElementById('heart');
+        const countDisplay = document.getElementById('count');
+        const permissionPrompt = document.getElementById('permission-prompt');
+        const startButton = document.getElementById('start-button');
+        let count = 0;
 
-        // Show debug info in local testing
-        const debugInfo = document.getElementById('debugInfo');
-        debugInfo.style.display = 'block';
+        // Start camera when button is clicked
+        startButton.addEventListener('click', startCamera);
 
-        function startGame() {
-            if (!gameStarted) {
-                gameStarted = true;
-                document.getElementById('startScreen').style.display = 'none';
-                document.getElementById('hint').style.display = 'block';
-                
-                // Initialize camera
-                initializeCamera();
-            }
-        }
-
-        function initializeCamera() {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then(stream => {
-                    debugInfo.textContent = 'Camera: Active';
-                    createHearts();
-                })
-                .catch(err => {
-                    debugInfo.textContent = 'Camera Error: ' + err.message;
-                    console.error('Camera error:', err);
-                });
-        }
-
-        function createHearts() {
-            // Create hearts in fixed positions around the user
-            const positions = [
-                { x: 0, y: 1.5, z: -3 },    // Center front (I)
-                { x: 0, y: 2, z: -3 },      // Top of I
-                { x: -1, y: 1.5, z: -3 },   // Left of heart
-                { x: 1, y: 1.5, z: -3 },    // Right of heart
-                { x: 0, y: 1, z: -3 },      // Bottom of heart
-                { x: 2, y: 1.5, z: -3 },    // Right side (U)
-                { x: 2, y: 1, z: -3 },      // Bottom right (U)
-                { x: 1.5, y: 1, z: -3 }     // Bottom middle (U)
-            ];
-
-            positions.forEach((pos, index) => {
-                createHeart(pos, index);
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'environment'
+                } 
+            })
+            .then(stream => {
+                video.srcObject = stream;
+                permissionPrompt.style.display = 'none';
+                moveHeart(); // Initial heart position
+            })
+            .catch(err => {
+                console.error('Camera error:', err);
+                alert('Could not access camera. Please make sure you have a camera and have granted permission.');
             });
         }
 
-        function createHeart(position, index) {
-            const heart = document.createElement('a-entity');
+        function moveHeart() {
+            const x = Math.random() * 80 + 10; // Keep within 10-90% of width
+            const y = Math.random() * 60 + 20; // Keep within 20-80% of height
+            heart.style.left = `${x}%`;
+            heart.style.top = `${y}%`;
+        }
+
+        heart.addEventListener('click', () => {
+            count++;
+            countDisplay.textContent = count;
             
-            // Create heart shape using a box for testing
-            const heartMesh = document.createElement('a-box');
-            heartMesh.setAttribute('color', '#ff4081');
-            heartMesh.setAttribute('scale', '0.3 0.3 0.3');
-            heartMesh.setAttribute('position', `${position.x} ${position.y} ${position.z}`);
-            heartMesh.setAttribute('animation', {
-                property: 'position',
-                dir: 'alternate',
-                dur: 1000 + (index * 100),
-                easing: 'easeInOutSine',
-                loop: true,
-                from: `${position.x} ${position.y} ${position.z}`,
-                to: `${position.x} ${position.y + 0.2} ${position.z}`
-            });
-
-            heartMesh.addEventListener('click', () => collectHeart(heartMesh));
-            document.querySelector('a-scene').appendChild(heartMesh);
-        }
-
-        function collectHeart(heart) {
-            heart.parentNode.removeChild(heart);
-            heartsCollected++;
-            document.getElementById('heartCount').textContent = heartsCollected;
-
-            if (heartsCollected === totalHearts) {
-                showCompletion();
-            }
-        }
-
-        function showCompletion() {
-            document.getElementById('completeScreen').style.display = 'flex';
+            // Add pop animation
+            heart.classList.add('pop-animation');
+            
+            // After animation, move heart and remove animation class
             setTimeout(() => {
-                document.getElementById('hint').textContent = 
-                    'You spelled "I ❤️ U" with your heart collection path!';
-                document.getElementById('hint').style.display = 'block';
-            }, 2000);
-        }
+                moveHeart();
+                heart.classList.remove('pop-animation');
+            }, 300);
+        });
 
-        // Prevent scrolling/zooming
-        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+        // Handle window resize
+        window.addEventListener('resize', moveHeart);
     </script>
 </body>
 </html>
