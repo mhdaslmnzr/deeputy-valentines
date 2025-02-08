@@ -1,73 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <title>Valentine's AR Heart Hunt ❤️</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Heart Collector</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-            background: #000;
-        }
-
-        #container {
-            position: relative;
+        #ui-container {
+            position: fixed;
             width: 100%;
-            height: 100%;
-        }
-
-        #video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .heart {
-            position: absolute;
-            font-size: 48px;
-            user-select: none;
-            transition: transform 0.3s ease-out;
-            animation: float 2s infinite ease-in-out;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            pointer-events: none;
         }
 
         #score {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.9);
             padding: 10px 20px;
             border-radius: 20px;
+            margin: 20px auto;
+            width: fit-content;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            pointer-events: none;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 20px;
         }
 
-        #distance-indicator {
+        #message {
             position: fixed;
-            bottom: 20px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 16px;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 64, 129, 0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: Arial, sans-serif;
+            text-align: center;
             display: none;
+            max-width: 80%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        #permission-prompt {
+        #start-screen {
             position: fixed;
             top: 0;
             left: 0;
@@ -79,198 +55,145 @@
             align-items: center;
             justify-content: center;
             color: white;
-            z-index: 1000;
+            font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
+            z-index: 1000;
         }
 
         #start-button {
-            margin-top: 20px;
-            padding: 12px 24px;
             background: #ff4081;
             border: none;
-            border-radius: 20px;
+            padding: 15px 30px;
+            border-radius: 25px;
             color: white;
+            font-size: 18px;
+            margin-top: 20px;
             cursor: pointer;
-            font-size: 16px;
-        }
-
-        .pop-animation {
-            animation: pop 0.5s ease-out forwards !important;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.1); }
-        }
-
-        @keyframes pop {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.5; }
-            100% { transform: scale(0); opacity: 0; }
+            box-shadow: 0 4px 15px rgba(255,64,129,0.3);
         }
 
         .hint {
-            color: #fff;
-            text-align: center;
-            padding: 10px;
             font-size: 14px;
+            opacity: 0.8;
             margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div id="permission-prompt">
-        <h2>AR Heart Collector</h2>
-        <p style="margin: 20px 0">Walk around to collect virtual hearts!</p>
-        <button id="start-button">Start AR Experience</button>
+    <div id="start-screen">
+        <h1>❤️ Valentine's Heart Hunt ❤️</h1>
+        <p>Find and collect all the floating hearts!</p>
+        <p class="hint">Walk around to discover hearts in your surroundings</p>
+        <button id="start-button">Start Hunt</button>
     </div>
 
-    <div id="score">❤️ <span id="count">0</span></div>
-    <div id="distance-indicator"></div>
-
-    <div id="container">
-        <video id="video" autoplay playsinline></video>
+    <div id="ui-container">
+        <div id="score">Hearts: <span id="heart-count">0</span>/5</div>
     </div>
+
+    <div id="message"></div>
+
+    <a-scene embedded arjs="trackingMethod: best; debugUIEnabled: false;" vr-mode-ui="enabled: false" renderer="antialias: true">
+        <a-camera position="0 1.6 0">
+            <a-entity cursor="fuse: false; rayOrigin: mouse;"
+                      raycaster="far: 50; interval: 100"></a-entity>
+        </a-camera>
+
+        <a-entity id="heart-container">
+            <!-- Hearts will be added here -->
+        </a-entity>
+    </a-scene>
 
     <script>
-        const video = document.getElementById('video');
-        const container = document.getElementById('container');
-        const countDisplay = document.getElementById('count');
-        const permissionPrompt = document.getElementById('permission-prompt');
-        const startButton = document.getElementById('start-button');
-        const distanceIndicator = document.getElementById('distance-indicator');
-        
-        let count = 0;
-        let hearts = [];
-        const maxHearts = 2;
-
-        startButton.addEventListener('click', startAR);
-
-        async function startAR() {
-            try {
-                // Request high-quality back camera
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'environment',
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 },
-                        frameRate: { ideal: 60 }
+        AFRAME.registerComponent('clickable', {
+            init: function() {
+                this.el.addEventListener('click', () => {
+                    if (!this.el.collected) {
+                        collectHeart(this.el);
                     }
                 });
-
-                video.srcObject = stream;
-                permissionPrompt.style.display = 'none';
-                
-                // Start spawning hearts
-                spawnHearts();
-                
-                // Start checking distances
-                setInterval(checkHeartDistances, 100);
-
-            } catch (err) {
-                console.error('Camera error:', err);
-                alert('Could not access camera. Please ensure camera permissions are granted.');
             }
-        }
+        });
 
-        function spawnHearts() {
-            if (hearts.length < maxHearts) {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.innerHTML = '❤️';
-                heart.style.left = `${Math.random() * 80 + 10}%`;
-                heart.style.top = `${Math.random() * 60 + 20}%`;
-                
-                // Store the heart's position relative to screen center
-                heart.dataset.offsetX = Math.random() * 200 - 100; // -100 to 100
-                heart.dataset.offsetY = Math.random() * 200 - 100; // -100 to 100
-                
-                container.appendChild(heart);
-                hearts.push(heart);
+        let collectedHearts = 0;
+        const messages = [
+            "You found a heart! Keep looking! 💕",
+            "Another heart! You're doing great! 💝",
+            "Three hearts! Almost there! 💓",
+            "Just one more to go! 💗",
+            "You found all the hearts!\n\nI love you more than all the stars in the sky... 🌟\n\nHappy Valentine's Day! ❤️"
+        ];
 
-                // Update heart position based on device orientation
-                updateHeartPosition(heart);
-            }
-        }
-
-        function checkHeartDistances() {
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-
-            hearts.forEach(heart => {
-                const rect = heart.getBoundingClientRect();
-                const heartX = rect.left + rect.width / 2;
-                const heartY = rect.top + rect.height / 2;
-                
-                const distance = Math.sqrt(
-                    Math.pow(heartX - centerX, 2) + 
-                    Math.pow(heartY - centerY, 2)
-                );
-
-                // If heart is close to center of screen (camera)
-                if (distance < 100) {
-                    collectHeart(heart);
-                }
-
-                // Update distance indicator
-                if (distance < 300) {
-                    distanceIndicator.style.display = 'block';
-                    distanceIndicator.textContent = 'Getting closer! 🔥';
-                    if (distance < 150) {
-                        distanceIndicator.textContent = 'Almost there! ✨';
-                    }
-                } else {
-                    distanceIndicator.style.display = 'none';
-                }
+        function createHeart(position) {
+            const heart = document.createElement('a-entity');
+            heart.setAttribute('position', position);
+            heart.setAttribute('gltf-model', 'https://cdn.aframe.io/examples/heart/heart.gltf');
+            heart.setAttribute('scale', '0.5 0.5 0.5');
+            heart.setAttribute('clickable', '');
+            heart.setAttribute('animation', {
+                property: 'position',
+                dir: 'alternate',
+                dur: 1000 + Math.random() * 1000,
+                easing: 'easeInOutSine',
+                loop: true,
+                to: `${position.x} ${position.y + 0.2} ${position.z}`
             });
+            heart.setAttribute('animation__rotate', {
+                property: 'rotation',
+                dur: 3000,
+                easing: 'linear',
+                loop: true,
+                to: '0 360 0'
+            });
+            return heart;
         }
 
         function collectHeart(heart) {
-            if (!heart.classList.contains('pop-animation')) {
-                count++;
-                countDisplay.textContent = count;
-                heart.classList.add('pop-animation');
-                
-                setTimeout(() => {
-                    heart.remove();
-                    hearts = hearts.filter(h => h !== heart);
-                    spawnHearts();
-                }, 500);
-            }
+            heart.collected = true;
+            collectedHearts++;
+            document.getElementById('heart-count').textContent = collectedHearts;
+
+            // Play collection animation
+            heart.setAttribute('animation__collect', {
+                property: 'scale',
+                to: '0 0 0',
+                dur: 500,
+                easing: 'easeInQuad'
+            });
+
+            // Show message
+            const message = document.getElementById('message');
+            message.textContent = messages[collectedHearts - 1];
+            message.style.display = 'block';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 3000);
+
+            // Remove heart after animation
+            setTimeout(() => {
+                heart.parentNode.removeChild(heart);
+            }, 500);
         }
 
-        // Handle device orientation for more realistic AR feeling
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', handleOrientation);
-        }
+        document.getElementById('start-button').addEventListener('click', () => {
+            document.getElementById('start-screen').style.display = 'none';
+            
+            // Create hearts in a line
+            const heartContainer = document.getElementById('heart-container');
+            const positions = [
+                { x: -4, y: 1.5, z: -5 },
+                { x: -2, y: 1.5, z: -5 },
+                { x: 0, y: 1.5, z: -5 },
+                { x: 2, y: 1.5, z: -5 },
+                { x: 4, y: 1.5, z: -5 }
+            ];
 
-        function handleOrientation(event) {
-            hearts.forEach(heart => updateHeartPosition(heart, event));
-        }
-
-        function updateHeartPosition(heart, orientation) {
-            if (orientation) {
-                const offsetX = parseFloat(heart.dataset.offsetX);
-                const offsetY = parseFloat(heart.dataset.offsetY);
-                
-                // Adjust position based on device orientation
-                const beta = orientation.beta || 0;  // Front/back tilt
-                const gamma = orientation.gamma || 0; // Left/right tilt
-                
-                const adjustedX = offsetX + (gamma * 2);
-                const adjustedY = offsetY + (beta * 2);
-                
-                heart.style.transform = `translate(${adjustedX}px, ${adjustedY}px)`;
-            }
-        }
-
-        // Spawn new hearts periodically
-        setInterval(() => {
-            if (hearts.length < maxHearts) {
-                spawnHearts();
-            }
-        }, 3000);
+            positions.forEach(position => {
+                const heart = createHeart(position);
+                heartContainer.appendChild(heart);
+            });
+        });
     </script>
 </body>
 </html>
