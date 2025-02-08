@@ -1,53 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Collect My Hearts ❤️</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
+    <title>Hunt My Hearts 💝</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
         .ui-overlay {
             position: fixed;
-            top: 10px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             padding: 10px 20px;
-            border-radius: 20px;
+            border-radius: 25px;
             z-index: 1000;
-            text-align: center;
             font-family: Arial, sans-serif;
+            font-size: 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
         }
+        
         #heartCount {
             color: #ff4081;
             font-weight: bold;
         }
-        #completeMessage {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 64, 129, 0.9);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            display: none;
-            z-index: 1000;
-        }
+
         .start-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #fff0f3;
+            background: linear-gradient(135deg, #fff0f3 0%, #ffb6c1 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 2000;
+            text-align: center;
+            padding: 20px;
         }
+
+        .start-screen h1 {
+            color: #ff4081;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .start-screen p {
+            color: #666;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
         .start-button {
             background: #ff4081;
             color: white;
@@ -55,96 +64,189 @@
             padding: 15px 30px;
             border-radius: 25px;
             font-size: 18px;
-            cursor: pointer;
             margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255,64,129,0.3);
+            transition: transform 0.2s;
+        }
+
+        .start-button:active {
+            transform: scale(0.95);
+        }
+
+        .hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            z-index: 1000;
+            text-align: center;
+            max-width: 80%;
+            display: none;
+        }
+
+        .complete-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .complete-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 20px;
+            max-width: 90%;
+        }
+
+        .complete-content h2 {
+            color: #ff4081;
+            margin-bottom: 15px;
+        }
+
+        /* Remove AR.js debug UI */
+        .a-enter-vr, .a-orientation-modal {
+            display: none !important;
         }
     </style>
 </head>
 <body>
     <div class="start-screen" id="startScreen">
-        <h1>Heart Hunt! 💝</h1>
-        <p>Find and collect all the floating hearts...</p>
-        <button class="start-button" onclick="startGame()">Start Hunt!</button>
+        <h1>Find My Hearts! 💝</h1>
+        <p>I've hidden special hearts around you...</p>
+        <p>Each one holds a memory of us!</p>
+        <button onclick="startGame()" class="start-button">Start Heart Hunt!</button>
     </div>
 
     <div class="ui-overlay">
-        Hearts collected: <span id="heartCount">0</span>/10
+        Hearts: <span id="heartCount">0</span>/<span id="totalHearts">10</span>
     </div>
 
-    <div id="completeMessage">
-        You found all the hearts!<br>
-        Look at the pattern they made... 💝
+    <div class="hint" id="hint">
+        Look around to find floating hearts! 💝
     </div>
 
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix;">
-        <!-- Heart entities will be added here by JavaScript -->
+    <div class="complete-screen" id="completeScreen">
+        <div class="complete-content">
+            <h2>You Found All Hearts! 💝</h2>
+            <p>The path you traced spells something special...</p>
+            <p>I ❤️ U!</p>
+        </div>
+    </div>
+
+    <a-scene 
+        embedded
+        arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix;'
+        renderer='antialias: true; alpha: true'
+        vr-mode-ui="enabled: false">
+
         <a-camera gps-projected-camera rotation-reader></a-camera>
     </a-scene>
 
     <script>
+        // Game state
         let heartsCollected = 0;
         const totalHearts = 10;
-        let startPosition = null;
+        let gameStarted = false;
+
+        // Sound effects
+        const sounds = {
+            collect: new Audio('pop.mp3'),
+            complete: new Audio('complete.mp3')
+        };
 
         function startGame() {
-            document.getElementById('startScreen').style.display = 'none';
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(initializeHearts);
+            if (!gameStarted) {
+                gameStarted = true;
+                document.getElementById('startScreen').style.display = 'none';
+                document.getElementById('hint').style.display = 'block';
+                
+                // Request device orientation permission on iOS
+                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(response => {
+                            if (response === 'granted') {
+                                initializeHearts();
+                            }
+                        })
+                        .catch(console.error);
+                } else {
+                    initializeHearts();
+                }
             }
         }
 
-        function initializeHearts(position) {
-            startPosition = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-            // Create hearts in I ❤️ U pattern
-            const heartPositions = calculateHeartPositions(startPosition);
-            
-            heartPositions.forEach((pos, index) => {
-                createHeart(pos.lat, pos.lng, index);
-            });
+        function initializeHearts() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const startLat = position.coords.latitude;
+                    const startLng = position.coords.longitude;
+                    
+                    // Calculate heart positions in I ❤️ U pattern
+                    const heartPositions = calculateHeartPositions(startLat, startLng);
+                    
+                    // Create hearts
+                    heartPositions.forEach((pos, index) => {
+                        createHeart(pos.lat, pos.lng, index);
+                    });
+                });
+            }
         }
 
-        function calculateHeartPositions(start) {
+        function calculateHeartPositions(startLat, startLng) {
             const positions = [];
-            const meterToLat = 0.00001;  // Approximate meter to latitude conversion
-            const meterToLng = 0.00001;  // Approximate meter to longitude conversion
+            const scale = 0.00001; // Approximately 1 meter
 
-            // I pattern (vertical line)
-            positions.push({ lat: start.lat + (2 * meterToLat), lng: start.lng });
-            positions.push({ lat: start.lat + (4 * meterToLat), lng: start.lng });
+            // I pattern
+            positions.push({lat: startLat + (scale * 2), lng: startLng});
+            positions.push({lat: startLat + (scale * 4), lng: startLng});
 
-            // Heart pattern
-            positions.push({ lat: start.lat + (6 * meterToLat), lng: start.lng - (2 * meterToLng) });
-            positions.push({ lat: start.lat + (6 * meterToLat), lng: start.lng + (2 * meterToLng) });
-            positions.push({ lat: start.lat + (5 * meterToLat), lng: start.lng });
+            // Heart shape
+            positions.push({lat: startLat + (scale * 6), lng: startLng - (scale * 2)});
+            positions.push({lat: startLat + (scale * 7), lng: startLng});
+            positions.push({lat: startLat + (scale * 6), lng: startLng + (scale * 2)});
 
             // U pattern
-            positions.push({ lat: start.lat + (2 * meterToLat), lng: start.lng + (4 * meterToLng) });
-            positions.push({ lat: start.lat + (3 * meterToLat), lng: start.lng + (4 * meterToLng) });
-            positions.push({ lat: start.lat + (4 * meterToLat), lng: start.lng + (4 * meterToLng) });
+            positions.push({lat: startLat + (scale * 4), lng: startLng + (scale * 4)});
+            positions.push({lat: startLat + (scale * 2), lng: startLng + (scale * 4)});
+            positions.push({lat: startLat + (scale * 2), lng: startLng + (scale * 3)});
 
             return positions;
         }
 
         function createHeart(lat, lng, index) {
             const heart = document.createElement('a-entity');
-            heart.setAttribute('gltf-model', '#heart-model');
-            heart.setAttribute('scale', '0.5 0.5 0.5');
-            heart.setAttribute('gps-projected-entity-place', {
-                latitude: lat,
-                longitude: lng
-            });
-            heart.setAttribute('animation', {
+            
+            // Use a simple box for testing, replace with heart model in production
+            const heartMesh = document.createElement('a-box');
+            heartMesh.setAttribute('color', '#ff4081');
+            heartMesh.setAttribute('scale', '0.3 0.3 0.3');
+            heartMesh.setAttribute('animation', {
                 property: 'position',
                 dir: 'alternate',
-                dur: 1000,
+                dur: 1000 + (index * 100),
                 easing: 'easeInOutSine',
                 loop: true,
                 from: '0 0 0',
                 to: '0 0.5 0'
+            });
+
+            heart.appendChild(heartMesh);
+            heart.setAttribute('gps-projected-entity-place', {
+                latitude: lat,
+                longitude: lng
             });
 
             heart.addEventListener('click', () => collectHeart(heart));
@@ -152,6 +254,7 @@
         }
 
         function collectHeart(heart) {
+            sounds.collect.play();
             heart.parentNode.removeChild(heart);
             heartsCollected++;
             document.getElementById('heartCount').textContent = heartsCollected;
@@ -162,17 +265,25 @@
         }
 
         function showCompletion() {
-            document.getElementById('completeMessage').style.display = 'block';
-            // Show final map with pattern
-            // Add celebration effects
+            sounds.complete.play();
+            document.getElementById('completeScreen').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('hint').textContent = 
+                    'You spelled "I ❤️ U" with your heart collection path!';
+                document.getElementById('hint').style.display = 'block';
+            }, 2000);
         }
 
-        AFRAME.registerComponent('heart-collision', {
-            tick: function() {
-                // Check distance between camera and heart
-                // Collect heart if close enough
+        // Handle visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Pause game elements when tab/app is not visible
+                Object.values(sounds).forEach(sound => sound.pause());
             }
         });
+
+        // Prevent scrolling/zooming
+        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
     </script>
 </body>
 </html>
