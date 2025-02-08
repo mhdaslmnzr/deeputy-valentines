@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Memory 🍫</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #fff0f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            min-height: 600px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+            perspective: 1000px;
+        }
+
+        .container.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .puzzle-side, .letter-side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .letter-side {
+            transform: rotateY(180deg);
+            padding: 40px;
+            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), 
+                        url('background.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1 {
+            color: #ff4081;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .hint {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .mistakes {
+            color: #f44336;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            border: 2px solid #ff4081;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cell:hover {
+            background: #fff0f3;
+        }
+
+        .cell.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .cell.wrong {
+            border-color: #f44336;
+            background: #ffebee;
+            animation: shake 0.5s;
+        }
+
+        .numbers {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .number {
+            padding: 15px;
+            background: #4a2110;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 0 #1a0f0a;
+        }
+
+        .number:hover {
+            transform: translateY(-2px);
+        }
+
+        .number:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1a0f0a;
+        }
+
+        .reset {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+            margin: 0 auto;
+        }
+
+        .success {
+            color: #4caf50;
+            font-weight: bold;
+            margin: 20px 0;
+            display: none;
+            text-align: center;
+        }
+
+        .letter {
+            color: #333;
+            line-height: 2;
+            padding: 20px;
+            font-size: 16px;
+            white-space: pre-wrap;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .letter-char {
+            opacity: 0;
+            display: inline-block;
+            transform: translateY(10px);
+            transition: opacity 0.05s, transform 0.1s;
+        }
+
+        .letter-char.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .memory-button {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #4a2110, #2c1810);
+            color: white;
+            padding: 20px 35px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 
+                0 4px 0 #1a0f0a,
+                0 8px 15px rgba(0, 0, 0, 0.3),
+                inset 0 2px 15px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .memory-button::after {
+            content: "🍫";
+            margin-left: 8px;
+            font-size: 20px;
+        }
+
+        .memory-button.show {
+            opacity: 1;
+            pointer-events: auto;
+            animation: bounce 1s ease;
+        }
+
+        .memory-button:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 
+                0 6px 0 #1a0f0a,
+                0 12px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .memory-button:active {
+            transform: translateX(-50%) translateY(2px);
+            box-shadow: 
+                0 2px 0 #1a0f0a,
+                0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        @media (max-width: 500px) {
+            .cell {
+                font-size: 20px;
+            }
+            
+            .number {
+                font-size: 18px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <div class="puzzle-side">
+            <h1>Unlock Our Memory 💝</h1>
+            <p class="hint">Hint: Most special of ours! 💭</p>
+            <div class="mistakes">Mistakes: <span id="mistakeCount">0</span>/3</div>
+            
+            <div class="grid" id="grid"></div>
+
+            <div class="numbers">
+                <button class="number">0</button>
+                <button class="number">1</button>
+                <button class="number">2</button>
+                <button class="number">4</button>
+            </div>
+
+            <button class="reset" id="resetBtn">Start Over</button>
+            <div class="success" id="success">Perfect! You found our special date! 💝</div>
+        </div>
+
+        <div class="letter-side">
+            <div class="letter" id="letter">Dear Deeputy ❤️,
+
+Thinking of chocolate day, I started to recollect all the good memories I had with you, and chocolate was always there. First time I met you, I wanted to buy you a flower, but light ayitt njn madiyan ayond, time inu enikathond, I couldn't...
+
+So I had to adjust with a chocolate, a Galaxy one I think. That was the first chocolate I ever gave you, but that was not the first 'chocolate' you loved the most I gave you...
+
+That chocolate was special. The reactions you gave for it, the way you later mentioned it... I miss those days, Deepu. It was different fun. All of sudden it feels like we grew up so fast. I consider pre-IIM as our teenage love...
+
+So yeah, that chocolate memory is so damn special, and that is your surprise for today. As each day progress, excitement to meet you is becoming very strong. So close yet so far...
+
+I miss you! ❤️</div>
+            <a href="chocovideo.html" class="memory-button" id="memoryButton">
+                See My Favorite Memory
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const correctCode = '14042024';
+        let mistakes = 0;
+        let currentCell = 0;
+        let userCode = Array(8).fill('');
+        
+        // Create grid cells
+        const grid = document.getElementById('grid');
+        for (let i = 0; i < 8; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.index = i;
+            grid.appendChild(cell);
+        }
+
+        // Handle number clicks
+        document.querySelectorAll('.number').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentCell >= 8 || mistakes >= 3) return;
+                
+                const number = btn.textContent;
+                const cells = document.querySelectorAll('.cell');
+                
+                if (number === correctCode[currentCell]) {
+                    cells[currentCell].textContent = number;
+                    cells[currentCell].classList.add('correct');
+                    userCode[currentCell] = number;
+                    currentCell++;
+                    
+                    if (currentCell === 8) {
+                        document.getElementById('success').style.display = 'block';
+                        setTimeout(() => {
+                            document.getElementById('container').classList.add('flipped');
+                            
+                            // Start letter animation
+                            setTimeout(() => {
+                                const letter = document.getElementById('letter');
+                                const content = letter.textContent;
+                                letter.textContent = '';
+                                let charIndex = 0;
+                                
+                                function typeNextChar() {
+                                    if (charIndex < content.length) {
+                                        const span = document.createElement('span');
+                                        span.className = 'letter-char';
+                                        span.textContent = content[charIndex];
+                                        letter.appendChild(span);
+                                        
+                                        // Add reveal class after a brief delay
+                                        setTimeout(() => {
+                                            span.classList.add('reveal');
+                                        }, 50);
+                                        
+                                        charIndex++;
+                                        setTimeout(typeNextChar, 50);
+                                    } else {
+                                        // Show button when typing is complete
+                                        setTimeout(() => {
+                                            document.getElementById('memoryButton').classList.add('show');
+                                        }, 1000);
+                                    }
+                                }
+                                
+                                typeNextChar();
+                            }, 1000);
+                        }, 1500);
+                    }
+                } else {
+                    cells[currentCell].classList.add('wrong');
+                    setTimeout(() => cells[currentCell].classList.remove('wrong'), 500);
+                    mistakes++;
+                    document.getElementById('mistakeCount').textContent = mistakes;
+                    
+                    if (mistakes >= 3) {
+                        document.getElementById('resetBtn').style.display = 'inline-block';
+                    }
+                }
+            });
+        });
+
+        // Reset game
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            mistakes = 0;
+            currentCell = 0;
+            userCode = Array(8).fill('');
+            document.getElementById('mistakeCount').textContent = '0';
+            document.getElementById('resetBtn').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+            document.getElementById('container').classList.remove('flipped');
+            document.getElementById('memoryButton').classList.remove('show');
+            
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.textContent = '';
+                cell.className = 'cell';
+            });
+        });
+    </script>
+</body>
+</html>

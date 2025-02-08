@@ -42,7 +42,7 @@ const daysData = [
     }
 ];
 
-const DEV_MODE = false;  // Set this to false when you want to enable timer/locks
+const DEV_MODE = true;  // Set this to false when you want to enable timer/locks
 
 function createDayCards() {
     const grid = document.querySelector('.days-grid');
