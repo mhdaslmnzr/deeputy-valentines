@@ -1,114 +1,181 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Valentine's AR Heart Hunt ❤️</title>
+    <title>Find My Hearts ❤️</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.2.2/aframe-ar.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script>
+        AFRAME.registerComponent('heart', {
+            init: function() {
+                this.el.addEventListener('click', () => {
+                    if (!this.el.collected) {
+                        this.collectHeart();
+                    }
+                });
+            },
+            
+            collectHeart: function() {
+                this.el.collected = true;
+                const score = document.querySelector('#score');
+                const count = parseInt(score.getAttribute('data-count') || 0) + 1;
+                score.setAttribute('data-count', count);
+                score.textContent = `Hearts collected: ${count}`;
+                
+                // Animate heart collection
+                this.el.setAttribute('animation', {
+                    property: 'scale',
+                    to: '0 0 0',
+                    dur: 500,
+                    easing: 'easeInQuad'
+                });
+                
+                setTimeout(() => {
+                    this.el.parentNode.removeChild(this.el);
+                    
+                    if (count === 5) {
+                        const message = document.querySelector('#message');
+                        message.style.display = 'block';
+                        message.textContent = '❤️ You found all my hearts! I love you! ❤️';
+                    }
+                }, 500);
+            }
+        });
+    </script>
     <style>
-        #ui-container {
+        #ui {
             position: fixed;
-            width: 100%;
-            top: 0;
+            top: 20px;
             left: 0;
-            z-index: 100;
+            right: 0;
+            z-index: 1000;
+            text-align: center;
+            font-family: Arial, sans-serif;
         }
-
+        
         #score {
+            display: inline-block;
             background: rgba(255, 255, 255, 0.9);
             padding: 10px 20px;
             border-radius: 20px;
-            margin: 20px auto;
-            width: fit-content;
-            font-family: Arial, sans-serif;
-            font-size: 24px;
+            font-size: 18px;
+            color: #ff4081;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        #debug-info {
+        
+        #message {
+            display: none;
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.7);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 64, 129, 0.95);
             color: white;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 14px;
-            z-index: 1000;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 24px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            z-index: 2000;
+        }
+        
+        .start-button {
+            background: #ff4081;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            color: white;
+            font-size: 18px;
+            margin-top: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div id="ui-container">
-        <div id="score">Look around for hearts! ❤️ <span id="heart-count">0</span>/5</div>
+    <div class="start-screen" id="start-screen">
+        <h1>❤️ Find My Hearts ❤️</h1>
+        <p>Look around to find all the floating hearts!</p>
+        <button class="start-button" onclick="startExperience()">Start</button>
     </div>
-    <div id="debug-info">Searching for surface...</div>
 
-    <!-- AR Scene -->
-    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;' renderer='precision: mediump;'>
-        <!-- Use a marker for testing -->
-        <a-marker preset='hiro'>
-            <!-- Heart container anchored to marker -->
-            <a-entity id="heart-container">
-                <!-- Heart 1 -->
-                <a-sphere position="0 0.5 0" 
-                         radius="0.2" 
-                         color="red" 
-                         animation="property: position; to: 0 0.7 0; dir: alternate; dur: 1000; loop: true"
-                         class="clickable"></a-sphere>
-                
-                <!-- Heart 2 -->
-                <a-sphere position="1 0.5 0" 
-                         radius="0.2" 
-                         color="pink"
-                         animation="property: position; to: 1 0.7 0; dir: alternate; dur: 1000; loop: true"
-                         class="clickable"></a-sphere>
-                
-                <!-- Heart 3 -->
-                <a-sphere position="-1 0.5 0" 
-                         radius="0.2" 
-                         color="red"
-                         animation="property: position; to: -1 0.7 0; dir: alternate; dur: 1000; loop: true"
-                         class="clickable"></a-sphere>
-                
-                <!-- Debug markers -->
-                <a-box position="0 0 0" 
-                       scale="0.1 0.1 0.1" 
-                       color="yellow"></a-box>
-            </a-entity>
-        </a-marker>
+    <div id="ui">
+        <div id="score" data-count="0">Hearts collected: 0</div>
+    </div>
+    
+    <div id="message"></div>
 
-        <!-- Camera -->
-        <a-entity camera></a-entity>
+    <a-scene embedded vr-mode-ui="enabled: false">
+        <a-camera position="0 1.6 0" look-controls="pointerLockEnabled: false">
+            <a-cursor color="#ff4081"></a-cursor>
+        </a-camera>
+        
+        <a-entity id="heart-container" position="0 0 0">
+            <!-- Hearts will be placed in a line -->
+            <a-box 
+                position="-2 1.5 -5" 
+                scale="0.5 0.5 0.5" 
+                material="color: #ff4081"
+                heart
+                animation="property: position; to: -2 1.7 -5; dir: alternate; dur: 1500; loop: true"
+                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
+            </a-box>
+            
+            <a-box 
+                position="-1 1.5 -5" 
+                scale="0.5 0.5 0.5" 
+                material="color: #ff4081"
+                heart
+                animation="property: position; to: -1 1.7 -5; dir: alternate; dur: 1700; loop: true"
+                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
+            </a-box>
+            
+            <a-box 
+                position="0 1.5 -5" 
+                scale="0.5 0.5 0.5" 
+                material="color: #ff4081"
+                heart
+                animation="property: position; to: 0 1.7 -5; dir: alternate; dur: 1600; loop: true"
+                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
+            </a-box>
+            
+            <a-box 
+                position="1 1.5 -5" 
+                scale="0.5 0.5 0.5" 
+                material="color: #ff4081"
+                heart
+                animation="property: position; to: 1 1.7 -5; dir: alternate; dur: 1800; loop: true"
+                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
+            </a-box>
+            
+            <a-box 
+                position="2 1.5 -5" 
+                scale="0.5 0.5 0.5" 
+                material="color: #ff4081"
+                heart
+                animation="property: position; to: 2 1.7 -5; dir: alternate; dur: 1900; loop: true"
+                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
+            </a-box>
+        </a-entity>
     </a-scene>
 
     <script>
-        // Debug info updates
-        const debugInfo = document.getElementById('debug-info');
-        const marker = document.querySelector('a-marker');
-        
-        marker.addEventListener('markerFound', () => {
-            debugInfo.textContent = 'Marker found! Hearts should be visible';
-            debugInfo.style.backgroundColor = 'rgba(0, 255, 0, 0.7)';
-        });
-        
-        marker.addEventListener('markerLost', () => {
-            debugInfo.textContent = 'Marker lost. Looking for marker...';
-            debugInfo.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
-        });
-
-        // Heart collection logic
-        let collectedHearts = 0;
-        document.querySelectorAll('.clickable').forEach(heart => {
-            heart.addEventListener('click', function() {
-                if (!this.collected) {
-                    this.collected = true;
-                    collectedHearts++;
-                    document.getElementById('heart-count').textContent = collectedHearts;
-                    this.setAttribute('animation', 'property: scale; to: 0 0 0; dur: 500');
-                    setTimeout(() => this.remove(), 500);
-                }
-            });
-        });
+        function startExperience() {
+            document.getElementById('start-screen').style.display = 'none';
+        }
     </script>
 </body>
 </html>
