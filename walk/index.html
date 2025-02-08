@@ -4,10 +4,26 @@
     <title>Hunt My Hearts 💝</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
+        /* Keep your existing styles but add these debug elements */
+        .debug-info {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* Keep all your existing styles */
         .ui-overlay {
             position: fixed;
             top: 20px;
@@ -20,109 +36,13 @@
             font-family: Arial, sans-serif;
             font-size: 18px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
         }
         
-        #heartCount {
-            color: #ff4081;
-            font-weight: bold;
-        }
-
-        .start-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #fff0f3 0%, #ffb6c1 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .start-screen h1 {
-            color: #ff4081;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-
-        .start-screen p {
-            color: #666;
-            margin: 10px 0;
-            font-size: 16px;
-        }
-
-        .start-button {
-            background: #ff4081;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 18px;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(255,64,129,0.3);
-            transition: transform 0.2s;
-        }
-
-        .start-button:active {
-            transform: scale(0.95);
-        }
-
-        .hint {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            color: #666;
-            z-index: 1000;
-            text-align: center;
-            max-width: 80%;
-            display: none;
-        }
-
-        .complete-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-        }
-
-        .complete-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            margin: 20px;
-            max-width: 90%;
-        }
-
-        .complete-content h2 {
-            color: #ff4081;
-            margin-bottom: 15px;
-        }
-
-        /* Remove AR.js debug UI */
-        .a-enter-vr, .a-orientation-modal {
-            display: none !important;
-        }
+        /* Keep rest of your styles... */
     </style>
 </head>
 <body>
+    <!-- Keep your existing UI elements -->
     <div class="start-screen" id="startScreen">
         <h1>Find My Hearts! 💝</h1>
         <p>I've hidden special hearts around you...</p>
@@ -131,11 +51,15 @@
     </div>
 
     <div class="ui-overlay">
-        Hearts: <span id="heartCount">0</span>/<span id="totalHearts">10</span>
+        Hearts: <span id="heartCount">0</span>/<span id="totalHearts">8</span>
     </div>
 
     <div class="hint" id="hint">
         Look around to find floating hearts! 💝
+    </div>
+
+    <div class="debug-info" id="debugInfo">
+        Camera Status: Initializing...
     </div>
 
     <div class="complete-screen" id="completeScreen">
@@ -146,26 +70,28 @@
         </div>
     </div>
 
+    <!-- Simplified AR Scene -->
     <a-scene 
         embedded
         arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix;'
         renderer='antialias: true; alpha: true'
         vr-mode-ui="enabled: false">
-
-        <a-camera gps-projected-camera rotation-reader></a-camera>
+        
+        <!-- Simple camera setup -->
+        <a-camera position="0 0 0" look-controls="enabled: true">
+            <a-cursor></a-cursor>
+        </a-camera>
     </a-scene>
 
     <script>
         // Game state
         let heartsCollected = 0;
-        const totalHearts = 10;
+        const totalHearts = 8;
         let gameStarted = false;
 
-        // Sound effects
-        const sounds = {
-            collect: new Audio('pop.mp3'),
-            complete: new Audio('complete.mp3')
-        };
+        // Show debug info in local testing
+        const debugInfo = document.getElementById('debugInfo');
+        debugInfo.style.display = 'block';
 
         function startGame() {
             if (!gameStarted) {
@@ -173,88 +99,64 @@
                 document.getElementById('startScreen').style.display = 'none';
                 document.getElementById('hint').style.display = 'block';
                 
-                // Request device orientation permission on iOS
-                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    DeviceOrientationEvent.requestPermission()
-                        .then(response => {
-                            if (response === 'granted') {
-                                initializeHearts();
-                            }
-                        })
-                        .catch(console.error);
-                } else {
-                    initializeHearts();
-                }
+                // Initialize camera
+                initializeCamera();
             }
         }
 
-        function initializeHearts() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const startLat = position.coords.latitude;
-                    const startLng = position.coords.longitude;
-                    
-                    // Calculate heart positions in I ❤️ U pattern
-                    const heartPositions = calculateHeartPositions(startLat, startLng);
-                    
-                    // Create hearts
-                    heartPositions.forEach((pos, index) => {
-                        createHeart(pos.lat, pos.lng, index);
-                    });
+        function initializeCamera() {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(stream => {
+                    debugInfo.textContent = 'Camera: Active';
+                    createHearts();
+                })
+                .catch(err => {
+                    debugInfo.textContent = 'Camera Error: ' + err.message;
+                    console.error('Camera error:', err);
                 });
-            }
         }
 
-        function calculateHeartPositions(startLat, startLng) {
-            const positions = [];
-            const scale = 0.00001; // Approximately 1 meter
+        function createHearts() {
+            // Create hearts in fixed positions around the user
+            const positions = [
+                { x: 0, y: 1.5, z: -3 },    // Center front (I)
+                { x: 0, y: 2, z: -3 },      // Top of I
+                { x: -1, y: 1.5, z: -3 },   // Left of heart
+                { x: 1, y: 1.5, z: -3 },    // Right of heart
+                { x: 0, y: 1, z: -3 },      // Bottom of heart
+                { x: 2, y: 1.5, z: -3 },    // Right side (U)
+                { x: 2, y: 1, z: -3 },      // Bottom right (U)
+                { x: 1.5, y: 1, z: -3 }     // Bottom middle (U)
+            ];
 
-            // I pattern
-            positions.push({lat: startLat + (scale * 2), lng: startLng});
-            positions.push({lat: startLat + (scale * 4), lng: startLng});
-
-            // Heart shape
-            positions.push({lat: startLat + (scale * 6), lng: startLng - (scale * 2)});
-            positions.push({lat: startLat + (scale * 7), lng: startLng});
-            positions.push({lat: startLat + (scale * 6), lng: startLng + (scale * 2)});
-
-            // U pattern
-            positions.push({lat: startLat + (scale * 4), lng: startLng + (scale * 4)});
-            positions.push({lat: startLat + (scale * 2), lng: startLng + (scale * 4)});
-            positions.push({lat: startLat + (scale * 2), lng: startLng + (scale * 3)});
-
-            return positions;
+            positions.forEach((pos, index) => {
+                createHeart(pos, index);
+            });
         }
 
-        function createHeart(lat, lng, index) {
+        function createHeart(position, index) {
             const heart = document.createElement('a-entity');
             
-            // Use a simple box for testing, replace with heart model in production
+            // Create heart shape using a box for testing
             const heartMesh = document.createElement('a-box');
             heartMesh.setAttribute('color', '#ff4081');
             heartMesh.setAttribute('scale', '0.3 0.3 0.3');
+            heartMesh.setAttribute('position', `${position.x} ${position.y} ${position.z}`);
             heartMesh.setAttribute('animation', {
                 property: 'position',
                 dir: 'alternate',
                 dur: 1000 + (index * 100),
                 easing: 'easeInOutSine',
                 loop: true,
-                from: '0 0 0',
-                to: '0 0.5 0'
+                from: `${position.x} ${position.y} ${position.z}`,
+                to: `${position.x} ${position.y + 0.2} ${position.z}`
             });
 
-            heart.appendChild(heartMesh);
-            heart.setAttribute('gps-projected-entity-place', {
-                latitude: lat,
-                longitude: lng
-            });
-
-            heart.addEventListener('click', () => collectHeart(heart));
-            document.querySelector('a-scene').appendChild(heart);
+            heartMesh.addEventListener('click', () => collectHeart(heartMesh));
+            document.querySelector('a-scene').appendChild(heartMesh);
         }
 
         function collectHeart(heart) {
-            sounds.collect.play();
             heart.parentNode.removeChild(heart);
             heartsCollected++;
             document.getElementById('heartCount').textContent = heartsCollected;
@@ -265,7 +167,6 @@
         }
 
         function showCompletion() {
-            sounds.complete.play();
             document.getElementById('completeScreen').style.display = 'flex';
             setTimeout(() => {
                 document.getElementById('hint').textContent = 
@@ -273,14 +174,6 @@
                 document.getElementById('hint').style.display = 'block';
             }, 2000);
         }
-
-        // Handle visibility changes
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                // Pause game elements when tab/app is not visible
-                Object.values(sounds).forEach(sound => sound.pause());
-            }
-        });
 
         // Prevent scrolling/zooming
         document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
