@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oru NIC ayalo baby🍫</title>
+    <title>Our Sweet Memory 🍫</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,44 +14,158 @@
 
         body {
             min-height: 100vh;
-            background: #fff0f3;
+            background: #4a2110;
+            background-image: 
+                radial-gradient(circle at 25px 25px, rgba(255,255,255,0.2) 2%, transparent 0%),
+                radial-gradient(circle at 75px 75px, rgba(255,255,255,0.2) 2%, transparent 0%);
+            background-size: 100px 100px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 20px;
+            padding: 20px 10px;
+            font-family: 'Poppins', serif;
         }
 
-        .video-container {
+        .letter-container {
             width: 100%;
             max-width: 800px;
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: #fff5eb;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chocolate-corner {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #4a2110;
+            transform: rotate(45deg);
+            opacity: 0.1;
+        }
+
+        .top-left { top: -50px; left: -50px; }
+        .top-right { top: -50px; right: -50px; }
+        .bottom-left { bottom: -50px; left: -50px; }
+        .bottom-right { bottom: -50px; right: -50px; }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+
+
+        .letter {
+            font-size: 1em;
+            color: #2c1810;
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+
+        .video-section {
+            text-align: center;
+            margin-top: 200px;
+            z-index: 9999;
+        }
+
+        .video-title {
+            font-size: 1.8em;
+            color: #4a2110;
+            margin-bottom: 20px;
         }
 
         video {
             width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 9999;
         }
 
-        h1 {
-            color: #ff4081;
-            text-align: center;
-            margin-bottom: 20px;
+        .chocolate-icon {
             font-size: 24px;
+            position: absolute;
+            opacity: 0.1;
+        }
+
+        .love-message {
+            text-align: center;
+            color: #4a2110;
+            font-size: 2em;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scatter chocolate icons around */
+        .chocolate-1 { top: 10%; left: 5%; }
+        .chocolate-2 { top: 20%; right: 8%; }
+        .chocolate-3 { bottom: 15%; left: 7%; }
+        .chocolate-4 { bottom: 25%; right: 6%; }
+
+        @media (max-width: 600px) {
+            .letter-container {
+                padding: 20px;
+            }
+            .letter {
+                font-size: 1.2em;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="video-container">
-        <h1>Your favorite chocolate memory... ❤️</h1>
-        <video autoplay controls>
-            <source src="video/choco.mp4" type="video/mp4">
-            Your browser doesn't support video playback.
-        </video>
+    <div class="letter-container">
+        <div class="chocolate-corner top-left"></div>
+        <div class="chocolate-corner top-right"></div>
+        <div class="chocolate-corner bottom-left"></div>
+        <div class="chocolate-corner bottom-right"></div>
+        
+        <span class="chocolate-icon chocolate-1">🍫</span>
+        <span class="chocolate-icon chocolate-2">🍫</span>
+        <span class="chocolate-icon chocolate-3">🍫</span>
+        <span class="chocolate-icon chocolate-4">🍫</span>
+            
+            <div class="letter" id="letter">
+                <p>Chocolate Day, huh?</p>
+                <br/>
+                <p>I still remember the first time I came to meet you. I had this grand idea of getting you flowers, but my lazy ass couldn't wake up early enough. So I ended up grabbing a Galaxy chocolate instead – the very first gift I gave you. But you know what? That's not my favorite chocolate memory with you. Nope, not that one you're thinking of (don't get all cheeky now, pennungalle!). There's another, one that's so much deeper.</p>
+                <br/>
+                <p>Now, here's what's funny… Do you know what's common with almost every time we met? It's not love, or excitement... it's <i>periods</i> 😂. Seriously, 7 out of 10 times we hung out, either you were on your period, about to get it, or just finishing up. But you know what? I never minded. It didn't matter at all. We still had so much fun.</p>
+                <br/>
+                <p>It's like that nice line from (the really unfunny show)<i>Friends</i> where Chandler says, "I love maintaining you." I can't even comprehend how its a funny show, but I get why you laugh at all those jokes. And I get why you find it funny, though honestly, compared to the genius of Andrews' songs, it's kinda hard for me to see it. But hey, I guess not all of us are gifted with a top-tier humor sense. I mean, I'm just glad I don't have to do much to make you laugh. Thank you, Jesus!</p>
+                <br/>
+                <p>But here's the thing, I don't think you remember the first time I took care of you. It was a moment so small, but the chocolate completely overshadowed it. You said, "Since I was 12, I've dealt with this by myself. And for the first time in 10 years, someone is taking care of me. Looking after me… it's such a small gesture, but it means so much. I love you." And I replied, "First of many."</p>
+                <br/>
+                <p>And that... that is my favorite chocolate memory with you. Not just the chocolate, but the love, care, and bond we were already building. That moment, to me, marks the beginning of our sweet story. I truly believe that.</p>
+                <br/>
+                <p>Man, I miss those days... those pre-IIM days when we were just our silly, carefree teenage selves. No deep talks, no heavy moments – just pure, unfiltered fun. I miss you so much, girl. So close, yet so far...</p>
+            </div>
+
+            <div class="video-section">
+                <div class="video-title">Here's our sweet memory... 🍫</div>
+                <video id="memory-video" controls>
+                    <source src="video/choco.mp4" type="video/mp4">
+                    Your browser doesn't support video playback.
+                </video>
+                <div class="love-message" id="love-message">I too love you Deepu, Happy Chocolate Day ❤️</div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        const video = document.getElementById('memory-video');
+        const loveMessage = document.getElementById('love-message');
+
+        video.addEventListener('ended', () => {
+            loveMessage.style.display = 'block';
+        });
+    </script>
 </body>
 </html>

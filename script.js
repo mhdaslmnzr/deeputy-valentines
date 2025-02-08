@@ -13,7 +13,7 @@ const daysData = [
     {
         name: 'Chocolate Day',
         image: 'images/3.jpg',
-        message: 'Sweet like chocolate, precious like gold - that\'s what you are to me! Enjoy your chocolates, my love! 🍫'
+        message: 'Thanks for the confirmation, chocolate is on the way. <br>Ayyadaaaa<br>Daily gift thannale my GF, baaki you know right. 😏<br><br>But Ichayan have another puzzle for you - <a href="choco.html" style="color: #ff4081; text-decoration: underline;">Click here!</a>'
     },
     {
         name: 'Teddy Day',
@@ -42,7 +42,7 @@ const daysData = [
     }
 ];
 
-const DEV_MODE = true;  // Set this to false when you want to enable timer/locks
+const DEV_MODE = false;  // Set this to false when you want to enable timer/locks
 
 function createDayCards() {
     const grid = document.querySelector('.days-grid');

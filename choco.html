@@ -3,392 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sweet Memory 🍫</title>
+    <title>Unlock Our Memory ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --dark-chocolate: #4a2110;
+            --milk-chocolate: #8B4513;
+            --cream-chocolate: #fff5eb;
+            --light-chocolate: #e5d5c5;
+            --chocolate-highlight: #D2691E;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
         }
 
         body {
             min-height: 100vh;
-            background: #fff0f3;
+            background: linear-gradient(135deg, var(--dark-chocolate), #2c1810);
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--cream-chocolate);
         }
-
+        
         .container {
             width: 100%;
-            max-width: 500px;
-            min-height: 600px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 1s;
-            perspective: 1000px;
-        }
-
-        .container.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .puzzle-side, .letter-side {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            background: white;
-            border-radius: 15px;
+            max-width: 800px;
+            background: var(--cream-chocolate);
+            border-radius: 25px;
             padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .letter-side {
-            transform: rotateY(180deg);
-            padding: 40px;
-            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), 
-                        url('background.jpg');
-            background-size: cover;
-            background-position: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
         }
 
         h1 {
-            color: #ff4081;
-            margin-bottom: 20px;
-            font-size: 24px;
             text-align: center;
+            font-family: 'Caveat', cursive;
+            color: var(--chocolate-highlight);
+            font-size: 3rem;
+            margin-bottom: 20px;
         }
 
-        .hint {
-            color: #666;
-            margin-bottom: 20px;
-            font-size: 16px;
+        .game-instructions {
+            background: rgba(139,69,19,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
             text-align: center;
+            color: var(--dark-chocolate);
+            line-height: 1.6;
         }
 
-        .mistakes {
-            color: #f44336;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+        .word-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 10px;
             margin-bottom: 30px;
         }
 
-        .cell {
-            aspect-ratio: 1;
-            border: 2px solid #ff4081;
+        .word {
+            position: relative;
+            padding: 6px 12px;
+            background: rgba(139,69,19,0.1);
+            color: var(--dark-chocolate);
+            border: 1px solid rgba(74,33,16,0.1);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            display: inline-block;
+            margin: 3px;
+            cursor: default;
+            overflow: hidden;
+        }
+
+        .word:hover {
+            transform: scale(1.05) rotate(2deg);
+            background: rgba(139,69,19,0.2);
+        }
+
+        .input-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-cell {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--milk-chocolate);
             border-radius: 8px;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 24px;
+            align-items: center;
+            font-size: 1.5rem;
             font-weight: bold;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.5);
+            position: relative;
+            cursor: text;
         }
 
-        .cell:hover {
-            background: #fff0f3;
+        .input-cell input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 1.5rem;
+            background: transparent;
+            outline: none;
         }
 
-        .cell.correct {
-            border-color: #4caf50;
-            background: #e8f5e9;
+        .input-cell.correct {
+            background: #4caf50;
+            color: white;
         }
 
-        .cell.wrong {
-            border-color: #f44336;
-            background: #ffebee;
+        .input-cell.wrong {
+            background: #f44336;
+            color: white;
             animation: shake 0.5s;
         }
 
-        .numbers {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+        .mistake-tracker {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: var(--dark-chocolate);
         }
 
-        .number {
-            padding: 15px;
-            background: #4a2110;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 0 #1a0f0a;
+        .mistake-message {
+            text-align: center;
+            color: var(--dark-chocolate);
+            margin: 15px 0;
+            font-style: italic;
+            min-height: 30px;
         }
 
-        .number:hover {
-            transform: translateY(-2px);
-        }
-
-        .number:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #1a0f0a;
-        }
-
-        .reset {
+        .reset-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 24px;
             background: #666;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
-            display: none;
-            margin: 0 auto;
-        }
-
-        .success {
-            color: #4caf50;
-            font-weight: bold;
-            margin: 20px 0;
-            display: none;
+            transition: all 0.3s ease;
             text-align: center;
         }
 
-        .letter {
-            color: #333;
-            line-height: 2;
-            padding: 20px;
-            font-size: 16px;
-            white-space: pre-wrap;
-            font-family: 'Segoe UI', Arial, sans-serif;
+        .reset-btn:hover {
+            background: #555;
         }
 
-        .letter-char {
-            opacity: 0;
-            display: inline-block;
-            transform: translateY(10px);
-            transition: opacity 0.05s, transform 0.1s;
-        }
-
-        .letter-char.reveal {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .memory-button {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(45deg, #4a2110, #2c1810);
-            color: white;
-            padding: 20px 35px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0;
-            pointer-events: none;
-            box-shadow: 
-                0 4px 0 #1a0f0a,
-                0 8px 15px rgba(0, 0, 0, 0.3),
-                inset 0 2px 15px rgba(255, 255, 255, 0.1),
-                inset 0 -2px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .memory-button::after {
-            content: "🍫";
-            margin-left: 8px;
-            font-size: 20px;
-        }
-
-        .memory-button.show {
-            opacity: 1;
-            pointer-events: auto;
-            animation: bounce 1s ease;
-        }
-
-        .memory-button:hover {
-            transform: translateX(-50%) translateY(-2px);
-            box-shadow: 
-                0 6px 0 #1a0f0a,
-                0 12px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .memory-button:active {
-            transform: translateX(-50%) translateY(2px);
-            box-shadow: 
-                0 2px 0 #1a0f0a,
-                0 4px 10px rgba(0, 0, 0, 0.3);
+        .success-message {
+            text-align: center;
+            color: var(--chocolate-highlight);
+            margin-top: 20px;
+            display: none;
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-10px); }
-            60% { transform: translateX(-50%) translateY(-5px); }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .input-cell {
+                width: 40px;
+                height: 40px;
+            }
+
+            .input-cell input {
+                font-size: 1.2rem;
+            }
         }
 
-        @media (max-width: 500px) {
-            .cell {
-                font-size: 20px;
-            }
-            
-            .number {
-                font-size: 18px;
-                padding: 12px;
-            }
+        .para{
+            text-align: left;
         }
+
+        .success-message{
+            padding: 10px 22px;
+            border-radius: 6px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            background-color: #e82a43;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container" id="container">
-        <div class="puzzle-side">
-            <h1>Unlock Our Memory 💝</h1>
-            <p class="hint">Hint: Most special of ours! 💭</p>
-            <div class="mistakes">Mistakes: <span id="mistakeCount">0</span>/3</div>
-            
-            <div class="grid" id="grid"></div>
+    <div class="container">
+        <h1>First Light ❤️</h1>
+        
+        <div class="game-instructions">
 
-            <div class="numbers">
-                <button class="number">0</button>
-                <button class="number">1</button>
-                <button class="number">2</button>
-                <button class="number">4</button>
-            </div>
-
-            <button class="reset" id="resetBtn">Start Over</button>
-            <div class="success" id="success">Perfect! You found our special date! 💝</div>
+            <p>
+                This is a special puzzle, the answer to which holds a very precious memory. 
+               <br> Your mission is to uncover the hidden code.
+            </p>
+            <br>
+            <p class="para">
+               <b> 🕹️ Game Rules: </b>
+                <br>
+                - This is an 8 digit puzzle
+                <br>
+                - Green means right digit
+                <br>
+                - Red means a wrong digit
+                <br>
+                - There is a mistake limit of three for one game and if you fail more than 'n' number of games where n = to your current battery percentage, you may never see whats on the other side.
+            </p>
         </div>
 
-        <div class="letter-side">
-            <div class="letter" id="letter">Dear Deeputy ❤️,
-
-Thinking of chocolate day, I started to recollect all the good memories I had with you, and chocolate was always there. First time I met you, I wanted to buy you a flower, but light ayitt njn madiyan ayond, time inu enikathond, I couldn't...
-
-So I had to adjust with a chocolate, a Galaxy one I think. That was the first chocolate I ever gave you, but that was not the first 'chocolate' you loved the most I gave you...
-
-That chocolate was special. The reactions you gave for it, the way you later mentioned it... I miss those days, Deepu. It was different fun. All of sudden it feels like we grew up so fast. I consider pre-IIM as our teenage love...
-
-So yeah, that chocolate memory is so damn special, and that is your surprise for today. As each day progress, excitement to meet you is becoming very strong. So close yet so far...
-
-I miss you! ❤️</div>
-            <a href="chocovideo.html" class="memory-button" id="memoryButton">
-                See My Favorite Memory
-            </a>
+        <div class="word-cloud">
+            <div class="word">Crowded Food Spot</div>
+            <div class="word">Pretty Dress</div>
+            <div class="word">Galaxy</div>
+            <div class="word">White</div>
+            <div class="word">Love at first sight</div>
+            <div class="word">Dosa</div>
+            <div class="word">Budweiser</div>
+            <div class="word">Millenium</div>
+            <div class="word">First of Many</div>
+            <div class="word">Years After</div>
+            <div class="word">Night Walk</div>
+            <div class="word">Black</div>
+            <div class="word">Mustard</div>
+            <div class="word">Laughs</div>
+            <div class="word">Cries</div>
+            <div class="word">Hugs</div>
+            <div class="word">Kisses</div>
+            <div class="word">Butterflies</div>
+            <div class="word">Beautiful Smile</div>
+            <div class="word">Oru Date Poyalo baby?</div>
+            <div class="word">In Love ❤️</div>
         </div>
+
+        <div class="mistake-tracker">Mistakes: <span id="mistake-count">0</span>/3</div>
+        <div class="mistake-message" id="mistake-message"></div>
+
+        <div class="input-grid" id="input-grid"></div>
+
+        <div class="success-message" id="success-message">
+            finally you cracked it, the day I met the love of my life 💝<br>
+             <b> 14th April 2024</b> <br>
+            <a href="chocovideo.html" style="text-decoration: none;">Click here for a sweet rewind</a>
+        </div>
+        <div class="reset-btn" id="reset-btn" style="display: none;">
+            <span>Since Ichayan is pavam, you get another chance! 🥺 <br> Count your chances ⚠️ <br/> Click here to try again</span>
+    
+        </div>
+        
     </div>
 
     <script>
         const correctCode = '14042024';
         let mistakes = 0;
-        let currentCell = 0;
-        let userCode = Array(8).fill('');
-        
-        // Create grid cells
-        const grid = document.getElementById('grid');
+        const MAX_MISTAKES = 3;
+
+        // Mistake messages
+        const mistakeMessages = [
+            "It's okay, I forgive you 😅",
+            "Don't you love me? 🥺",
+            "Bye beeeeeeach! 👋"
+        ];
+
+        // Create input cells
+        const inputGrid = document.getElementById('input-grid');
+        const inputCells = [];
+        const mistakeCountEl = document.getElementById('mistake-count');
+        const mistakeMessageEl = document.getElementById('mistake-message');
+        const resetBtn = document.getElementById('reset-btn');
+
+        // Create 8 input cells
         for (let i = 0; i < 8; i++) {
             const cell = document.createElement('div');
-            cell.className = 'cell';
-            cell.dataset.index = i;
-            grid.appendChild(cell);
-        }
+            cell.className = 'input-cell';
+            
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.min = 0;
+            input.max = 9;
+            input.maxLength = 1;
+            
+            input.addEventListener('input', (e) => {
+                // Ensure single digit
+                if (e.target.value.length > 1) {
+                    e.target.value = e.target.value.slice(0, 1);
+                }
+                // Ensure 0-9
+                if (e.target.value !== '' && (e.target.value < 0 || e.target.value > 9)) {
+                    e.target.value = '';
+                }
 
-        // Handle number clicks
-        document.querySelectorAll('.number').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (currentCell >= 8 || mistakes >= 3) return;
-                
-                const number = btn.textContent;
-                const cells = document.querySelectorAll('.cell');
-                
-                if (number === correctCode[currentCell]) {
-                    cells[currentCell].textContent = number;
-                    cells[currentCell].classList.add('correct');
-                    userCode[currentCell] = number;
-                    currentCell++;
+                // Check if all inputs are correct
+                if (inputCells.every((input, index) => input.value === correctCode[index] && input.value !== '')) {
+                    // All inputs are correct
+                    document.getElementById('success-message').style.display = 'block';
+                    inputCells.forEach(input => input.disabled = true);
+                    return; // Exit the function after success
+                }
+
+                // Check if the input is correct
+                if (e.target.value === correctCode[i]) {
+                    // Correct input turns box green
+                    cell.classList.remove('wrong');
+                    cell.classList.add('correct');
+                } else if (e.target.value !== '') {
+                    // Wrong input
+                    // Turn box red
+                    cell.classList.add('wrong');
                     
-                    if (currentCell === 8) {
-                        document.getElementById('success').style.display = 'block';
-                        setTimeout(() => {
-                            document.getElementById('container').classList.add('flipped');
-                            
-                            // Start letter animation
-                            setTimeout(() => {
-                                const letter = document.getElementById('letter');
-                                const content = letter.textContent;
-                                letter.textContent = '';
-                                let charIndex = 0;
-                                
-                                function typeNextChar() {
-                                    if (charIndex < content.length) {
-                                        const span = document.createElement('span');
-                                        span.className = 'letter-char';
-                                        span.textContent = content[charIndex];
-                                        letter.appendChild(span);
-                                        
-                                        // Add reveal class after a brief delay
-                                        setTimeout(() => {
-                                            span.classList.add('reveal');
-                                        }, 50);
-                                        
-                                        charIndex++;
-                                        setTimeout(typeNextChar, 50);
-                                    } else {
-                                        // Show button when typing is complete
-                                        setTimeout(() => {
-                                            document.getElementById('memoryButton').classList.add('show');
-                                        }, 1000);
-                                    }
-                                }
-                                
-                                typeNextChar();
-                            }, 1000);
-                        }, 1500);
-                    }
-                } else {
-                    cells[currentCell].classList.add('wrong');
-                    setTimeout(() => cells[currentCell].classList.remove('wrong'), 500);
+                    // Increment mistakes
                     mistakes++;
-                    document.getElementById('mistakeCount').textContent = mistakes;
+                    mistakeCountEl.textContent = mistakes;
+
+                    // Show mistake message
+                    if (mistakes <= MAX_MISTAKES) {
+                        mistakeMessageEl.textContent = mistakeMessages[mistakes - 1];
+                    }
+
+                    // Remove input value
+                    e.target.value = '';
                     
-                    if (mistakes >= 3) {
-                        document.getElementById('resetBtn').style.display = 'inline-block';
+                    // Turn box white after a short delay
+                    setTimeout(() => {
+                        cell.classList.remove('wrong');
+                    }, 500);
+
+                    // Game over condition
+                    if (mistakes >= MAX_MISTAKES) {
+                        // Disable inputs
+                        inputCells.forEach(input => input.disabled = true);
+                        
+
+                        
+                        // After 2 seconds, show "Ichayan is pavam" message
+                        setTimeout(() => {
+
+                            
+                            // Show reset button
+                            resetBtn.style.display = 'block';
+                        }, 2000);
                     }
                 }
             });
-        });
 
-        // Reset game
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            mistakes = 0;
-            currentCell = 0;
-            userCode = Array(8).fill('');
-            document.getElementById('mistakeCount').textContent = '0';
-            document.getElementById('resetBtn').style.display = 'none';
-            document.getElementById('success').style.display = 'none';
-            document.getElementById('container').classList.remove('flipped');
-            document.getElementById('memoryButton').classList.remove('show');
-            
-            document.querySelectorAll('.cell').forEach(cell => {
-                cell.textContent = '';
-                cell.className = 'cell';
+            cell.appendChild(input);
+            inputGrid.appendChild(cell);
+            inputCells.push(input);
+        }
+
+        // Reset game function
+        resetBtn.addEventListener('click', resetGame);
+
+        function resetGame() {
+            // Reset input cells
+            inputCells.forEach((input, i) => {
+                input.value = '';
+                input.disabled = false;
+                const cell = input.parentElement;
+                cell.classList.remove('correct', 'wrong', 'mistake-counted');
             });
-        });
+
+            // Reset mistake tracking
+            mistakes = 0;
+            mistakeCountEl.textContent = '0';
+            mistakeMessageEl.textContent = '';
+
+            // Hide reset button and success message
+            resetBtn.style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
     </script>
 </body>
 </html>
