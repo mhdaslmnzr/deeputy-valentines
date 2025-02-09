@@ -18,7 +18,7 @@ const daysData = [
     {
         name: 'Teddy Day',
         image: 'images/4.jpg',
-        message: 'Remember our first talks? I fell in love with those panda eyes of yours! 🐼 Since I couldn\'t get you a red panda from the Himalayas (tried but couldn\'t find time to hunt and stuff one 😂), here\'s a China-imported normal panda instead! Love you, my favorite panda kunje!'
+        message: 'The cutest girl with the darkest dark circles and the most expressive eyes—there couldn’t be a better Teddy Day surprise for you. But to unwrap it, you’ve got to solve a little puzzle first. <a href="walk/index.html" style="color: #ff4081; text-decoration: underline;">Click here!</a>'
     },
     {
         name: 'Promise Day',

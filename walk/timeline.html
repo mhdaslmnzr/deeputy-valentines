@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Timeline Puzzle 💝</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fff0f3;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff4081;
+            margin: 20px 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .puzzle-container {
+            aspect-ratio: 4/3;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 4px;
+            height: 100%;
+            background: #ff4081;
+            border-radius: 10px;
+            padding: 4px;
+        }
+
+        .tile {
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .tile:not(.empty):hover {
+            transform: scale(0.98);
+        }
+
+        .tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .tile-number {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(255,64,129,0.9);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        .empty {
+            background: #ff4081;
+        }
+
+        .message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: white;
+            color: #ff4081;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        .button {
+            background: #ff4081;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: transform 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+        }
+
+        .hint-reveal {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .tile-number {
+                width: 20px;
+                height: 20px;
+                font-size: 0.8rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .button {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="message" style="font-style: italic; font-size: 1.5rem; margin: 30px 0;">
+            "Time solves everything... but first, solve time." 🕰️
+        </div>
+        <div class="sub-message" style="color: #666; margin-bottom: 20px;">
+            Arrange the memories in chronological order...
+        </div>
+        
+        <div class="puzzle-container">
+            <div class="puzzle-grid" id="puzzleGrid"></div>
+        </div>
+
+        <div class="controls">
+            <button class="button" onclick="puzzle.shuffle()">Shuffle</button>
+            <a href="index.html" class="button">← Back</a>
+        </div>
+
+        <div class="hint-reveal">
+            🎉 Perfect! You've arranged our timeline!<br>
+            Here's part 2 of the password: "A"
+        </div>
+    </div>
+
+    <script>
+        class SlidingPuzzle {
+            constructor() {
+                this.grid = document.getElementById('puzzleGrid');
+                this.tiles = [];
+                this.emptyPos = 11; // Last position is empty
+                this.size = { rows: 3, cols: 4 };
+                this.isWon = false;
+                
+                this.initializePuzzle();
+                this.addEventListeners();
+            }
+
+            initializePuzzle() {
+                this.grid.innerHTML = '';
+                this.tiles = [];
+
+                // Create tiles
+                for (let i = 0; i < (this.size.rows * this.size.cols); i++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    
+                    if (i < 11) { // 11 images, last spot empty
+                        tile.innerHTML = `
+                            <img src="timeline/${i + 1}.jpg" alt="Memory ${i + 1}">
+                                        `;
+                        tile.dataset.number = i + 1;
+                    } else {
+                        tile.className = 'tile empty';
+                    }
+                    
+                    this.tiles.push(tile);
+                    this.grid.appendChild(tile);
+                }
+
+                this.shuffle();
+            }
+
+            addEventListeners() {
+                this.grid.addEventListener('click', (e) => {
+                    const tile = e.target.closest('.tile');
+                    if (tile && !tile.classList.contains('empty') && !this.isWon) {
+                        this.moveTile(tile);
+                    }
+                });
+
+                // Add touch support
+                let touchStartX, touchStartY;
+                
+                this.grid.addEventListener('touchstart', (e) => {
+                    const touch = e.touches[0];
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                }, { passive: true });
+
+                this.grid.addEventListener('touchend', (e) => {
+                    if (this.isWon) return;
+                    
+                    const touch = e.changedTouches[0];
+                    const deltaX = touch.clientX - touchStartX;
+                    const deltaY = touch.clientY - touchStartY;
+                    
+                    if (Math.abs(deltaX) > 30 || Math.abs(deltaY) > 30) {
+                        const direction = Math.abs(deltaX) > Math.abs(deltaY)
+                            ? (deltaX > 0 ? 'right' : 'left')
+                            : (deltaY > 0 ? 'down' : 'up');
+                        
+                        this.handleSwipe(direction);
+                    }
+                }, { passive: true });
+            }
+
+            handleSwipe(direction) {
+                const emptyIndex = this.tiles.findIndex(tile => tile.classList.contains('empty'));
+                const row = Math.floor(emptyIndex / this.size.cols);
+                const col = emptyIndex % this.size.cols;
+                let tileToMove;
+
+                switch (direction) {
+                    case 'up':
+                        if (row < this.size.rows - 1) {
+                            tileToMove = this.tiles[emptyIndex + this.size.cols];
+                        }
+                        break;
+                    case 'down':
+                        if (row > 0) {
+                            tileToMove = this.tiles[emptyIndex - this.size.cols];
+                        }
+                        break;
+                    case 'left':
+                        if (col < this.size.cols - 1) {
+                            tileToMove = this.tiles[emptyIndex + 1];
+                        }
+                        break;
+                    case 'right':
+                        if (col > 0) {
+                            tileToMove = this.tiles[emptyIndex - 1];
+                        }
+                        break;
+                }
+
+                if (tileToMove && !tileToMove.classList.contains('empty')) {
+                    this.moveTile(tileToMove);
+                }
+            }
+
+            moveTile(tile) {
+                const tileIndex = this.tiles.indexOf(tile);
+                const emptyIndex = this.tiles.findIndex(t => t.classList.contains('empty'));
+                
+                if (this.isAdjacent(tileIndex, emptyIndex)) {
+                    // Swap tiles
+                    const tempHTML = tile.innerHTML;
+                    const tempNumber = tile.dataset.number;
+                    
+                    tile.innerHTML = '';
+                    tile.className = 'tile empty';
+                    tile.removeAttribute('data-number');
+                    
+                    this.tiles[emptyIndex].innerHTML = tempHTML;
+                    this.tiles[emptyIndex].className = 'tile';
+                    this.tiles[emptyIndex].dataset.number = tempNumber;
+                    
+                    this.checkWin();
+                }
+            }
+
+            isAdjacent(pos1, pos2) {
+                const row1 = Math.floor(pos1 / this.size.cols);
+                const col1 = pos1 % this.size.cols;
+                const row2 = Math.floor(pos2 / this.size.cols);
+                const col2 = pos2 % this.size.cols;
+                
+                return (Math.abs(row1 - row2) === 1 && col1 === col2) ||
+                       (Math.abs(col1 - col2) === 1 && row1 === row2);
+            }
+
+            checkWin() {
+                const currentOrder = this.tiles
+                    .map(tile => tile.dataset.number)
+                    .filter(num => num !== undefined)
+                    .join('');
+                
+                if (currentOrder === '1234567891011') {
+                    this.isWon = true;
+                    document.querySelector('.hint-reveal').style.display = 'block';
+                    document.querySelector('.message').innerHTML = '🎉 Perfect! You\'ve mastered time itself! 💝<br><span style="font-size: 0.9em; color: #666;">Your reward: The letter "A"</span>';
+                    localStorage.setItem('puzzle2', 'completed');
+                    
+                    // Redirect after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 3000);
+                }
+            }
+
+            shuffle() {
+                if (this.isWon) return;
+                
+                // Perform random valid moves
+                for (let i = 0; i < 200; i++) {
+                    const emptyIndex = this.tiles.findIndex(t => t.classList.contains('empty'));
+                    const possibleMoves = [];
+                    
+                    // Check all possible moves
+                    if (emptyIndex >= this.size.cols) {
+                        possibleMoves.push(emptyIndex - this.size.cols);
+                    }
+                    if (emptyIndex < (this.size.rows - 1) * this.size.cols) {
+                        possibleMoves.push(emptyIndex + this.size.cols);
+                    }
+                    if (emptyIndex % this.size.cols > 0) {
+                        possibleMoves.push(emptyIndex - 1);
+                    }
+                    if (emptyIndex % this.size.cols < this.size.cols - 1) {
+                        possibleMoves.push(emptyIndex + 1);
+                    }
+                    
+                    const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                    this.moveTile(this.tiles[randomMove]);
+                }
+                
+                this.isWon = false;
+                document.querySelector('.hint-reveal').style.display = 'none';
+                document.querySelector('.message').textContent = 'Click tiles next to the empty space to move them!';
+            }
+        }
+
+        // Start the game
+        const puzzle = new SlidingPuzzle();
+    </script>
+</body>
+</html>

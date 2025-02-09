@@ -1,181 +1,219 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Find My Hearts ❤️</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script>
-        AFRAME.registerComponent('heart', {
-            init: function() {
-                this.el.addEventListener('click', () => {
-                    if (!this.el.collected) {
-                        this.collectHeart();
-                    }
-                });
-            },
-            
-            collectHeart: function() {
-                this.el.collected = true;
-                const score = document.querySelector('#score');
-                const count = parseInt(score.getAttribute('data-count') || 0) + 1;
-                score.setAttribute('data-count', count);
-                score.textContent = `Hearts collected: ${count}`;
-                
-                // Animate heart collection
-                this.el.setAttribute('animation', {
-                    property: 'scale',
-                    to: '0 0 0',
-                    dur: 500,
-                    easing: 'easeInQuad'
-                });
-                
-                setTimeout(() => {
-                    this.el.parentNode.removeChild(this.el);
-                    
-                    if (count === 5) {
-                        const message = document.querySelector('#message');
-                        message.style.display = 'block';
-                        message.textContent = '❤️ You found all my hearts! I love you! ❤️';
-                    }
-                }, 500);
-            }
-        });
-    </script>
+    <title>Deeputy's Puzzle Adventure 💝</title>
     <style>
-        #ui {
-            position: fixed;
-            top: 20px;
-            left: 0;
-            right: 0;
-            z-index: 1000;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: #fff0f3;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
             text-align: center;
-            font-family: Arial, sans-serif;
         }
-        
-        #score {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 18px;
+
+        h1 {
             color: #ff4081;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-        
-        #message {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 64, 129, 0.95);
-            color: white;
+
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .puzzle-card {
+            background: white;
             padding: 20px;
             border-radius: 15px;
-            font-size: 24px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .start-screen {
+
+        .puzzle-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .puzzle-card h3 {
+            color: #ff4081;
+            margin-bottom: 10px;
+        }
+
+        .puzzle-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .puzzle-icon {
+            font-size: 3rem;
+            margin: 10px 0;
+        }
+
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: rgba(0,0,0,0.5);
             justify-content: center;
-            color: white;
-            font-family: Arial, sans-serif;
-            z-index: 2000;
+            align-items: center;
+            z-index: 1000;
         }
-        
-        .start-button {
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 10px;
+            margin: 20px 0;
+            border: 2px solid #ff4081;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .submit-btn {
             background: #ff4081;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
             color: white;
-            font-size: 18px;
-            margin-top: 20px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.1rem;
             cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #f50057;
+        }
+
+        .completed-stamp {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4caf50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .puzzle-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="start-screen" id="start-screen">
-        <h1>❤️ Find My Hearts ❤️</h1>
-        <p>Look around to find all the floating hearts!</p>
-        <button class="start-button" onclick="startExperience()">Start</button>
+    <div class="container">
+        <h1>Deeputy's Puzzle Adventure 💝</h1>
+        <div class="puzzle-grid">
+            <div class="puzzle-card" onclick="window.location.href='hangman.html'">
+                <div class="puzzle-icon">🎯</div>
+                <h3>Puzzle 1</h3>
+                <div class="completed-stamp">Completed!</div>
+            </div>
+            <div class="puzzle-card" onclick="window.location.href='timeline.html'">
+                <div class="puzzle-icon">🌊</div>
+                <h3>Puzzle 2</h3>
+                <div class="completed-stamp">Completed!</div>
+            </div>
+            <div class="puzzle-card" onclick="window.location.href='puzzle3.html'">
+                <div class="puzzle-icon">🧩</div>
+                <h3>Puzzle 3</h3>
+                <div class="completed-stamp">Completed!</div>
+            </div>
+            <div class="puzzle-card" onclick="showPasswordModal()">
+                <div class="puzzle-icon">❤️</div>
+                <h3>Main Puzzle</h3>
+                <p>Enter if you dare...</p>
+            </div>
+        </div>
     </div>
 
-    <div id="ui">
-        <div id="score" data-count="0">Hearts collected: 0</div>
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <h3>Enter the Secret Password</h3>
+            <input type="text" class="password-input" id="passwordInput" placeholder="Hint: Combine all three parts...">
+            <button class="submit-btn" onclick="checkPassword()">Submit</button>
+        </div>
     </div>
-    
-    <div id="message"></div>
-
-    <a-scene embedded vr-mode-ui="enabled: false">
-        <a-camera position="0 1.6 0" look-controls="pointerLockEnabled: false">
-            <a-cursor color="#ff4081"></a-cursor>
-        </a-camera>
-        
-        <a-entity id="heart-container" position="0 0 0">
-            <!-- Hearts will be placed in a line -->
-            <a-box 
-                position="-2 1.5 -5" 
-                scale="0.5 0.5 0.5" 
-                material="color: #ff4081"
-                heart
-                animation="property: position; to: -2 1.7 -5; dir: alternate; dur: 1500; loop: true"
-                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
-            </a-box>
-            
-            <a-box 
-                position="-1 1.5 -5" 
-                scale="0.5 0.5 0.5" 
-                material="color: #ff4081"
-                heart
-                animation="property: position; to: -1 1.7 -5; dir: alternate; dur: 1700; loop: true"
-                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
-            </a-box>
-            
-            <a-box 
-                position="0 1.5 -5" 
-                scale="0.5 0.5 0.5" 
-                material="color: #ff4081"
-                heart
-                animation="property: position; to: 0 1.7 -5; dir: alternate; dur: 1600; loop: true"
-                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
-            </a-box>
-            
-            <a-box 
-                position="1 1.5 -5" 
-                scale="0.5 0.5 0.5" 
-                material="color: #ff4081"
-                heart
-                animation="property: position; to: 1 1.7 -5; dir: alternate; dur: 1800; loop: true"
-                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
-            </a-box>
-            
-            <a-box 
-                position="2 1.5 -5" 
-                scale="0.5 0.5 0.5" 
-                material="color: #ff4081"
-                heart
-                animation="property: position; to: 2 1.7 -5; dir: alternate; dur: 1900; loop: true"
-                animation__rotate="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear">
-            </a-box>
-        </a-entity>
-    </a-scene>
 
     <script>
-        function startExperience() {
-            document.getElementById('start-screen').style.display = 'none';
+        // Check for completed puzzles from localStorage
+        function checkCompletedPuzzles() {
+            const puzzles = ['puzzle1', 'puzzle2', 'puzzle3'];
+            puzzles.forEach((puzzle, index) => {
+                if (localStorage.getItem(puzzle) === 'completed') {
+                    document.querySelectorAll('.completed-stamp')[index].style.display = 'none';
+                }
+            });
         }
+
+        function showPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'flex';
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value.toLowerCase().replace(/\s+/g, ' ').trim();
+            if (input === 'deepthi a cutie') {
+                window.location.href = 'newspaper.html';
+            } else {
+                alert('Wrong password! Try combining the hints from all three puzzles...');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('passwordModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                document.getElementById('passwordModal').style.display = 'none';
+            }
+        });
+
+        // Check completed puzzles on load
+        window.onload = checkCompletedPuzzles;
     </script>
 </body>
 </html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save Our Love! 💔</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #fff0f3;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff4081;
+            margin: 20px 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .game-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        .word-display {
+            font-size: 3.5rem;
+            letter-spacing: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            color: #333;
+            min-height: 80px;
+        }
+
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .key {
+            padding: 10px;
+            background: #ff4081;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .key:hover:not(.used) {
+            background: #f50057;
+            transform: translateY(-2px);
+        }
+
+        .key.used {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .heart {
+            font-size: 100px;
+            margin: 20px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .message {
+            font-size: 1.2rem;
+            margin: 20px;
+            color: #ff4081;
+            font-weight: bold;
+            min-height: 50px;
+        }
+
+        .breakup-meter {
+            width: 80%;
+            height: 20px;
+            background: #fce4ec;
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ff4081, #f50057);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .hint-reveal {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            animation: fadeIn 1s;
+        }
+
+        .navigation {
+            margin-top: 20px;
+        }
+
+        .nav-button {
+            text-decoration: none;
+            background: #ff4081;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            margin: 10px;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+
+        .nav-button:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .word-display {
+                font-size: 2rem;
+                letter-spacing: 8px;
+            }
+
+            .key {
+                padding: 8px;
+                font-size: 1rem;
+            }
+
+            .heart {
+                font-size: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Save Our Love! 💔</h1>
+        <div class="heart">❤️</div>
+        <div class="breakup-meter">
+            <div class="meter-fill"></div>
+        </div>
+        <div class="message">Can you guess our special word?</div>
+        <div class="game-container">
+            <div class="word-display"></div>
+            <div class="keyboard"></div>
+        </div>
+        <div class="hint-reveal" id="hintReveal">
+            🎉 Congratulations! You've earned the first part of the secret password:<br>
+            <span style="font-size: 1.5em; font-weight: bold; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+                "DEEPTHI"
+            </span>
+        </div>
+        <div class="navigation">
+            <a href="index.html" class="nav-button">← Back to Puzzles</a>
+        </div>
+    </div>
+
+    <script>
+        const words = ['SHAWARMA', 'TELEGRAM', 'BEACH', 'HUMMUS'];
+        const funnyMessages = [
+            "Uh oh... Someone's getting hangry! 🍖",
+            "Is this how you treat your Ichayan? 😢",
+            "My poor little heart is cracking! 💔",
+            "Deeputy plz... Think harder! 🤔",
+            "No more teddy bears for you! 🧸",
+            "That's it! I'm eating your hummus! 😤"
+        ];
+
+        let currentWord = '';
+        let guessedLetters = new Set();
+        let mistakes = 0;
+        const maxMistakes = 6;
+
+        function selectWord() {
+            return words[Math.floor(Math.random() * words.length)];
+        }
+
+        function createKeyboard() {
+            const keyboard = document.querySelector('.keyboard');
+            keyboard.innerHTML = '';
+            for (let i = 65; i <= 90; i++) {
+                const letter = String.fromCharCode(i);
+                const button = document.createElement('button');
+                button.textContent = letter;
+                button.className = 'key';
+                button.onclick = () => guessLetter(letter);
+                keyboard.appendChild(button);
+            }
+        }
+
+        function updateWordDisplay() {
+            const display = document.querySelector('.word-display');
+            display.textContent = currentWord
+                .split('')
+                .map(letter => guessedLetters.has(letter) ? letter : '_')
+                .join(' ');
+        }
+
+        function updateMeter() {
+            const percentage = (mistakes / maxMistakes) * 100;
+            document.querySelector('.meter-fill').style.width = `${percentage}%`;
+        }
+
+        function guessLetter(letter) {
+            if (guessedLetters.has(letter)) return;
+
+            const button = document.querySelector(`.key:nth-child(${letter.charCodeAt(0) - 64})`);
+            button.classList.add('used');
+            guessedLetters.add(letter);
+
+            if (!currentWord.includes(letter)) {
+                mistakes++;
+                document.querySelector('.message').textContent = funnyMessages[mistakes - 1];
+                updateMeter();
+            }
+
+            updateWordDisplay();
+            checkGameStatus();
+        }
+
+        function checkGameStatus() {
+            const won = currentWord.split('').every(letter => guessedLetters.has(letter));
+            const lost = mistakes >= maxMistakes;
+
+            if (won) {
+                document.querySelector('.message').textContent = "YAAAY! You saved our love! 🎉💖";
+                document.querySelector('.hint-reveal').style.display = 'block';
+                localStorage.setItem('puzzle1', 'completed');
+                disableAllButtons();
+            } else if (lost) {
+                document.querySelector('.message').textContent = `Game Over! The word was: ${currentWord}`;
+                disableAllButtons();
+                setTimeout(() => {
+                    if (confirm('Want to try again to save our love?')) {
+                        initGame();
+                    }
+                }, 1000);
+            }
+        }
+
+        function disableAllButtons() {
+            document.querySelectorAll('.key').forEach(button => button.classList.add('used'));
+        }
+
+        function initGame() {
+            currentWord = selectWord();
+            guessedLetters.clear();
+            mistakes = 0;
+            document.querySelector('.message').textContent = "Can you guess our special word?";
+            document.querySelector('.hint-reveal').style.display = 'none';
+            document.querySelector('.meter-fill').style.width = '0%';
+            createKeyboard();
+            updateWordDisplay();
+        }
+
+        // Handle keyboard input
+        document.addEventListener('keyup', (e) => {
+            const key = e.key.toUpperCase();
+            if (/^[A-Z]$/.test(key)) {
+                guessLetter(key);
+            }
+        });
+
+        // Start the game
+        initGame();
+    </script>
+</body>
+</html>

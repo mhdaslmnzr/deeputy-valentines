@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deeeputty Times - Classic Edition</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Classic Newspaper Styling */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f4f1ea;
+            color: #222;
+            font-family: 'PT Serif', serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Masthead Styling */
+        .masthead {
+            text-align: center;
+            border-bottom: 2px solid #222;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+        }
+
+        .newspaper-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin: 0;
+            line-height: 1;
+            color: #222;
+        }
+
+        .newspaper-motto {
+            font-style: italic;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            color: #444;
+        }
+
+        .newspaper-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            border-top: 1px solid #222;
+            border-bottom: 1px solid #222;
+            padding: 5px 0;
+            margin: 10px 0;
+        }
+
+        /* Navigation */
+        .nav {
+            border-bottom: 2px solid #222;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .nav a {
+            color: #222;
+            text-decoration: none;
+            margin: 0 20px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content Grid */
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            margin: 0 auto;
+            max-width: 1400px;
+        }
+
+        /* Featured Article */
+        .featured-article {
+            grid-column: span 8;
+            border-right: 1px solid #222;
+            padding-right: 20px;
+        }
+
+        .featured-article .article-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+
+        /* Side Articles */
+        .side-articles {
+            grid-column: span 4;
+        }
+
+        /* Article Styling */
+        .article {
+            margin-bottom: 30px;
+            column-count: 2;
+            column-gap: 20px;
+            text-align: justify;
+        }
+
+        .article-image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+            filter: grayscale(20%);
+            background-color: #f4f1ea;
+            border: 2px solid #222;
+        }
+
+        /* SVG hover effects */
+        .article-image #room-407 {
+            transition: transform 0.3s ease;
+            transform-origin: center;
+        }
+
+        .article-image:hover #room-407 {
+            transform: scale(1.05);
+        }
+
+        .article-image #detective {
+            transition: transform 0.3s ease;
+        }
+
+        .article-image:hover #detective {
+            transform: translateX(10px);
+        }
+
+        /* Make question marks float */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .article-image #question-marks text {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .article-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .article-metadata {
+            font-style: italic;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        .article-content {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .article-content::first-letter {
+            font-size: 3.5rem;
+            font-family: 'Playfair Display', serif;
+            float: left;
+            padding-right: 8px;
+            line-height: 1;
+        }
+
+        /* Decorative Elements */
+        .decorative-line {
+            border-top: 1px solid #222;
+            margin: 20px 0;
+        }
+
+        .vintage-ad {
+            background: #eee;
+            padding: 20px;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            margin: 20px 0;
+            border: 1px solid #222;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-article {
+                grid-column: span 12;
+                border-right: none;
+                padding-right: 0;
+            }
+
+            .side-articles {
+                grid-column: span 12;
+            }
+
+            .article {
+                column-count: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .newspaper-name {
+                font-size: 3rem;
+            }
+
+            .article-title {
+                font-size: 1.5rem;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
+
+        /* Breaking News Banner */
+        .breaking-news {
+            background: #222;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* Page Number */
+        .page-number {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            color: #444;
+        }
+        .puzzle-link-section {
+    grid-column: span 12;
+    text-align: center;
+    margin: 40px 0;
+    padding: 20px;
+    background: #eee;
+    border: 2px solid #222;
+    border-style: dashed;
+}
+
+.puzzle-link {
+    display: inline-block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #ff4081;
+    text-decoration: none;
+    padding: 20px;
+    transition: transform 0.3s;
+}
+
+.puzzle-link:hover {
+    transform: scale(1.05);
+}
+
+.puzzle-link::after {
+    content: '→';
+    margin-left: 10px;
+    font-size: 1.2em;
+}
+
+    </style>
+</head>
+<body>
+    <div class="breaking-news">
+        BREAKING NEWS: Mysterious Room 407 Continues to Captivate Campus!
+    </div>
+
+    <header class="masthead">
+        <h1 class="newspaper-name">The Deeeputty Times</h1>
+        <p class="newspaper-motto">"All the Love That's Fit to Print"</p>
+        <div class="newspaper-details">
+            <span>Vol. CVII No. 407</span>
+            <span>MUMBAI, SUNDAY, APRIL 14, 2024</span>
+            <span>FIVE RUPEES</span>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <a href="#home">Home</a>
+        <a href="#love">Love Stories</a>
+    </nav>
+
+    <main class="main-content">
+        <section class="featured-article">
+            <h2 class="article-title">EXCLUSIVE: Mysterious Room 407 Harbors Secret Teddy Operation!</h2>
+            <div class="article-metadata">By CHIEF INVESTIGATIVE REPORTER | Mumbai, April 14, 2024</div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" class="article-image">
+                <!-- Background -->
+                <rect width="800" height="400" fill="#f4f1ea"/>
+                
+                <!-- Building facade -->
+                <rect x="50" y="50" width="700" height="300" fill="#e6e6e6" stroke="#333" stroke-width="2"/>
+                
+                <!-- Windows pattern -->
+                <g id="windows">
+                    <rect x="100" y="80" width="80" height="100" fill="#d9d9d9" stroke="#333"/>
+                    <rect x="200" y="80" width="80" height="100" fill="#d9d9d9" stroke="#333"/>
+                    <rect x="300" y="80" width="80" height="100" fill="#d9d9d9" stroke="#333"/>
+                    <rect x="400" y="80" width="80" height="100" fill="#d9d9d9" stroke="#333"/>
+                    <rect x="500" y="80" width="80" height="100" fill="#d9d9d9" stroke="#333"/>
+                    <rect x="600" y="80" width="80" height="100" fill="#d9d9d9" stroke="#333"/>
+                </g>
+
+                <!-- Room 407 window (highlighted) -->
+                <g id="room-407">
+                    <rect x="400" y="80" width="80" height="100" fill="#fff" stroke="#333" stroke-width="3"/>
+                    <text x="415" y="130" font-family="Times New Roman" font-size="24" fill="#333">407</text>
+                    
+                    <!-- Teddy bear silhouette in window -->
+                    <path d="M425 110 
+                             C420 105, 435 95, 440 100
+                             C445 95, 460 105, 455 110
+                             C460 115, 460 130, 440 140
+                             C420 130, 420 115, 425 110" 
+                          fill="#4a4a4a"/>
+                    
+                    <!-- Heart floating near window -->
+                    <path d="M470 90
+                             C475 85, 485 85, 490 90
+                             C495 85, 505 85, 510 90
+                             C515 95, 515 105, 490 120
+                             C465 105, 465 95, 470 90"
+                          fill="#666"/>
+                </g>
+
+                <!-- Detective figure -->
+                <g id="detective">
+                    <circle cx="200" cy="300" r="20" fill="#333"/> <!-- head -->
+                    <path d="M190 290 L210 290" stroke="#666" stroke-width="2"/> <!-- hat brim -->
+                    <rect x="195" y="280" width="10" height="10" fill="#333"/> <!-- hat top -->
+                    <path d="M200 320 L200 350" stroke="#333" stroke-width="4"/> <!-- body -->
+                    <path d="M200 330 L180 340 M200 330 L220 340" stroke="#333" stroke-width="3"/> <!-- arms -->
+                    <path d="M200 350 L190 370 M200 350 L210 370" stroke="#333" stroke-width="3"/> <!-- legs -->
+                    <!-- Magnifying glass -->
+                    <circle cx="220" cy="340" r="10" fill="none" stroke="#333" stroke-width="2"/>
+                    <line x1="227" y1="347" x2="235" y2="355" stroke="#333" stroke-width="3"/>
+                </g>
+
+                <!-- Floating question marks -->
+                <g id="question-marks" font-family="Times New Roman" font-style="italic" fill="#666">
+                    <text x="300" y="200" font-size="24">?</text>
+                    <text x="350" y="150" font-size="20">?</text>
+                    <text x="500" y="200" font-size="28">?</text>
+                    <text x="450" y="250" font-size="22">?</text>
+                </g>
+
+                <!-- Love clues -->
+                <g id="clues">
+                    <path d="M600 300 
+                             C605 295, 615 295, 620 300
+                             C625 295, 635 295, 640 300
+                             C645 305, 645 315, 620 330
+                             C595 315, 595 305, 600 300"
+                          fill="#999" transform="rotate(-15, 620, 315)"/>
+                    <text x="650" y="350" font-family="Times New Roman" font-style="italic" fill="#666">❤️</text>
+                </g>
+
+                <!-- Newspaper texture overlay -->
+                <rect width="800" height="400" fill="url(#grain)" opacity="0.1"/>
+                <defs>
+                    <pattern id="grain" patternUnits="userSpaceOnUse" width="100" height="100">
+                        <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AoIChsht9ZehwAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAK0lEQVQI12P8//8/AyMj438GBgYGRkZGRgYmJiYGZmZmBhYWFgY2NjYGdnZ2AC5OA/5Wd5QRAAAAAElFTkSuQmCC" 
+                              x="0" y="0" width="100" height="100"/>
+                    </pattern>
+                </defs>
+
+                <!-- Vintage border -->
+                <rect x="0" y="0" width="800" height="400" fill="none" 
+                      stroke="#333" stroke-width="4" stroke-dasharray="2,2"/>
+            </svg>
+            <div class="article-content">
+                In a groundbreaking development that has sent shockwaves through IIM Mumbai, reliable sources confirm the existence of a highly classified "Operation Teddy Bear" centered around the now-infamous Room 407.
+
+                "The evidence is undeniable," states our anonymous source, code-named "Deepu." "First, there were roses. Then chocolates. Now, a teddy bear has been spotted entering the premises under suspicious circumstances."
+
+                Our forensic team has calculated that exactly 4 months, 0 weeks, and 7 days have passed since the initial planning of this operation began. Coincidence? We think not.
+
+                Mathematical experts point out that if you multiply the room number (407) by love (∞), you get exactly enough happiness to fill one heart. "These numbers don't lie," says Prof. Vector, head of Love Mathematics at IIM.
+            </div>
+            <div class="decorative-line"></div>
+        </section>
+
+        <section class="side-articles">
+            <article>
+                <h3 class="article-title">WEATHER REPORT: Love Storm Brewing on 4th Floor</h3>
+                <div class="article-metadata">By METEOROLOGICAL CORRESPONDENT | Room 407 Observatory</div>
+                <div class="article-content">
+                    Today's forecast predicts heavy showers of affection around Room 407, with a 100% chance of teddy bear hugs and scattered chocolate surprises throughout the evening. Students are advised to carry umbrellas in case of unexpected romantic gestures.
+                </div>
+            </article>
+
+            <div class="vintage-ad">
+                🌹 SPECIAL ANNOUNCEMENT 🌹<br>
+                Room 407's Annual<br>
+                TEDDY BEAR CONVENTION<br>
+                "Where Hugs Come to Life"<br>
+                Admission: Only One Heart Required
+            </div>
+
+            <article>
+                <h3 class="article-title">BREAKING: Panda Spotted in IIM Mumbai!</h3>
+                <div class="article-metadata">By WILDLIFE EXPERT | 4th Floor Safari</div>
+                <div class="article-content">
+                    A rare species of panda has been sighted in Room 407. Unlike its Chinese counterparts, this specimen reportedly has heart-shaped markings and responds to the name "Deepu." Local authorities confirm it's the cutest invasion they've ever witnessed.
+                </div>
+            </article>
+
+            <div class="decorative-line"></div>
+
+            <article>
+                <h3 class="article-title">MARKET UPDATE: Love Stock Soars at 407 Points</h3>
+                <div class="article-metadata">By ROMANCE ECONOMIST | Heart Street Journal</div>
+                <div class="article-content">
+                    The Love Index (LOVE) reached an all-time high of 407 points today, driven by strong performance in the teddy bear sector and unexpected surges in chocolate futures. Analysts recommend long-term investment in Room 407 securities.
+                </div>
+            </article>
+
+            <div class="vintage-ad">
+                DECODED: 4-0-7<br>
+                4 seasons of love<br>
+                0 distance between hearts<br>
+                7 days of endless joy<br>
+                ❤️ Now showing in Room 407 ❤️
+            </div>
+
+            <article>
+                <h3 class="article-title">SCIENTIFIC DISCOVERY: Love Algorithm Found!</h3>
+                <div class="article-metadata">By TECH CORRESPONDENT | Room 407 Labs</div>
+                <div class="article-content">
+                    Scientists have discovered a revolutionary love algorithm in Room 407. Key components include one teddy bear, infinite hugs, and a mysterious variable called "Deepu." Further research is ongoing, but preliminary results show unprecedented levels of cuteness.
+                </div>
+            </article>
+
+            <div class="decorative-line"></div>
+
+            <article>
+                <h3 class="article-title">LOCAL NEWS: Fourth Floor Witnesses Historic Sugar Levels</h3>
+                <div class="article-metadata">By SWEETNESS ANALYST | Diabetes Prevention Unit</div>
+                <div class="article-content">
+                    Health officials warn of dangerously high sweetness levels emanating from Room 407. Symptoms include uncontrollable smiling, excessive heart emojis, and spontaneous "aww" reactions. No cure is currently known or desired.
+                </div>
+            </article>
+        </section>
+    </main>
+    <section class="puzzle-link-section">
+        <a href="word.html" class="puzzle-link">
+            🔍 For the final clue, solve this mysterious puzzle!
+        </a>
+    </section>
+    
+    <div class="page-number">Page 407</div>
+</body>
+</html>
