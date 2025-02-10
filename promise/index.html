@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Cinzel', serif;
+            color: white;
+        }
+
+        .cosmic-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .cosmic-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('1.jpg') center center no-repeat;
+            background-size: cover;
+            animation: cosmicMove 30s infinite alternate ease-in-out;
+        }
+
+        @keyframes cosmicMove {
+            0% {
+                transform: scale(1) translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: scale(1.2) translate(-2%, -2%) rotate(0.5deg);
+            }
+            50% {
+                transform: scale(1.3) translate(2%, 2%) rotate(-0.5deg);
+            }
+            75% {
+                transform: scale(1.2) translate(-1%, 1%) rotate(0.25deg);
+            }
+            100% {
+                transform: scale(1.4) translate(1%, -1%) rotate(-0.25deg);
+            }
+        }
+
+        .cosmic-background.visible {
+            opacity: 1;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+        }
+
+        .text-container {
+            max-width: 900px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin: 0 0.2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .word.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #start-button {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            font-size: 1.8rem;
+            color: white;
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 4;
+            font-family: 'Cinzel', serif;
+            transition: all 0.3s ease;
+        }
+
+        #start-button:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translate(-50%, -50%) scale(1.05);
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        #youtubePlayer {
+            position: fixed;
+            bottom: -100%;
+            right: -100%;
+            width: 1px;
+            height: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-background">
+        <div class="cosmic-image"></div>
+    </div>
+    <div class="overlay"></div>
+    
+    <button id="start-button">Begin Journey</button>
+    
+    <div class="content">
+        <div class="text-container"></div>
+    </div>
+
+    <iframe id="youtubePlayer"
+            src="https://www.youtube.com/embed/gCWaRhNUvfc?enablejsapi=1&controls=0&showinfo=0&rel=0&autoplay=0&loop=1&playlist=gCWaRhNUvfc"
+            allow="autoplay; encrypted-media"
+            title="luv"
+            allowfullscreen>
+    </iframe>
+
+    <script>
+        const texts = [
+            "In quantum mechanics, Schrödinger proposed that until observed, a particle exists in all possible states simultaneously...",
+            "But what if it wasn't just particles? What if our choices, our decisions, our very lives existed in multiple states...",
+            "Creating infinite branches of reality, endless possibilities of what could be..."
+        ];
+
+        let player;
+
+        // Load YouTube API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        window.onYouTubeIframeAPIReady = function() {
+            player = new YT.Player('youtubePlayer', {
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        };
+
+        function onPlayerReady(event) {
+            document.querySelector('.cosmic-background').classList.add('visible');
+        }
+
+        async function showText(text) {
+            const textContainer = document.querySelector('.text-container');
+            textContainer.innerHTML = '';
+            
+            // Split text into words
+            const words = text.split(' ');
+            
+            // Create elements for each word
+            words.forEach(word => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word';
+                wordSpan.textContent = word;
+                textContainer.appendChild(wordSpan);
+            });
+            
+            // Animate each word with delay
+            const wordElements = textContainer.querySelectorAll('.word');
+            for (let i = 0; i < wordElements.length; i++) {
+                await new Promise(resolve => setTimeout(resolve, 200)); // Delay between words
+                wordElements[i].classList.add('visible');
+            }
+            
+            // Wait for reading time (adjusted based on text length)
+            const readingTime = Math.max(8000, words.length * 500); // Minimum 8 seconds, plus time per word
+            await new Promise(resolve => setTimeout(resolve, readingTime));
+            
+            // Fade out words in reverse order
+            for (let i = wordElements.length - 1; i >= 0; i--) {
+                wordElements[i].classList.remove('visible');
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            // Wait for complete fade out
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        async function startJourney() {
+            // Hide button
+            const button = document.getElementById('start-button');
+            button.style.opacity = '0';
+            setTimeout(() => button.style.display = 'none', 500);
+
+            // Start background music
+            player.unMute();
+            player.playVideo();
+
+            // Show each text
+            for (const text of texts) {
+                await showText(text);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
+
+        // Function to randomly change background image
+        function setupRandomImages() {
+            const images = ['1.jpg']; // Add more image names here when you have them
+            let currentIndex = 0;
+
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % images.length;
+                const imageElement = document.querySelector('.cosmic-image');
+                imageElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    imageElement.style.backgroundImage = `url('${images[currentIndex]}')`;
+                    imageElement.style.opacity = '1';
+                }, 1000);
+            }, 20000); // Change image every 20 seconds
+        }
+
+        // Initialize
+        document.getElementById('start-button').addEventListener('click', startJourney);
+        setupRandomImages();
+    </script>
+</body>
+</html>

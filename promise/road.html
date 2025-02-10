@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Road Not Taken</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cinzel', serif;
+        }
+
+        body {
+            background: black;
+            color: white;
+            perspective: 1000px;
+        }
+
+        .cosmic-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("a.webp");
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.5) contrast(1.7);
+            z-index: 1;
+        }
+
+        .cosmic-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg, 
+                rgba(0,0,0,0.6) 0%, 
+                rgba(0,0,0,0.8) 100%
+            );
+            z-index: 2;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+        }
+
+        .title, .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 0 30px rgba(255,255,255,0.5);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1.5s ease;
+            max-width: 800px;
+            padding: 0 1rem;
+        }
+
+        .title {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .title.visible, .subtitle.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 2rem;
+        }
+
+        .card {
+            width: 300px;
+            height: 400px;
+            background: linear-gradient(
+                135deg, 
+                rgba(50,0,100,0.7) 0%, 
+                rgba(20,0,50,0.9) 100%
+            );
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s ease;
+            transform: perspective(1000px);
+            opacity: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg, 
+                transparent, 
+                rgba(255,255,255,0.1), 
+                transparent
+            );
+            transform: rotate(-45deg);
+            transition: all 0.6s ease;
+        }
+
+        .card-header {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.9);
+            transition: all 0.6s ease;
+            text-align: center;
+        }
+
+        .card-content {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .card-content p {
+            margin-bottom: 1rem;
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .begin-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .begin-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .card-container {
+                flex-direction: column;
+            }
+            .title {
+                font-size: 2.5rem;
+            }
+            .card {
+                width: 280px;
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-background"></div>
+    <div class="cosmic-overlay"></div>
+
+    <div class="container">
+        <div class="title">THE ROAD NOT TAKEN</div>
+        <div class="subtitle first-subtitle">In front of you lie three roads—three worlds where our story unfolded differently. <br>Or never unfolded at all. </div>
+        <div class="subtitle second-subtitle">To experience them, you must take a step. <br> Choose one of the three, step into the unknown, and walk the road… not taken.</div>
+
+        <div class="card-container">
+            <div class="card" data-story="beginning" data-page="card1.html">
+                <div class="card-header">THE <br> BEGINNING</div>
+                <div class="card-content">
+                    <p>What if I never texted you?</p>
+                    <p>The hesitation, the chance, the moment that started it all.</p>
+                    <button class="begin-btn">Begin Journey</button>
+                </div>
+            </div>
+            <div class="card" data-story="reassurance" data-page="card2.html">
+                <div class="card-header">THE <br> REASSURANCE</div>
+                <div class="card-content">
+                    <p>What if we lost each other in distance?</p>
+                    <p>The journey, the goodbyes, the nights apart.</p>
+                    <button class="begin-btn">Begin Journey</button>
+                </div>
+            </div>
+            <div class="card" data-story="promise" data-page="card3.html">
+                <div class="card-header">THE <br> PROMISE</div>
+                <div class="card-content">
+                    <p>What if we never healed?</p>
+                    <p>The storm, the silence, the breaking point.</p>
+                    <button class="begin-btn">Begin Journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate title
+            const title = document.querySelector('.title');
+            const firstSubtitle = document.querySelector('.first-subtitle');
+            const secondSubtitle = document.querySelector('.second-subtitle');
+
+            // Sequential reveal of title and subtitles
+            setTimeout(() => {
+                title.classList.add('visible');
+            }, 500);
+
+            setTimeout(() => {
+                firstSubtitle.classList.add('visible');
+            }, 2500);
+
+            setTimeout(() => {
+                secondSubtitle.classList.add('visible');
+            }, 4500);
+
+            // Animate cards with stagger effect
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                }, 7500 + (index * 300));
+            });
+
+            // Card interaction
+            cards.forEach(card => {
+                const header = card.querySelector('.card-header');
+                const content = card.querySelector('.card-content');
+                const beginBtn = card.querySelector('.begin-btn');
+
+                // Prevent multiple clicks
+                let isExpanded = false;
+
+                card.addEventListener('click', (e) => {
+                    // If already expanded, do nothing
+                    if (isExpanded) return;
+
+                    // Hide other cards
+                    cards.forEach(otherCard => {
+                        if (otherCard !== card) {
+                            otherCard.style.opacity = '0';
+                            otherCard.style.transform = 'scale(0.8)';
+                        }
+                    });
+
+                    // Expand current card
+                    card.style.transform = 'scale(1.1)';
+                    header.style.opacity = '0';
+                    
+                    // Reveal content
+                    setTimeout(() => {
+                        header.style.display = 'none';
+                        content.style.display = 'flex';
+                        setTimeout(() => {
+                            content.style.opacity = '1';
+                        }, 50);
+                    }, 300);
+
+                    isExpanded = true;
+                });
+
+                // Button click handler
+                beginBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const page = card.getAttribute('data-page');
+                    // Navigate to the respective page
+                    window.location.href = page;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
