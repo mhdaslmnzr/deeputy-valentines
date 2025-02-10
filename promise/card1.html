@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Beginning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&family=Italiana&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a20;
+            min-height: 100vh;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .scene {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .cosmos {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, #1a1a4a 0%, #0a0a20 100%);
+        }
+
+        .stars {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, white, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            animation: twinkle 8s ease infinite;
+        }
+
+        .screen {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .phone-content {
+            width: 300px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .message {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 1s ease forwards;
+        }
+
+        .message-typing {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: dotPulse 1.4s infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        .monologue {
+            max-width: 600px;
+            text-align: center;
+            line-height: 1.8;
+            margin: 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 1s ease forwards;
+        }
+
+        .game-container {
+            position: relative;
+            height: 70vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4rem 0;
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid #00f3ff;
+            background: url('/api/placeholder/70/70') center/cover;
+            position: absolute;
+            transition: transform 0.3s ease;
+        }
+
+        #avatarTop {
+            top: 10%;
+            cursor: pointer;
+        }
+
+        #avatarBottom {
+            bottom: 10%;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00f3ff;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 4rem;
+            color: #ff3366;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s ease;
+        }
+
+        .continue-btn {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid #00f3ff;
+            color: #00f3ff;
+            border-radius: 25px;
+            font-family: 'Space Grotesk', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            display: none;
+        }
+
+        .continue-btn:hover {
+            background: rgba(0,243,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @media (max-width: 768px) {
+            .monologue { 
+                font-size: 0.9rem;
+                padding: 0 1rem;
+            }
+            .phone-content {
+                width: 90%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="cosmos">
+            <div class="stars"></div>
+        </div>
+
+        <div class="screen active" id="screen1">
+            <div class="phone-content">
+                <div class="message-typing">
+                    <div class="typing-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="message">Hi cutie ✨</div>
+            </div>
+            <div class="monologue">
+                I hesitated that night, thumb hovering over send. What if you never replied? We would have remained strangers, passing ships in the vast ocean of what-ifs...
+            </div>
+            <button class="continue-btn" onclick="nextScreen(2)">Continue</button>
+        </div>
+
+        <div class="screen" id="screen2">
+            <div class="monologue">
+                Now here you are. Drag my heart to yours, and let's recreate the moment our paths first crossed...
+            </div>
+            <div class="game-container">
+                <div class="avatar" id="avatarTop" draggable="true"></div>
+                <div class="heart">♥</div>
+                <div class="avatar" id="avatarBottom"></div>
+            </div>
+            <button class="continue-btn" onclick="nextScreen(3)" style="display: none;">Continue</button>
+        </div>
+
+        <div class="screen" id="screen3">
+            <div class="monologue">
+                But you did reply. And in that simple act of courage, our two separate paths merged into one beautiful journey. Every message, every laugh, every moment since then has been writing our story...
+            </div>
+            <button class="continue-btn" onclick="window.location.href='card2.html'">Next Chapter</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.querySelector('#screen1 .continue-btn').style.opacity = '1';
+                document.querySelector('#screen1 .continue-btn').style.display = 'block';
+            }, 2000);
+
+            const avatarTop = document.getElementById('avatarTop');
+            const avatarBottom = document.getElementById('avatarBottom');
+            const heart = document.querySelector('.heart');
+            let isDragging = false;
+
+            // Touch events for mobile
+            avatarTop.addEventListener('touchstart', handleDragStart);
+            document.addEventListener('touchmove', handleDrag);
+            document.addEventListener('touchend', handleDragEnd);
+
+            // Mouse events for desktop
+            avatarTop.addEventListener('mousedown', handleDragStart);
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('mouseup', handleDragEnd);
+
+            function handleDragStart(e) {
+                isDragging = true;
+                e.preventDefault();
+            }
+
+            function handleDrag(e) {
+                if (!isDragging) return;
+                
+                const y = e.type.includes('touch') ? 
+                    e.touches[0].clientY : e.clientY;
+                const x = e.type.includes('touch') ? 
+                    e.touches[0].clientX : e.clientX;
+
+                avatarTop.style.position = 'absolute';
+                avatarTop.style.left = `${x - 35}px`;
+                avatarTop.style.top = `${y - 35}px`;
+
+                createSparkle(x, y);
+
+                // Check if avatars are close enough
+                const rect1 = avatarTop.getBoundingClientRect();
+                const rect2 = avatarBottom.getBoundingClientRect();
+                
+                if (isNear(rect1, rect2)) {
+                    handleConnection();
+                }
+            }
+
+            function handleDragEnd() {
+                isDragging = false;
+                if (!heart.style.opacity || heart.style.opacity === '0') {
+                    avatarTop.style.transition = '0.5s ease';
+                    avatarTop.style.top = '10%';
+                    avatarTop.style.left = '50%';
+                    avatarTop.style.transform = 'translateX(-50%)';
+                    setTimeout(() => {
+                        avatarTop.style.transition = 'none';
+                    }, 500);
+                }
+            }
+
+            function createSparkle(x, y) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = `${x}px`;
+                sparkle.style.top = `${y}px`;
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    sparkle.style.transition = 'all 0.5s ease';
+                    sparkle.style.opacity = '0';
+                    sparkle.style.transform = `translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px)`;
+                }, 50);
+
+                setTimeout(() => sparkle.remove(), 500);
+            }
+
+            function isNear(rect1, rect2) {
+                const distance = Math.hypot(
+                    rect1.left - rect2.left,
+                    rect1.top - rect2.top
+                );
+                return distance < 100;
+            }
+
+            function handleConnection() {
+                isDragging = false;
+                avatarTop.style.transition = '0.5s ease';
+                avatarTop.style.left = `${avatarBottom.offsetLeft}px`;
+                avatarTop.style.top = `${avatarBottom.offsetTop}px`;
+                
+                heart.style.opacity = '1';
+                heart.style.transform = 'scale(1)';
+                
+                const continueBtn = document.querySelector('#screen2 .continue-btn');
+                continueBtn.style.display = 'block';
+                continueBtn.style.opacity = '1';
+            }
+        });
+
+        function nextScreen(num) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(`screen${num}`).classList.add('active');
+            
+            if (num === 3) {
+                document.querySelector('#screen3 .continue-btn').style.display = 'block';
+                document.querySelector('#screen3 .continue-btn').style.opacity = '1';
+            }
+        }
+    </script>
+</body>
+</html>

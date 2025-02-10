@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Every Reality - A Promise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Italiana&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a20;
+            min-height: 100vh;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .cosmos {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, #1a1a4a 0%, #0a0a20 100%);
+        }
+
+        .stars {
+            position: absolute;
+            inset: -50%;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, white, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            animation: starFloat 100s linear infinite;
+        }
+
+        .nebula {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(138, 43, 226, 0.2), transparent 40%),
+                radial-gradient(circle at 70% 60%, rgba(75, 0, 130, 0.2), transparent 40%);
+            filter: blur(30px);
+            animation: nebulaPulse 15s ease infinite alternate;
+        }
+
+        .screen {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .screen.active {
+            opacity: 1;
+        }
+
+        .monologue {
+            max-width: 800px;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        .highlight {
+            font-family: 'Italiana', serif;
+            font-size: 2.5rem;
+            color: #00f3ff;
+            margin: 3rem 0;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: glowPulse 2s ease forwards;
+            animation-delay: 2s;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        .poem {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            line-height: 2;
+            max-width: 600px;
+            margin: 4rem auto;
+            opacity: 0;
+            animation: fadeIn 2s ease forwards;
+            animation-delay: 3s;
+        }
+
+        .signature {
+            font-family: 'Italiana', serif;
+            font-size: 2rem;
+            margin-top: 3rem;
+            color: #00f3ff;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 5s;
+        }
+
+        .path-marker {
+            position: absolute;
+            width: 2px;
+            height: 0;
+            background: rgba(0, 243, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            animation: pathGrow 3s ease forwards;
+        }
+
+        .path-left { left: 20%; transform: rotate(-15deg); }
+        .path-center { left: 50%; }
+        .path-right { right: 20%; transform: rotate(15deg); }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes glowPulse {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes starFloat {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes nebulaPulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.6; }
+        }
+
+        @keyframes pathGrow {
+            0% { height: 0; top: 100%; }
+            100% { height: 100%; top: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .monologue {
+                font-size: 1rem;
+            }
+            .highlight {
+                font-size: 2rem;
+            }
+            .poem {
+                font-size: 1.2rem;
+            }
+            .signature {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmos">
+        <div class="stars"></div>
+        <div class="nebula"></div>
+        <div class="path-marker path-left"></div>
+        <div class="path-marker path-center"></div>
+        <div class="path-marker path-right"></div>
+    </div>
+
+    <div class="screen active">
+        <div class="monologue">
+            Do you see now? In every universe, in every version of us—<strong>it was you who chose to bridge the gap. You who reached out. You who made us real.</strong> And because of that, I get to love you—not just in one reality, but in <strong>every single one.</strong>
+        </div>
+
+        <div class="highlight">
+            I love you in every reality.
+        </div>
+
+        <div class="monologue">
+            But today, my love, is about promises. And you know your Ichayan is a man of his word. So here it is, one more time. A promise that echoes across every timeline, every choice, every version of us.
+        </div>
+
+        <div class="poem">
+            In the chaos, I will be your calm.<br>
+            In the storm, your shelter.<br>
+            When the world is too much, my arms will be your home.<br>
+            And even when the stars fade, my love will shine in their place.<br>
+            For in every universe, in every possibility—<br>
+            I choose you. Always.
+        </div>
+
+        <div class="signature">
+            Mohammed Aslam Nazar
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const paths = document.querySelectorAll('.path-marker');
+            paths.forEach((path, index) => {
+                path.style.animationDelay = `${index * 0.5}s`;
+            });
+        });
+    </script>
+</body>
+</html>

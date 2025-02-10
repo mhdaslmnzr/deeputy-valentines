@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>101 Love Promises</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playball&family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #f8a5c2;
+            --text-color: #2d3436;
+            --background-start: #fff0f0;
+            --background-end: #ffe3e3;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            color: var(--primary-color);
+            opacity: 0.6;
+            animation: float var(--duration) ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+
+        .header {
+            position: relative;
+            text-align: center;
+            padding: 3rem 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+
+        h1 {
+            font-family: 'Playball', cursive;
+            font-size: 4rem;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(255, 107, 107, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 107, 107, 0.8); }
+        }
+
+        .subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            z-index: 2;
+            position: relative;
+        }
+
+        .promise-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promise-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.4));
+            pointer-events: none;
+        }
+
+        .promise-card:hover {
+            transform: translateY(-10px) rotateX(10deg) rotateY(10deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .promise-card:hover::after {
+            content: '❤️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .promise-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .heart-icon {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            display: inline-block;
+            transform-origin: center;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.2); }
+            20%, 40% { transform: scale(0.9); }
+            50%, 70% { transform: scale(1.1); }
+            60%, 80% { transform: scale(0.95); }
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 10;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .love-meter {
+            position: fixed;
+            top: 50%;
+            left: 2rem;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .love-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, var(--primary-color), var(--secondary-color));
+            transition: height 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .love-meter {
+                display: none;
+            }
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+            max-width: 90%;
+            width: 500px;
+        }
+
+        .modal.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary-color);
+            opacity: 0.8;
+            animation: confettiFall var(--duration) linear infinite;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100%) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="floating-hearts"></div>
+    <div class="confetti"></div>
+
+    <div class="header">
+        <h1>101 Promises of Love</h1>
+        <p class="subtitle">Every promise is a piece of my heart, given to you</p>
+    </div>
+
+    <div class="container" id="promises-container"></div>
+
+    <div class="love-meter">
+        <div class="love-fill" id="love-fill"></div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="shufflePromises()" title="Shuffle Promises">
+            <i class="fas fa-random"></i>
+        </button>
+        <button class="control-btn" onclick="scrollToTop()" title="Back to Top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        <button class="control-btn" onclick="toggleTheme()" title="Toggle Theme">
+            <i class="fas fa-palette"></i>
+        </button>
+    </div>
+
+    <div class="modal" id="special-modal">
+        <div class="modal-content"></div>
+    </div>
+
+    <script>
+                const promises = [
+            "to love you every day, in every way, no matter what.",
+            "to stand by your side through all the highs and lows.",
+            "to laugh with you when you're happy, and hold you when you're sad.",
+            "to support you in all your dreams and aspirations.",
+            "to never let the little things fade away – the small moments that make us \"us.\"",
+            "to give you my time, my heart, and all the love I have.",
+            "to make you feel special every day, because you truly are.",
+            "to always listen to you, truly and deeply, when you speak.",
+            "to always be honest with you, even when it's hard.",
+            "to be your biggest fan, cheering for you even when no one else does.",
+            "to care for you with all my heart and soul.",
+            "to be your rock when you feel weak.",
+            "to celebrate your victories, big or small.",
+            "to share my life with you, every detail, every secret, every dream.",
+            "to never stop loving you, even when life gets tough.",
+            "to bring you comfort when you're feeling down.",
+            "to be your safe space, your home, no matter where we are.",
+            "to protect your heart, just as you protect mine.",
+            "to make you feel cherished, every single day.",
+            "to hold your hand, figuratively and literally, through every twist and turn.",
+            "to remember the little things you love and cherish them too.",
+            "to make our time together count, and make every moment with you unforgettable.",
+            "to be your support, your strength, and your peace.",
+            "to remind you of how amazing you are, every single day.",
+            "to never take you for granted.",
+            "to work through our challenges together, always united.",
+            "to never stop growing with you and becoming better, together.",
+            "to create memories with you that we'll both hold dear forever.",
+            "to surprise you with love when you least expect it.",
+            "to appreciate you more than words can express.",
+            "to love you when we're together, and miss you when we're apart.",
+            "to be there to celebrate your achievements and help you through your struggles.",
+            "to protect our relationship, even from the smallest cracks.",
+            "to make you laugh every chance I get.",
+            "to never leave you when you need me most.",
+            "to cherish every moment we share, no matter how small.",
+            "to fight for you, even when life gets complicated.",
+            "to be the one you can always count on.",
+            "to dream with you, build with you, and grow with you.",
+            "to hold you in my arms and never let go, even when times are tough.",
+            "to be your forever person, in this lifetime and beyond.",
+            "to always encourage you to be yourself, no matter what.",
+            "to never stop learning from you, because you teach me something new every day.",
+            "to give you my patience when you need it.",
+            "to show you love in ways both big and small.",
+            "to stand by you when you need strength, and step back when you need space.",
+            "to make you feel valued, respected, and understood.",
+            "to keep the spark in our relationship alive, no matter how much time passes.",
+            "to never stop pursuing your heart.",
+            "to stay curious about you, your thoughts, your dreams, and your desires.",
+            "to hold onto our memories forever, and keep them close to my heart.",
+            "to never let go of you, even when life's tides try to pull us apart.",
+            "to be your partner in everything, and never let you face life alone.",
+            "to comfort you when you're feeling uneasy, and celebrate with you when you're happy.",
+            "to love you not just today, but every single day for the rest of our lives.",
+            "to be there for you through both the good times and the bad.",
+            "to make you feel safe and secure, always.",
+            "to always believe in us, even when it feels hard.",
+            "to never let a day go by without reminding you how much you mean to me.",
+            "to be the calm in your storm and the warmth in your cold.",
+            "to lift you up when life gets heavy.",
+            "to put effort into our relationship every single day.",
+            "to cherish your quirks, because they make you who you are.",
+            "to never let distance change how much I love you.",
+            "to never let you feel alone, because I'll always be right here.",
+            "to be your sunshine on the cloudy days.",
+            "to protect the love we share, with all of my heart.",
+            "to be your greatest adventure and your safest home.",
+            "to remind you how incredible you are, even on your hardest days.",
+            "to choose you, every single day, for as long as we both shall live.",
+            "to be your light, even on the darkest of days.",
+            "to always be your first love and your last love.",
+            "to celebrate every milestone, every achievement, every moment of joy we have together.",
+            "to remind you, every day, that I'm in awe of your strength and beauty.",
+            "to share all of myself with you, and never hold anything back.",
+            "to laugh with you, cry with you, and be by your side through everything life throws at us.",
+            "to never give up on us, even when it gets hard.",
+            "to hold your hand, and guide you through all of life's challenges.",
+            "to love you with everything I have and more.",
+            "to continue loving you even when I don't have the words to say it.",
+            "to be your biggest supporter and your best friend.",
+            "to always find new ways to make you feel special.",
+            "to encourage you to be your best self, and be there when you feel lost.",
+            "to be patient, kind, and understanding, no matter the circumstances.",
+            "to keep our love strong, no matter how many years pass.",
+            "to love you unconditionally, without hesitation or doubt.",
+            "to always look for the good in you, even in difficult moments.",
+            "to be honest, kind, and loving, every day.",
+            "to never take your love for granted and to show you how much I value it.",
+            "to be your forever and always, no matter where life takes us.",
+            "to make our love a priority, above everything else.",
+            "to make you feel seen, heard, and understood.",
+            "to always encourage you to chase your dreams, no matter how big they are.",
+            "to be your strength when you need it most.",
+            "to never stop falling in love with you.",
+            "to be your peace when the world feels chaotic.",
+            "to keep learning about you, because there is always something new to discover.",
+            "to keep our bond strong, no matter the time or distance.",
+            "to cherish the love we share, today and forever.",
+            "that, no matter what happens, you will always have my heart.",
+            "no matter where life takes us, no matter how many years pass, I will always be there for you—through every challenge, every triumph, every laugh, and every tear. Because you're not just my love; you're my home, my forever, and I'll keep choosing you in every reality, every moment, for the rest of my life."
+        ];
+
+        // Create stars background
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${2 + Math.random() * 3}s`);
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Create floating hearts
+        function createFloatingHearts() {
+            const heartsContainer = document.querySelector('.floating-hearts');
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.top = `${Math.random() * 100}%`;
+                heart.style.setProperty('--duration', `${3 + Math.random() * 4}s`);
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const confettiContainer = document.querySelector('.confetti');
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                confetti.style.setProperty('--duration', `${3 + Math.random() * 2}s`);
+                confettiContainer.appendChild(confetti);
+            }
+        }
+
+        // Update love meter based on scroll position
+        function updateLoveMeter() {
+            const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('love-fill').style.height = `${scrollPercent}%`;
+        }
+
+        // Create promise cards with enhanced animation
+        function createPromiseCard(promise, index) {
+            const delay = index * 0.1;
+            const card = document.createElement('div');
+            card.className = 'promise-card';
+            card.style.animationDelay = `${delay}s`;
+            card.innerHTML = `
+                <p class="promise-text">
+                    <span class="heart-icon">❤️</span>
+                    I promise ${promise}
+                </p>
+            `;
+            card.addEventListener('click', () => showSpecialMessage(promise));
+            return card;
+        }
+
+        // Show special message modal
+        function showSpecialMessage(promise) {
+            const modal = document.getElementById('special-modal');
+            modal.querySelector('.modal-content').textContent = `I promise ${promise}`;
+            modal.classList.add('active');
+            setTimeout(() => modal.classList.remove('active'), 3000);
+        }
+
+        // Theme toggling
+        const themes = [
+            {
+                primary: '#ff6b6b',
+                secondary: '#f8a5c2',
+                backgroundStart: '#fff0f0',
+                backgroundEnd: '#ffe3e3'
+            },
+            {
+                primary: '#6c5ce7',
+                secondary: '#a8a4e6',
+                backgroundStart: '#f0f0ff',
+                backgroundEnd: '#e3e3ff'
+            },
+            {
+                primary: '#00b894',
+                secondary: '#55efc4',
+                backgroundStart: '#f0fff7',
+                backgroundEnd: '#e3fff0'
+            },
+            {
+                primary: '#e17055',
+                secondary: '#fab1a0',
+                backgroundStart: '#fff6f0',
+                backgroundEnd: '#ffe9e3'
+            }
+        ];
+        let currentTheme = 0;
+
+        function toggleTheme() {
+            currentTheme = (currentTheme + 1) % themes.length;
+            const theme = themes[currentTheme];
+            document.documentElement.style.setProperty('--primary-color', theme.primary);
+            document.documentElement.style.setProperty('--secondary-color', theme.secondary);
+            document.documentElement.style.setProperty('--background-start', theme.backgroundStart);
+            document.documentElement.style.setProperty('--background-end', theme.backgroundEnd);
+        }
+
+        function renderPromises(promisesArray) {
+            const container = document.getElementById('promises-container');
+            container.innerHTML = '';
+            promisesArray.forEach((promise, index) => {
+                container.appendChild(createPromiseCard(promise, index));
+            });
+        }
+
+        function shufflePromises() {
+            const shuffled = [...promises];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            renderPromises(shuffled);
+            createConfetti();
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Particle effects on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = e.pageX + 'px';
+            heart.style.top = e.pageY + 'px';
+            heart.style.setProperty('--duration', '1s');
+            document.querySelector('.floating-hearts').appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
+        });
+
+        // Initialize everything
+        window.addEventListener('load', () => {
+            createStars();
+            createFloatingHearts();
+            createConfetti();
+            renderPromises(promises);
+        });
+
+        // Update love meter on scroll
+        window.addEventListener('scroll', updateLoveMeter);
+
+        // Handle clicks outside modal
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('special-modal');
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Random special effects
+        setInterval(() => {
+            if (Math.random() < 0.3) {
+                createConfetti();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

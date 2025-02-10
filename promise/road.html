@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Road Not Taken</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <title>Paths of Promise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,302 +12,259 @@
             box-sizing: border-box;
         }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Cinzel', serif;
+        :root {
+            --color-background: #0a0a0a;
+            --color-text: #f5f5f5;
+            --color-accent: #B7916C;
+            --color-secondary: #2A2A2A;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
-            background: black;
-            color: white;
-            perspective: 1000px;
-        }
-
-        .cosmic-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("a.webp");
-            background-size: cover;
-            background-position: center;
-            filter: brightness(0.5) contrast(1.7);
-            z-index: 1;
-        }
-
-        .cosmic-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                45deg, 
-                rgba(0,0,0,0.6) 0%, 
-                rgba(0,0,0,0.8) 100%
-            );
-            z-index: 2;
+            background: var(--color-background);
+            min-height: 100vh;
+            font-family: 'Cormorant', serif;
+            color: var(--color-text);
+            overflow-x: hidden;
         }
 
         .container {
             position: relative;
-            width: 100%;
+            min-height: 100vh;
+            padding: 4rem 2rem;
+        }
+
+        .background {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .grain {
+            position: absolute;
+            inset: -150%;
+            opacity: 0.12;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj4KICA8ZmlsdGVyIGlkPSJub2lzZSIgeD0iMCIgeT0iMCI+CiAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42NSIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCI+PC9mZVR1cmJ1bGVuY2U+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbHRlcj0idXJsKCNub2lzZSkiIG9wYWNpdHk9IjAuNCI+PC9yZWN0Pgo8L3N2Zz4=');
+            animation: grainAnimation 8s steps(10) infinite;
+        }
+
+        @keyframes grainAnimation {
+            0% { transform: translate(0, 0) }
+            10% { transform: translate(-5%, -5%) }
+            20% { transform: translate(-10%, 5%) }
+            30% { transform: translate(5%, -10%) }
+            40% { transform: translate(-5%, 15%) }
+            50% { transform: translate(-10%, 5%) }
+            60% { transform: translate(15%, 0) }
+            70% { transform: translate(0, 10%) }
+            80% { transform: translate(-15%, 0) }
+            90% { transform: translate(10%, 5%) }
+            100% { transform: translate(0, 0) }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 6rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1.2s var(--transition-smooth) forwards;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .subtitle {
+            font-family: 'Cormorant', serif;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: rgba(245, 245, 245, 0.8);
+        }
+
+        .paths-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .path-card {
+            position: relative;
+            aspect-ratio: 2/3;
+            background: var(--color-secondary);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 1.2s var(--transition-smooth) forwards;
+        }
+
+        .path-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .path-card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .path-frame {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(183, 145, 108, 0.3);
+            transition: all 0.6s var(--transition-smooth);
+        }
+
+        .path-content {
+            position: relative;
             height: 100%;
+            padding: 3rem 2rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 3;
-        }
-
-        .title, .subtitle {
             text-align: center;
-            color: rgba(255,255,255,0.9);
-            text-shadow: 0 0 30px rgba(255,255,255,0.5);
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1.5s ease;
-            max-width: 800px;
-            padding: 0 1rem;
+            transition: transform 0.6s var(--transition-smooth);
         }
 
-        .title {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+        .path-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--color-accent);
+            margin-bottom: 1.5rem;
+            transition: transform 0.6s var(--transition-smooth);
         }
 
-        .subtitle {
-            font-size: 1rem;
+        .path-description {
+            font-size: 1.1rem;
             line-height: 1.6;
-            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s var(--transition-smooth);
         }
 
-        .title.visible, .subtitle.visible {
+        .path-button {
+            position: absolute;
+            bottom: 3rem;
+            padding: 0.8rem 1.5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            background: transparent;
+            border: 1px solid var(--color-accent);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s var(--transition-smooth);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .path-card:hover .path-frame {
+            border-color: var(--color-accent);
+            transform: scale(0.98);
+        }
+
+        .path-card:hover .path-content {
+            transform: scale(0.98);
+        }
+
+        .path-card:hover .path-description,
+        .path-card:hover .path-button {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .card-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            width: 100%;
-            max-width: 1200px;
-            padding: 0 2rem;
+        .path-button:hover {
+            background: rgba(183, 145, 108, 0.1);
+            letter-spacing: 0.3em;
         }
 
-        .card {
-            width: 300px;
-            height: 400px;
-            background: linear-gradient(
-                135deg, 
-                rgba(50,0,100,0.7) 0%, 
-                rgba(20,0,50,0.9) 100%
-            );
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.6s ease;
-            transform: perspective(1000px);
-            opacity: 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg, 
-                transparent, 
-                rgba(255,255,255,0.1), 
-                transparent
-            );
-            transform: rotate(-45deg);
-            transition: all 0.6s ease;
-        }
-
-        .card-header {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: rgba(255,255,255,0.9);
-            transition: all 0.6s ease;
-            text-align: center;
-        }
-
-        .card-content {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: all 0.6s ease;
-        }
-
-        .card-content p {
-            margin-bottom: 1rem;
-            color: rgba(255,255,255,0.8);
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .begin-btn {
-            padding: 0.75rem 1.5rem;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.3);
-            color: white;
-            border-radius: 30px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-        }
-
-        .begin-btn:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
-            .card-container {
-                flex-direction: column;
+            .container {
+                padding: 2rem 1rem;
             }
+
             .title {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
-            .card {
-                width: 280px;
-                height: 350px;
+
+            .subtitle {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+
+            .paths-container {
+                gap: 2rem;
+                padding: 1rem;
+            }
+
+            .path-description {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .path-button {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
 </head>
 <body>
-    <div class="cosmic-background"></div>
-    <div class="cosmic-overlay"></div>
+    <div class="background">
+        <div class="grain"></div>
+    </div>
 
     <div class="container">
-        <div class="title">THE ROAD NOT TAKEN</div>
-        <div class="subtitle first-subtitle">In front of you lie three roads—three worlds where our story unfolded differently. <br>Or never unfolded at all. </div>
-        <div class="subtitle second-subtitle">To experience them, you must take a step. <br> Choose one of the three, step into the unknown, and walk the road… not taken.</div>
+        <header class="header">
+            <h1 class="title">Paths of Promise</h1>
+            <p class="subtitle">Before us lie three paths, each holding a story of what could have been. Choose wisely, for in each possibility lies a truth about our journey.</p>
+        </header>
 
-        <div class="card-container">
-            <div class="card" data-story="beginning" data-page="card1.html">
-                <div class="card-header">THE <br> BEGINNING</div>
-                <div class="card-content">
-                    <p>What if I never texted you?</p>
-                    <p>The hesitation, the chance, the moment that started it all.</p>
-                    <button class="begin-btn">Begin Journey</button>
+        <div class="paths-container">
+            <div class="path-card">
+                <div class="path-frame"></div>
+                <div class="path-content">
+                    <h2 class="path-title">The Beginning</h2>
+                    <p class="path-description">Where courage met destiny, and a simple message changed everything. A reminder of how the smallest actions can alter the course of our lives forever.</p>
+                    <button class="path-button" onclick="window.location.href='card1.html'">Explore</button>
                 </div>
             </div>
-            <div class="card" data-story="reassurance" data-page="card2.html">
-                <div class="card-header">THE <br> REASSURANCE</div>
-                <div class="card-content">
-                    <p>What if we lost each other in distance?</p>
-                    <p>The journey, the goodbyes, the nights apart.</p>
-                    <button class="begin-btn">Begin Journey</button>
+
+            <div class="path-card">
+                <div class="path-frame"></div>
+                <div class="path-content">
+                    <h2 class="path-title">The Distance</h2>
+                    <p class="path-description">When miles stretched between us, testing the strength of our bond. A testament to how love bridges any distance when hearts are determined.</p>
+                    <button class="path-button" onclick="window.location.href='card2.html'">Explore</button>
                 </div>
             </div>
-            <div class="card" data-story="promise" data-page="card3.html">
-                <div class="card-header">THE <br> PROMISE</div>
-                <div class="card-content">
-                    <p>What if we never healed?</p>
-                    <p>The storm, the silence, the breaking point.</p>
-                    <button class="begin-btn">Begin Journey</button>
+
+            <div class="path-card">
+                <div class="path-frame"></div>
+                <div class="path-content">
+                    <h2 class="path-title">The Choice</h2>
+                    <p class="path-description">Through storms and uncertainty, we chose each other. A reflection on how every challenge we faced only strengthened our resolve.</p>
+                    <button class="path-button" onclick="window.location.href='card3.html'">Explore</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Animate title
-            const title = document.querySelector('.title');
-            const firstSubtitle = document.querySelector('.first-subtitle');
-            const secondSubtitle = document.querySelector('.second-subtitle');
-
-            // Sequential reveal of title and subtitles
-            setTimeout(() => {
-                title.classList.add('visible');
-            }, 500);
-
-            setTimeout(() => {
-                firstSubtitle.classList.add('visible');
-            }, 2500);
-
-            setTimeout(() => {
-                secondSubtitle.classList.add('visible');
-            }, 4500);
-
-            // Animate cards with stagger effect
-            const cards = document.querySelectorAll('.card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                }, 7500 + (index * 300));
-            });
-
-            // Card interaction
-            cards.forEach(card => {
-                const header = card.querySelector('.card-header');
-                const content = card.querySelector('.card-content');
-                const beginBtn = card.querySelector('.begin-btn');
-
-                // Prevent multiple clicks
-                let isExpanded = false;
-
-                card.addEventListener('click', (e) => {
-                    // If already expanded, do nothing
-                    if (isExpanded) return;
-
-                    // Hide other cards
-                    cards.forEach(otherCard => {
-                        if (otherCard !== card) {
-                            otherCard.style.opacity = '0';
-                            otherCard.style.transform = 'scale(0.8)';
-                        }
-                    });
-
-                    // Expand current card
-                    card.style.transform = 'scale(1.1)';
-                    header.style.opacity = '0';
-                    
-                    // Reveal content
-                    setTimeout(() => {
-                        header.style.display = 'none';
-                        content.style.display = 'flex';
-                        setTimeout(() => {
-                            content.style.opacity = '1';
-                        }, 50);
-                    }, 300);
-
-                    isExpanded = true;
-                });
-
-                // Button click handler
-                beginBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const page = card.getAttribute('data-page');
-                    // Navigate to the respective page
-                    window.location.href = page;
-                });
-            });
-        });
-    </script>
 </body>
 </html>

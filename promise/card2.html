@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Reassurance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&family=Italiana&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a20;
+            min-height: 100vh;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .scene {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .cosmos {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, #1a1a4a 0%, #0a0a20 100%);
+        }
+
+        .stars {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, white, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            animation: twinkle 8s ease infinite;
+        }
+
+        .screen {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .screen.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .monologue {
+            max-width: 600px;
+            text-align: center;
+            line-height: 1.8;
+            margin: 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 1s ease forwards;
+        }
+
+        .game-space {
+            width: 100%;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 15px;
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        .game-placeholder {
+            color: rgba(0, 243, 255, 0.6);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .continue-btn {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid #00f3ff;
+            color: #00f3ff;
+            border-radius: 25px;
+            font-family: 'Space Grotesk', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease 1s forwards;
+        }
+
+        .continue-btn:hover {
+            background: rgba(0,243,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .monologue {
+                font-size: 0.9rem;
+                padding: 0 1rem;
+            }
+            .game-space {
+                height: 40vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="cosmos">
+            <div class="stars"></div>
+        </div>
+
+        <div class="screen active" id="screen1">
+            <div class="monologue">
+                Two strangers who felt like home. The coffee turned cold, but our conversation never did. And somewhere in the middle of our laughter, we both knew—this could be something. But then, reality struck. You were leaving. Mumbai was calling. And I... I was staying.
+            </div>
+            <button class="continue-btn" onclick="nextScreen(2)">Continue</button>
+        </div>
+
+        <div class="screen" id="screen2">
+            <div class="monologue">
+                The distance felt vast at first, like an ocean between us. Each city light a star we couldn't share.
+            </div>
+            <div class="game-space">
+                <div class="game-placeholder">
+                    [Game space: Drawing heart between cities]
+                </div>
+            </div>
+            <button class="continue-btn" onclick="nextScreen(3)">Continue</button>
+        </div>
+
+        <div class="screen" id="screen3">
+            <div class="monologue">
+                You chose to ask me to come with you. And because of that, we had this—we had us. A reality where we found our way back, where I drove across the night just to hold you one last time before college started. Where your reassurance became the foundation of everything we built.
+            </div>
+            <button class="continue-btn" onclick="window.location.href='card3.html'">Next Chapter</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Screen transition logic
+            window.nextScreen = function(num) {
+                document.querySelectorAll('.screen').forEach(screen => {
+                    screen.classList.remove('active');
+                });
+                document.getElementById(`screen${num}`).classList.add('active');
+            };
+        });
+    </script>
+</body>
+</html>
