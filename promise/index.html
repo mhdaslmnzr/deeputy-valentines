@@ -253,60 +253,52 @@
 
         <div class="video-container">
             <div class="video-frame">
-                <video id="mainVideo" playsinline>
-                    <source src="https://drive.google.com/file/d/1GHUKTZ9xvTBQyEr1vgC4f6-QvfY9aOmt" type="video/mp4">
-                </video>
-                <div class="video-overlay">
+                <iframe 
+            src="https://drive.google.com/file/d/1GHUKTZ9xvTBQyEr1vgC4f6-QvfY9aOmt/preview?controls=0" 
+            width="100%" 
+            height="100%" 
+            allow="autoplay" 
+            allowfullscreen
+        ></iframe>
+                <!-- <div class="video-overlay">
                     <div class="play-button"></div>
-                </div>
+                </div> -->
             </div>
         </div>
 
         <button class="next-button" onclick="window.location.href='road.html'">
-            Quest: The Road Not Taken
+            After finishing the video <br> Click here to Start <br> <br>
+           <b> Quest: The Road Not Taken </b>
         </button>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const beginButton = document.querySelector('.begin-experience');
-            const geometricFrame = document.querySelector('.geometric-frame');
-            const videoContainer = document.querySelector('.video-container');
-            const video = document.getElementById('mainVideo');
-            const videoFrame = document.querySelector('.video-frame');
-            const nextButton = document.querySelector('.next-button');
+         document.addEventListener('DOMContentLoaded', () => {
+        const beginButton = document.querySelector('.begin-experience');
+        const geometricFrame = document.querySelector('.geometric-frame');
+        const videoContainer = document.querySelector('.video-container');
+        const iframe = document.querySelector('iframe');
+        const nextButton = document.querySelector('.next-button');
 
-            // Initial animation
+        // Initial animation
+        setTimeout(() => {
+            geometricFrame.classList.add('expanded');
+        }, 500);
+
+        // Begin experience
+        beginButton.addEventListener('click', () => {
+            beginButton.style.opacity = '0';
             setTimeout(() => {
-                geometricFrame.classList.add('expanded');
-            }, 500);
-
-            // Begin experience
-            beginButton.addEventListener('click', () => {
-                beginButton.style.opacity = '0';
-                setTimeout(() => {
-                    beginButton.style.visibility = 'hidden';
-                    videoContainer.classList.add('visible');
-                }, 600);
-            });
-
-            // Video controls
-            videoFrame.addEventListener('click', () => {
-                if (video.paused) {
-                    video.play();
-                    videoFrame.querySelector('.video-overlay').style.opacity = '0';
-                } else {
-                    video.pause();
-                    videoFrame.querySelector('.video-overlay').style.opacity = '1';
-                }
-            });
-
-            // Video ended
-            video.addEventListener('ended', () => {
-                videoFrame.querySelector('.video-overlay').style.opacity = '1';
-                nextButton.classList.add('visible');
-            });
+                beginButton.style.visibility = 'hidden';
+                videoContainer.classList.add('visible');
+            }, 600);
         });
+
+        // Add a timer to show next button
+        setTimeout(() => {
+            nextButton.classList.add('visible');
+        }, 20000); // Adjust this to match your video length
+    });
     </script>
 </body>
 </html>
