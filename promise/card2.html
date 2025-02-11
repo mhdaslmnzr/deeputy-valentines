@@ -143,9 +143,6 @@
             position: absolute;
             width: 40px;
             height: 20px;
-            bottom: 15%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             z-index: 3;
         }
 
@@ -292,8 +289,8 @@ What if… we never took that step forward?
 
     <section class="section" id="game">
         <div class="game-container" id="gameContainer">
-            <div class="city-marker" id="calicut">Calicut</div>
-            <div class="city-marker" id="kochi">Kochi</div>
+            <div class="city-marker" id="calicut">Kochi</div>
+            <div class="city-marker" id="kochi">Calicut</div>
             <div class="car" id="car">
                 <div class="car-body"></div>
                 <div class="car-top"></div>
@@ -302,7 +299,7 @@ What if… we never took that step forward?
                 <div class="wheel wheel-front"></div>
                 <div class="wheel wheel-back"></div>
             </div>
-            <button class="move-button" id="moveBtn">Drive to Calicut</button>
+            <button class="move-button" id="moveBtn">Click To Complete The Road Trip</button>
         </div>
         <button class="nav-button" id="continueBtn">Continue Story</button>
     </section>
@@ -337,156 +334,108 @@ That no matter how far, no matter the miles between us—we would always find ou
         <button class="nav-button" id="returnBtn" onclick="window.location.href='road.html'">Return to choices</button>
     </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const openingMessage = document.getElementById('openingMessage');
-            const startGameBtn = document.getElementById('startGameBtn');
-            const gameContainer = document.getElementById('gameContainer');
-            const moveBtn = document.getElementById('moveBtn');
-            const car = document.getElementById('car');
-            const continueBtn = document.getElementById('continueBtn');
-            const closingMessage = document.getElementById('closingMessage');
-            const returnBtn = document.getElementById('returnBtn');
+   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const openingMessage = document.getElementById('openingMessage');
+    const startGameBtn = document.getElementById('startGameBtn');
+    const gameContainer = document.getElementById('gameContainer');
+    const moveBtn = document.getElementById('moveBtn');
+    const car = document.getElementById('car');
+    const continueBtn = document.getElementById('continueBtn');
+    const closingMessage = document.getElementById('closingMessage');
+    const returnBtn = document.getElementById('returnBtn');
 
-            let isAtKochi = true;
-            let tripCount = 0;
+car.style.left = '50%';
+car.style.top = 'auto';     // Clear any top value
+car.style.bottom = '80%';   // Position from bottom
+car.style.transform = 'translate(-50%, -50%)';
 
-            // Initial reveal
-            setTimeout(() => {
-                openingMessage.classList.add('visible');
-                setTimeout(() => startGameBtn.classList.add('visible'), 1000);
-            }, 500);
+    // Initial reveal
+    setTimeout(() => {
+        openingMessage.classList.add('visible');
+        setTimeout(() => startGameBtn.classList.add('visible'), 1000);
+    }, 500);
 
-            // Start game button
-            startGameBtn.addEventListener('click', () => {
-                document.getElementById('game').scrollIntoView();
+    // Start game button
+    startGameBtn.addEventListener('click', () => {
+        document.getElementById('game').scrollIntoView();
+        setTimeout(() => {
+            gameContainer.classList.add('visible');
+        }, 500);
+    });
+
+    function moveAlongPath(progress) {
+        const containerWidth = gameContainer.offsetWidth;
+        const containerHeight = gameContainer.offsetHeight;
+        
+        // Convert progress to angle (0 to 2π)
+        const t = progress * 2 * Math.PI;
+        
+        // Calculate heart shape using parametric equations
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+        
+        // Scale and position the heart
+        const scaleFactor = 11;
+        const posX = x * scaleFactor + containerWidth / 2;
+        const posY = -y * scaleFactor + containerHeight / 3;
+        
+        // Calculate angle for car rotation
+        const nextT = (progress + 0.01) * 2 * Math.PI;
+        const nextX = 16 * Math.pow(Math.sin(nextT), 3) * scaleFactor + containerWidth / 2;
+        const nextY = -(13 * Math.cos(nextT) - 5 * Math.cos(2 * nextT) - 2 * Math.cos(3 * nextT) - Math.cos(4 * nextT)) * scaleFactor + containerHeight / 3;
+        
+        const angle = Math.atan2(nextY - posY, nextX - posX) * (180 / Math.PI);
+        
+        return { x: posX, y: posY, angle };
+    }
+
+    // Move button
+    moveBtn.addEventListener('click', () => {
+        moveBtn.style.opacity = '0';
+        moveBtn.disabled = true;
+
+        let progress = 0;
+        const duration = 8000; // 5 seconds
+        const startTime = Date.now();
+
+        function animate() {
+            const currentTime = Date.now();
+            progress = (currentTime - startTime) / duration;
+
+            if (progress < 1) {
+                const pos = moveAlongPath(progress);
+                car.style.left = pos.x + 'px';
+                car.style.top = pos.y + 'px';
+                car.style.transform = `translate(-50%, -50%) rotate(${pos.angle}deg)`;
+                requestAnimationFrame(animate);
+            } else {
+                // Complete the animation
+                const finalPos = moveAlongPath(1);
+                car.style.left = finalPos.x + 'px';
+                car.style.top = finalPos.y + 'px';
+                car.style.transform = `translate(-50%, -50%) rotate(${finalPos.angle}deg)`;
+
+                // Show continue button
                 setTimeout(() => {
-                    gameContainer.classList.add('visible');
+                    continueBtn.classList.add('visible');
                 }, 500);
-            });
-
-            function moveAlongPath(startPoint, endPoint, progress) {
-            const containerWidth = gameContainer.offsetWidth;
-            const containerHeight = gameContainer.offsetHeight;
-            
-            // First half of the heart (left side going up)
-            if (isAtKochi && tripCount === 0) {
-                const cp1 = { x: containerWidth * 0.15, y: containerHeight * 0.85 }; // Bottom curve out
-                const cp2 = { x: containerWidth * 0.15, y: containerHeight * 0.2 };  // Top curve in
-                
-                // Calculate point on curve using bezier
-                const x = Math.pow(1 - progress, 3) * startPoint.x + 
-                        3 * Math.pow(1 - progress, 2) * progress * cp1.x +
-                        3 * (1 - progress) * Math.pow(progress, 2) * cp2.x +
-                        Math.pow(progress, 3) * endPoint.x;
-                
-                const y = Math.pow(1 - progress, 3) * startPoint.y +
-                        3 * Math.pow(1 - progress, 2) * progress * cp1.y +
-                        3 * (1 - progress) * Math.pow(progress, 2) * cp2.y +
-                        Math.pow(progress, 3) * endPoint.y;
-
-                return getAngleAndPosition(x, y, progress, startPoint, cp1, cp2, endPoint);
-            }
-            // Second half of the heart (right side coming down)
-            else {
-                const cp1 = { x: containerWidth * 0.85, y: containerHeight * 0.2 };  // Top curve out
-                const cp2 = { x: containerWidth * 0.85, y: containerHeight * 0.85 }; // Bottom curve in
-                
-                const x = Math.pow(1 - progress, 3) * startPoint.x + 
-                        3 * Math.pow(1 - progress, 2) * progress * cp1.x +
-                        3 * (1 - progress) * Math.pow(progress, 2) * cp2.x +
-                        Math.pow(progress, 3) * endPoint.x;
-                
-                const y = Math.pow(1 - progress, 3) * startPoint.y +
-                        3 * Math.pow(1 - progress, 2) * progress * cp1.y +
-                        3 * (1 - progress) * Math.pow(progress, 2) * cp2.y +
-                        Math.pow(progress, 3) * endPoint.y;
-
-                return getAngleAndPosition(x, y, progress, startPoint, cp1, cp2, endPoint);
             }
         }
 
-            function getAngleAndPosition(x, y, progress, startPoint, cp1, cp2, endPoint) {
-                // Calculate next point for angle
-                const nextProgress = Math.min(1, progress + 0.01);
-                const nextX = Math.pow(1 - nextProgress, 3) * startPoint.x + 
-                            3 * Math.pow(1 - nextProgress, 2) * nextProgress * cp1.x +
-                            3 * (1 - nextProgress) * Math.pow(nextProgress, 2) * cp2.x +
-                            Math.pow(nextProgress, 3) * endPoint.x;
-                
-                const nextY = Math.pow(1 - nextProgress, 3) * startPoint.y +
-                            3 * Math.pow(1 - nextProgress, 2) * nextProgress * cp1.y +
-                            3 * (1 - nextProgress) * Math.pow(nextProgress, 2) * cp2.y +
-                            Math.pow(nextProgress, 3) * endPoint.y;
+        animate();
+    });
 
-                const angle = Math.atan2(nextY - y, nextX - x) * (180 / Math.PI);
-
-                return { x, y, angle };
-            }
-
-            // Move button
-            moveBtn.addEventListener('click', () => {
-                if (tripCount >= 2) return;
-
-                moveBtn.style.opacity = '0';
-                moveBtn.disabled = true;
-
-                const startPoint = isAtKochi ? 
-                    { x: gameContainer.offsetWidth / 2, y: gameContainer.offsetHeight * 0.85 } :
-                    { x: gameContainer.offsetWidth / 2, y: gameContainer.offsetHeight * 0.15 };
-                
-                const endPoint = isAtKochi ?
-                    { x: gameContainer.offsetWidth / 2, y: gameContainer.offsetHeight * 0.15 } :
-                    { x: gameContainer.offsetWidth / 2, y: gameContainer.offsetHeight * 0.85 };
-
-                let progress = 0;
-                const duration = 3000; // 3 seconds
-                const startTime = Date.now();
-
-                function animate() {
-                    const currentTime = Date.now();
-                    progress = (currentTime - startTime) / duration;
-
-                    if (progress < 1) {
-                        const pos = moveAlongPath(startPoint, endPoint, progress);
-                        car.style.left = pos.x + 'px';
-                        car.style.top = pos.y + 'px';
-                        car.style.transform = `translate(-50%, -50%) rotate(${pos.angle}deg)`;
-                        requestAnimationFrame(animate);
-                    } else {
-                        // Ensure final position is exact
-                        const finalPos = moveAlongPath(startPoint, endPoint, 1);
-                        car.style.left = finalPos.x + 'px';
-                        car.style.top = finalPos.y + 'px';
-                        car.style.transform = `translate(-50%, -50%) rotate(${finalPos.angle}deg)`;
-
-                        isAtKochi = !isAtKochi;
-                        tripCount++;
-
-                        if (tripCount < 2) {
-                            moveBtn.textContent = isAtKochi ? "Drive to Calicut" : "Drive to Kochi";
-                            moveBtn.style.opacity = '1';
-                            moveBtn.disabled = false;
-                        } else {
-                            setTimeout(() => {
-                                continueBtn.classList.add('visible');
-                            }, 500);
-                        }
-                    }
-                }
-
-                animate();
-            });
-
-            // Continue button
-            continueBtn.addEventListener('click', () => {
-                document.getElementById('closing').scrollIntoView();
-                setTimeout(() => {
-                    closingMessage.classList.add('visible');
-                    setTimeout(() => returnBtn.classList.add('visible'), 1000);
-                }, 500);
-            });
-        });
-    </script>
+    // Continue button
+    continueBtn.addEventListener('click', () => {
+        document.getElementById('closing').scrollIntoView();
+        setTimeout(() => {
+            closingMessage.classList.add('visible');
+            setTimeout(() => returnBtn.classList.add('visible'), 1000);
+        }, 500);
+    });
+});
+   </script>
+    
 </body
 </html>

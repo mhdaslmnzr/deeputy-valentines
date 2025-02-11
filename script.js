@@ -49,7 +49,7 @@ function createDayCards() {
     const today = new Date();
     
     daysData.forEach((day, index) => {
-        const cardDate = new Date(2025, 1, 7 + index, 15, 0, 0); // Feb 7-14, 2025
+        const cardDate = new Date(2025, 1, 7 + index, 16, 0, 0); // Feb 7-14, 2025
         const isActive = DEV_MODE ? true : today >= cardDate;
         
         const card = document.createElement('div');

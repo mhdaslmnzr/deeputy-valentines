@@ -129,7 +129,7 @@
             opacity: 0;
             transform: translateY(20px);
             position: absolute;
-            bottom: 20px;
+            bottom: 5px;
             left: 50%;
             transform: translateX(-50%) translateY(20px); /* Center the button horizontally */
         }
@@ -167,10 +167,55 @@
             }
 
         }
+
+        .loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-background);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loader-container.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--color-secondary);
+    border-top: 3px solid var(--color-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hide content initially */
+.container {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.container.visible {
+    opacity: 1;
+}
     </style>
 </head>
 <body>
-    
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
 
     <div class="container">
         <h1 class="title">In every world, in every moment, in every breath we took...</h1>
@@ -247,28 +292,39 @@
             <span class="highlight"> <b>HAPPY PROMISE DAY BABY ❤️</b> </span>
         </p>
 
-        <button class="surprise-btn">A Surprise Awaits</button>
+        <button class="surprise-btn" onclick="window.location.href='reveal.html';">A Surprise Awaits</button>
     </div>
 
     <script>
         const title = document.querySelector('.title');
         const paragraphs = document.querySelectorAll('.paragraph');
         const surpriseBtn = document.querySelector('.surprise-btn');
-
+    
         const revealText = () => {
             title.classList.add('visible');
             paragraphs.forEach((para, index) => {
                 setTimeout(() => para.classList.add('visible'), index * 700);
             });
-
+    
             // Make button visible after the last paragraph (timing based on last paragraph reveal)
             setTimeout(() => {
                 surpriseBtn.classList.add('visible');
             }, paragraphs.length * 700); // Make the button appear after the last paragraph
         };
-
-        document.addEventListener('DOMContentLoaded', revealText);
-
+    
+        document.addEventListener('DOMContentLoaded', () => {
+    const loaderContainer = document.querySelector('.loader-container');
+    const container = document.querySelector('.container');
+    
+    // Simulate loading time (you can adjust this)
+    setTimeout(() => {
+        loaderContainer.classList.add('fade-out');
+        container.classList.add('visible');
+        // Start the text reveal animation after loader fades
+        setTimeout(revealText, 500);
+    }, 2000); // Loading time in milliseconds (currently 2 seconds)
+});
     </script>
+    
 </body>
 </html>
