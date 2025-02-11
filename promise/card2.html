@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Reassurance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&family=Italiana&display=swap" rel="stylesheet">
+    <title>The Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,177 +12,429 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --color-background: #0a0a0a;
+            --color-text: #f5f5f5;
+            --color-accent: #B7916C;
+            --color-secondary: #2A2A2A;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background: #0a0a20;
+            background: var(--color-background);
+            font-family: 'Cormorant', serif;
+            color: var(--color-text);
+            overflow-x: hidden;
+        }
+
+        .section {
             min-height: 100vh;
-            font-family: 'Space Grotesk', sans-serif;
-            color: #fff;
-            overflow: hidden;
-        }
-
-        .scene {
-            position: relative;
-            height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            overflow: hidden;
-        }
-
-        .cosmos {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, #1a1a4a 0%, #0a0a20 100%);
-        }
-
-        .stars {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                radial-gradient(1px 1px at 20px 30px, white, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0));
-            background-repeat: repeat;
-            animation: twinkle 8s ease infinite;
-        }
-
-        .screen {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            display: none;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
             padding: 2rem;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            position: relative;
         }
 
-        .screen.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .monologue {
+        .message {
             max-width: 600px;
             text-align: center;
-            line-height: 1.8;
             margin: 2rem 0;
             opacity: 0;
             transform: translateY(20px);
-            animation: slideUp 1s ease forwards;
+            transition: all 1.5s var(--transition-smooth);
         }
 
-        .game-space {
-            width: 100%;
-            height: 60vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            line-height: 1.8;
             margin: 2rem 0;
-            border: 1px solid rgba(0, 243, 255, 0.2);
-            border-radius: 15px;
-            background: rgba(0, 243, 255, 0.05);
         }
 
-        .game-placeholder {
-            color: rgba(0, 243, 255, 0.6);
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .continue-btn {
+        .nav-button {
             padding: 1rem 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--color-accent);
             background: transparent;
-            border: 1px solid #00f3ff;
-            color: #00f3ff;
-            border-radius: 25px;
-            font-family: 'Space Grotesk', sans-serif;
+            border: 1px solid var(--color-accent);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.6s var(--transition-smooth);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
             opacity: 0;
-            animation: fadeIn 0.5s ease 1s forwards;
+            transform: translateY(20px);
         }
 
-        .continue-btn:hover {
-            background: rgba(0,243,255,0.1);
-            transform: translateY(-2px);
+        .nav-button.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        @keyframes slideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .nav-button:hover {
+            background: rgba(183, 145, 108, 0.1);
+            letter-spacing: 0.3em;
         }
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
+        .game-container {
+            width: 100%;
+            max-width: 400px;
+            height: 500px;
+            background: var(--color-secondary);
+            border: 1px solid rgba(183, 145, 108, 0.3);
+            margin: 4rem 0;
+            position: relative;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s var(--transition-smooth);
+            overflow: hidden;
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        .game-container.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .city-marker {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(183, 145, 108, 0.1);
+            border: 2px solid var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            z-index: 2;
+        }
+
+        #kochi {
+            bottom: 10%;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+
+        #calicut {
+            top: 10%;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+
+        .car {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            bottom: 15%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+        }
+
+        .car-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--color-accent);
+            border-radius: 5px;
+        }
+
+        .car-top {
+            position: absolute;
+            width: 60%;
+            height: 70%;
+            background: var(--color-accent);
+            border-radius: 5px;
+            top: -60%;
+            left: 20%;
+        }
+
+        .car-light {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        .light-front {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .light-back {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .wheel {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            bottom: -4px;
+        }
+
+        .wheel-front {
+            right: 6px;
+        }
+
+        .wheel-back {
+            left: 6px;
+        }
+
+        .move-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 1rem 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            background: transparent;
+            border: 1px solid var(--color-accent);
+            cursor: pointer;
+            transition: all 0.6s var(--transition-smooth);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            z-index: 4;
+        }
+
+        .move-button:hover {
+            background: rgba(183, 145, 108, 0.1);
+            letter-spacing: 0.3em;
         }
 
         @media (max-width: 768px) {
-            .monologue {
-                font-size: 0.9rem;
-                padding: 0 1rem;
+            .text {
+                font-size: 1.2rem;
             }
-            .game-space {
-                height: 40vh;
+
+            .nav-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.8rem;
+            }
+
+            .game-container {
+                height: 400px;
+            }
+
+            .city-marker {
+                width: 60px;
+                height: 60px;
+                font-size: 0.7rem;
+            }
+
+            .car {
+                width: 30px;
+                height: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="scene">
-        <div class="cosmos">
-            <div class="stars"></div>
+    <section class="section" id="opening">
+        <div class="message" id="openingMessage">
+            <p class="text">The distance between Kochi and Calicut seemed vast, but with every mile traveled, our hearts grew closer.</p>
         </div>
+        <button class="nav-button" id="startGameBtn">Begin Journey</button>
+    </section>
 
-        <div class="screen active" id="screen1">
-            <div class="monologue">
-                Two strangers who felt like home. The coffee turned cold, but our conversation never did. And somewhere in the middle of our laughter, we both knew—this could be something. But then, reality struck. You were leaving. Mumbai was calling. And I... I was staying.
+    <section class="section" id="game">
+        <div class="game-container" id="gameContainer">
+            <div class="city-marker" id="calicut">Calicut</div>
+            <div class="city-marker" id="kochi">Kochi</div>
+            <div class="car" id="car">
+                <div class="car-body"></div>
+                <div class="car-top"></div>
+                <div class="car-light light-front"></div>
+                <div class="car-light light-back"></div>
+                <div class="wheel wheel-front"></div>
+                <div class="wheel wheel-back"></div>
             </div>
-            <button class="continue-btn" onclick="nextScreen(2)">Continue</button>
+            <button class="move-button" id="moveBtn">Drive to Calicut</button>
         </div>
+        <button class="nav-button" id="continueBtn">Continue Story</button>
+    </section>
 
-        <div class="screen" id="screen2">
-            <div class="monologue">
-                The distance felt vast at first, like an ocean between us. Each city light a star we couldn't share.
-            </div>
-            <div class="game-space">
-                <div class="game-placeholder">
-                    [Game space: Drawing heart between cities]
-                </div>
-            </div>
-            <button class="continue-btn" onclick="nextScreen(3)">Continue</button>
+    <section class="section" id="closing">
+        <div class="message" id="closingMessage">
+            <p class="text">Every journey brought us closer, every mile strengthened our bond. In the end, distance was just a number, but our love was infinite.</p>
         </div>
-
-        <div class="screen" id="screen3">
-            <div class="monologue">
-                You chose to ask me to come with you. And because of that, we had this—we had us. A reality where we found our way back, where I drove across the night just to hold you one last time before college started. Where your reassurance became the foundation of everything we built.
-            </div>
-            <button class="continue-btn" onclick="window.location.href='card3.html'">Next Chapter</button>
-        </div>
-    </div>
+        <button class="nav-button" id="returnBtn" onclick="window.location.href='road.html'">Return to choices</button>
+    </section>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Screen transition logic
-            window.nextScreen = function(num) {
-                document.querySelectorAll('.screen').forEach(screen => {
-                    screen.classList.remove('active');
-                });
-                document.getElementById(`screen${num}`).classList.add('active');
-            };
+            const openingMessage = document.getElementById('openingMessage');
+            const startGameBtn = document.getElementById('startGameBtn');
+            const gameContainer = document.getElementById('gameContainer');
+            const moveBtn = document.getElementById('moveBtn');
+            const car = document.getElementById('car');
+            const continueBtn = document.getElementById('continueBtn');
+            const closingMessage = document.getElementById('closingMessage');
+            const returnBtn = document.getElementById('returnBtn');
+
+            let isAtKochi = true;
+            let tripCount = 0;
+
+            // Initial reveal
+            setTimeout(() => {
+                openingMessage.classList.add('visible');
+                setTimeout(() => startGameBtn.classList.add('visible'), 1000);
+            }, 500);
+
+            // Start game button
+            startGameBtn.addEventListener('click', () => {
+                document.getElementById('game').scrollIntoView();
+                setTimeout(() => {
+                    gameContainer.classList.add('visible');
+                }, 500);
+            });
+
+            function moveAlongPath(startPoint, endPoint, progress) {
+            const containerWidth = gameContainer.offsetWidth;
+            const containerHeight = gameContainer.offsetHeight;
+            
+            // First half of the heart (left side going up)
+            if (isAtKochi && tripCount === 0) {
+                const cp1 = { x: containerWidth * 0.15, y: containerHeight * 0.85 }; // Bottom curve out
+                const cp2 = { x: containerWidth * 0.15, y: containerHeight * 0.2 };  // Top curve in
+                
+                // Calculate point on curve using bezier
+                const x = Math.pow(1 - progress, 3) * startPoint.x + 
+                        3 * Math.pow(1 - progress, 2) * progress * cp1.x +
+                        3 * (1 - progress) * Math.pow(progress, 2) * cp2.x +
+                        Math.pow(progress, 3) * endPoint.x;
+                
+                const y = Math.pow(1 - progress, 3) * startPoint.y +
+                        3 * Math.pow(1 - progress, 2) * progress * cp1.y +
+                        3 * (1 - progress) * Math.pow(progress, 2) * cp2.y +
+                        Math.pow(progress, 3) * endPoint.y;
+
+                return getAngleAndPosition(x, y, progress, startPoint, cp1, cp2, endPoint);
+            }
+            // Second half of the heart (right side coming down)
+            else {
+                const cp1 = { x: containerWidth * 0.85, y: containerHeight * 0.2 };  // Top curve out
+                const cp2 = { x: containerWidth * 0.85, y: containerHeight * 0.85 }; // Bottom curve in
+                
+                const x = Math.pow(1 - progress, 3) * startPoint.x + 
+                        3 * Math.pow(1 - progress, 2) * progress * cp1.x +
+                        3 * (1 - progress) * Math.pow(progress, 2) * cp2.x +
+                        Math.pow(progress, 3) * endPoint.x;
+                
+                const y = Math.pow(1 - progress, 3) * startPoint.y +
+                        3 * Math.pow(1 - progress, 2) * progress * cp1.y +
+                        3 * (1 - progress) * Math.pow(progress, 2) * cp2.y +
+                        Math.pow(progress, 3) * endPoint.y;
+
+                return getAngleAndPosition(x, y, progress, startPoint, cp1, cp2, endPoint);
+            }
+        }
+
+            function getAngleAndPosition(x, y, progress, startPoint, cp1, cp2, endPoint) {
+                // Calculate next point for angle
+                const nextProgress = Math.min(1, progress + 0.01);
+                const nextX = Math.pow(1 - nextProgress, 3) * startPoint.x + 
+                            3 * Math.pow(1 - nextProgress, 2) * nextProgress * cp1.x +
+                            3 * (1 - nextProgress) * Math.pow(nextProgress, 2) * cp2.x +
+                            Math.pow(nextProgress, 3) * endPoint.x;
+                
+                const nextY = Math.pow(1 - nextProgress, 3) * startPoint.y +
+                            3 * Math.pow(1 - nextProgress, 2) * nextProgress * cp1.y +
+                            3 * (1 - nextProgress) * Math.pow(nextProgress, 2) * cp2.y +
+                            Math.pow(nextProgress, 3) * endPoint.y;
+
+                const angle = Math.atan2(nextY - y, nextX - x) * (180 / Math.PI);
+
+                return { x, y, angle };
+            }
+
+            // Move button
+            moveBtn.addEventListener('click', () => {
+                if (tripCount >= 2) return;
+
+                moveBtn.style.opacity = '0';
+                moveBtn.disabled = true;
+
+                const startPoint = isAtKochi ? 
+                    { x: gameContainer.offsetWidth / 2, y: gameContainer.offsetHeight * 0.85 } :
+                    { x: gameContainer.offsetWidth / 2, y: gameContainer.offsetHeight * 0.15 };
+                
+                const endPoint = isAtKochi ?
+                    { x: gameContainer.offsetWidth / 2, y: gameContainer.offsetHeight * 0.15 } :
+                    { x: gameContainer.offsetWidth / 2, y: gameContainer.offsetHeight * 0.85 };
+
+                let progress = 0;
+                const duration = 3000; // 3 seconds
+                const startTime = Date.now();
+
+                function animate() {
+                    const currentTime = Date.now();
+                    progress = (currentTime - startTime) / duration;
+
+                    if (progress < 1) {
+                        const pos = moveAlongPath(startPoint, endPoint, progress);
+                        car.style.left = pos.x + 'px';
+                        car.style.top = pos.y + 'px';
+                        car.style.transform = `translate(-50%, -50%) rotate(${pos.angle}deg)`;
+                        requestAnimationFrame(animate);
+                    } else {
+                        // Ensure final position is exact
+                        const finalPos = moveAlongPath(startPoint, endPoint, 1);
+                        car.style.left = finalPos.x + 'px';
+                        car.style.top = finalPos.y + 'px';
+                        car.style.transform = `translate(-50%, -50%) rotate(${finalPos.angle}deg)`;
+
+                        isAtKochi = !isAtKochi;
+                        tripCount++;
+
+                        if (tripCount < 2) {
+                            moveBtn.textContent = isAtKochi ? "Drive to Calicut" : "Drive to Kochi";
+                            moveBtn.style.opacity = '1';
+                            moveBtn.disabled = false;
+                        } else {
+                            setTimeout(() => {
+                                continueBtn.classList.add('visible');
+                            }, 500);
+                        }
+                    }
+                }
+
+                animate();
+            });
+
+            // Continue button
+            continueBtn.addEventListener('click', () => {
+                document.getElementById('closing').scrollIntoView();
+                setTimeout(() => {
+                    closingMessage.classList.add('visible');
+                    setTimeout(() => returnBtn.classList.add('visible'), 1000);
+                }, 500);
+            });
         });
     </script>
-</body>
+</body
 </html>

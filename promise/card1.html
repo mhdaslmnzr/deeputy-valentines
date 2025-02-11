@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Beginning</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&family=Italiana&display=swap" rel="stylesheet">
+    <title>The Beginning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,357 +12,344 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --color-background: #0a0a0a;
+            --color-text: #f5f5f5;
+            --color-accent: #B7916C;
+            --color-secondary: #2A2A2A;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background: #0a0a20;
+            background: var(--color-background);
+            font-family: 'Cormorant', serif;
+            color: var(--color-text);
+            overflow-x: hidden;
+        }
+
+        .section {
             min-height: 100vh;
-            font-family: 'Space Grotesk', sans-serif;
-            color: #fff;
-            overflow: hidden;
-        }
-
-        .scene {
-            position: relative;
-            height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            overflow: hidden;
-        }
-
-        .cosmos {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, #1a1a4a 0%, #0a0a20 100%);
-        }
-
-        .stars {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                radial-gradient(1px 1px at 20px 30px, white, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0));
-            background-repeat: repeat;
-            animation: twinkle 8s ease infinite;
-        }
-
-        .screen {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            display: none;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
             padding: 2rem;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        .phone-content {
-            width: 300px;
-            background: rgba(0,0,0,0.8);
-            border-radius: 20px;
-            padding: 1.5rem;
+            position: relative;
         }
 
         .message {
-            background: rgba(255,255,255,0.1);
-            padding: 1rem;
-            border-radius: 15px;
-            margin-bottom: 1rem;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUp 1s ease forwards;
-        }
-
-        .message-typing {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 3px;
-        }
-
-        .dot {
-            width: 6px;
-            height: 6px;
-            background: #fff;
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: dotPulse 1.4s infinite;
-        }
-
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
-
-        .monologue {
             max-width: 600px;
             text-align: center;
-            line-height: 1.8;
             margin: 2rem 0;
             opacity: 0;
             transform: translateY(20px);
-            animation: slideUp 1s ease forwards;
+            transition: all 1.5s var(--transition-smooth);
+        }
+
+        .message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            line-height: 1.8;
+            margin: 2rem 0;
+        }
+
+        .nav-button {
+            padding: 1rem 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--color-accent);
+            background: transparent;
+            border: 1px solid var(--color-accent);
+            cursor: pointer;
+            transition: all 0.6s var(--transition-smooth);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .nav-button.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-button:hover {
+            background: rgba(183, 145, 108, 0.1);
+            letter-spacing: 0.3em;
         }
 
         .game-container {
-            position: relative;
-            height: 70vh;
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4rem 0;
+            max-width: 400px;
+            height: 500px;
+            background: var(--color-secondary);
+            border: 1px solid rgba(183, 145, 108, 0.3);
+            margin: 4rem 0;
+            position: relative;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s var(--transition-smooth);
+            overflow: hidden;
+        }
+
+        .game-container.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .avatar {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(183, 145, 108, 0.1);
+            border: 2px solid var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s var(--transition-smooth);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+        }
+
+        .avatar::after {
+            content: '';
+            position: absolute;
             width: 70px;
             height: 70px;
+            border: 1px solid var(--color-accent);
             border-radius: 50%;
-            border: 2px solid #00f3ff;
-            background: url('/api/placeholder/70/70') center/cover;
-            position: absolute;
-            transition: transform 0.3s ease;
+            opacity: 0;
+            transition: all 0.3s var(--transition-smooth);
         }
 
-        #avatarTop {
+        .avatar:hover::after {
+            opacity: 0.5;
+        }
+
+        #avatar-top {
             top: 10%;
-            cursor: pointer;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
-        #avatarBottom {
+        #avatar-bottom {
             bottom: 10%;
+            left: 50%;
+            transform: translate(-50%, 50%);
         }
 
-        .sparkle {
+        .move-button {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #00f3ff;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 1rem 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            background: transparent;
+            border: 1px solid var(--color-accent);
+            cursor: pointer;
+            transition: all 0.6s var(--transition-smooth);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .move-button:hover {
+            background: rgba(183, 145, 108, 0.1);
+            letter-spacing: 0.3em;
+        }
+
+        .merged-avatar {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(183, 145, 108, 0.2);
+            border: 2px solid var(--color-accent);
             border-radius: 50%;
-            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.8s var(--transition-smooth);
+        }
+
+        .merged-avatar.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px var(--color-accent),
+                           0 0 20px var(--color-accent),
+                           0 0 30px var(--color-accent);
+            }
+            to {
+                box-shadow: 0 0 20px var(--color-accent),
+                           0 0 30px var(--color-accent),
+                           0 0 40px var(--color-accent);
+            }
         }
 
         .heart {
-            position: absolute;
-            font-size: 4rem;
-            color: #ff3366;
-            opacity: 0;
-            transform: scale(0);
-            transition: all 0.5s ease;
-        }
-
-        .continue-btn {
-            padding: 1rem 2rem;
-            background: transparent;
-            border: 1px solid #00f3ff;
-            color: #00f3ff;
-            border-radius: 25px;
-            font-family: 'Space Grotesk', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            opacity: 0;
-            display: none;
-        }
-
-        .continue-btn:hover {
-            background: rgba(0,243,255,0.1);
-            transform: translateY(-2px);
-        }
-
-        @keyframes slideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        @keyframes dotPulse {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 1.2em;
+            transform: translateY(1px);
         }
 
         @media (max-width: 768px) {
-            .monologue { 
-                font-size: 0.9rem;
-                padding: 0 1rem;
+            .text {
+                font-size: 1.2rem;
             }
-            .phone-content {
-                width: 90%;
-                max-width: 300px;
+
+            .nav-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.8rem;
+            }
+
+            .game-container {
+                height: 400px;
+            }
+
+            .avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 0.7rem;
+            }
+
+            .merged-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="scene">
-        <div class="cosmos">
-            <div class="stars"></div>
+    <section class="section" id="opening">
+        <div class="message" id="openingMessage">
+            <p class="text">That first message changed everything. A moment of courage that bridged two worlds.</p>
         </div>
+        <button class="nav-button" id="startGameBtn">Begin Interaction</button>
+    </section>
 
-        <div class="screen active" id="screen1">
-            <div class="phone-content">
-                <div class="message-typing">
-                    <div class="typing-dots">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </div>
-                </div>
-                <div class="message">Hi cutie ✨</div>
-            </div>
-            <div class="monologue">
-                I hesitated that night, thumb hovering over send. What if you never replied? We would have remained strangers, passing ships in the vast ocean of what-ifs...
-            </div>
-            <button class="continue-btn" onclick="nextScreen(2)">Continue</button>
+    <section class="section" id="game">
+        <div class="game-container" id="gameContainer">
+            <div class="avatar" id="avatar-top">you</div>
+            <button class="move-button" id="moveBtn">Move Closer</button>
+            <div class="avatar" id="avatar-bottom">me</div>
+            <div class="merged-avatar" id="mergedAvatar">us<span class="heart">♥</span></div>
         </div>
+        <button class="nav-button" id="continueBtn">Continue Story</button>
+    </section>
 
-        <div class="screen" id="screen2">
-            <div class="monologue">
-                Now here you are. Drag my heart to yours, and let's recreate the moment our paths first crossed...
-            </div>
-            <div class="game-container">
-                <div class="avatar" id="avatarTop" draggable="true"></div>
-                <div class="heart">♥</div>
-                <div class="avatar" id="avatarBottom"></div>
-            </div>
-            <button class="continue-btn" onclick="nextScreen(3)" style="display: none;">Continue</button>
+    <section class="section" id="closing">
+        <div class="message" id="closingMessage">
+            <p class="text">In that simple act of reaching out, we found something extraordinary. A connection that would grow beyond our wildest dreams.</p>
         </div>
-
-        <div class="screen" id="screen3">
-            <div class="monologue">
-                But you did reply. And in that simple act of courage, our two separate paths merged into one beautiful journey. Every message, every laugh, every moment since then has been writing our story...
-            </div>
-            <button class="continue-btn" onclick="window.location.href='card2.html'">Next Chapter</button>
-        </div>
-    </div>
+        <button class="nav-button" id="returnBtn" onclick="window.location.href='road.html'">Return to Choices</button>
+    </section>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const openingMessage = document.getElementById('openingMessage');
+            const startGameBtn = document.getElementById('startGameBtn');
+            const gameContainer = document.getElementById('gameContainer');
+            const moveBtn = document.getElementById('moveBtn');
+            const avatarTop = document.getElementById('avatar-top');
+            const avatarBottom = document.getElementById('avatar-bottom');
+            const mergedAvatar = document.getElementById('mergedAvatar');
+            const continueBtn = document.getElementById('continueBtn');
+            const closingMessage = document.getElementById('closingMessage');
+            const returnBtn = document.getElementById('returnBtn');
+
+            let moveCount = 0;
+            const totalMoves = 4;
+
+            // Initial reveal
             setTimeout(() => {
-                document.querySelector('#screen1 .continue-btn').style.opacity = '1';
-                document.querySelector('#screen1 .continue-btn').style.display = 'block';
-            }, 2000);
+                openingMessage.classList.add('visible');
+                setTimeout(() => startGameBtn.classList.add('visible'), 1000);
+            }, 500);
 
-            const avatarTop = document.getElementById('avatarTop');
-            const avatarBottom = document.getElementById('avatarBottom');
-            const heart = document.querySelector('.heart');
-            let isDragging = false;
+            // Start game button
+            startGameBtn.addEventListener('click', () => {
+                document.getElementById('game').scrollIntoView();
+                setTimeout(() => {
+                    gameContainer.classList.add('visible');
+                }, 500);
+            });
 
-            // Touch events for mobile
-            avatarTop.addEventListener('touchstart', handleDragStart);
-            document.addEventListener('touchmove', handleDrag);
-            document.addEventListener('touchend', handleDragEnd);
-
-            // Mouse events for desktop
-            avatarTop.addEventListener('mousedown', handleDragStart);
-            document.addEventListener('mousemove', handleDrag);
-            document.addEventListener('mouseup', handleDragEnd);
-
-            function handleDragStart(e) {
-                isDragging = true;
-                e.preventDefault();
-            }
-
-            function handleDrag(e) {
-                if (!isDragging) return;
+            // Move button
+            moveBtn.addEventListener('click', () => {
+                moveCount++;
+                const progress = moveCount / totalMoves;
                 
-                const y = e.type.includes('touch') ? 
-                    e.touches[0].clientY : e.clientY;
-                const x = e.type.includes('touch') ? 
-                    e.touches[0].clientX : e.clientX;
-
-                avatarTop.style.position = 'absolute';
-                avatarTop.style.left = `${x - 35}px`;
-                avatarTop.style.top = `${y - 35}px`;
-
-                createSparkle(x, y);
-
-                // Check if avatars are close enough
-                const rect1 = avatarTop.getBoundingClientRect();
-                const rect2 = avatarBottom.getBoundingClientRect();
+                // Calculate new position
+                const startTop = 10;
+                const endTop = 90;
+                const newTop = startTop + (endTop - startTop) * progress;
                 
-                if (isNear(rect1, rect2)) {
-                    handleConnection();
-                }
-            }
+                avatarTop.style.top = `${newTop}%`;
 
-            function handleDragEnd() {
-                isDragging = false;
-                if (!heart.style.opacity || heart.style.opacity === '0') {
-                    avatarTop.style.transition = '0.5s ease';
-                    avatarTop.style.top = '10%';
-                    avatarTop.style.left = '50%';
-                    avatarTop.style.transform = 'translateX(-50%)';
+                if (moveCount >= totalMoves) {
+                    // Final merge animation
+                    moveBtn.style.opacity = '0';
                     setTimeout(() => {
-                        avatarTop.style.transition = 'none';
+                        moveBtn.style.display = 'none';
+                        avatarTop.style.opacity = '0';
+                        avatarBottom.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            mergedAvatar.style.top = '90%';
+                            mergedAvatar.style.left = '50%';
+                            mergedAvatar.style.transform = 'translate(-50%, -50%)';
+                            mergedAvatar.classList.add('visible', 'glow');
+                            
+                            setTimeout(() => {
+                                continueBtn.classList.add('visible');
+                            }, 1000);
+                        }, 500);
                     }, 500);
                 }
-            }
-
-            function createSparkle(x, y) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                sparkle.style.left = `${x}px`;
-                sparkle.style.top = `${y}px`;
-                document.body.appendChild(sparkle);
-                
-                setTimeout(() => {
-                    sparkle.style.transition = 'all 0.5s ease';
-                    sparkle.style.opacity = '0';
-                    sparkle.style.transform = `translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px)`;
-                }, 50);
-
-                setTimeout(() => sparkle.remove(), 500);
-            }
-
-            function isNear(rect1, rect2) {
-                const distance = Math.hypot(
-                    rect1.left - rect2.left,
-                    rect1.top - rect2.top
-                );
-                return distance < 100;
-            }
-
-            function handleConnection() {
-                isDragging = false;
-                avatarTop.style.transition = '0.5s ease';
-                avatarTop.style.left = `${avatarBottom.offsetLeft}px`;
-                avatarTop.style.top = `${avatarBottom.offsetTop}px`;
-                
-                heart.style.opacity = '1';
-                heart.style.transform = 'scale(1)';
-                
-                const continueBtn = document.querySelector('#screen2 .continue-btn');
-                continueBtn.style.display = 'block';
-                continueBtn.style.opacity = '1';
-            }
-        });
-
-        function nextScreen(num) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
             });
-            document.getElementById(`screen${num}`).classList.add('active');
-            
-            if (num === 3) {
-                document.querySelector('#screen3 .continue-btn').style.display = 'block';
-                document.querySelector('#screen3 .continue-btn').style.opacity = '1';
-            }
-        }
+
+            // Continue button
+            continueBtn.addEventListener('click', () => {
+                document.getElementById('closing').scrollIntoView();
+                setTimeout(() => {
+                    closingMessage.classList.add('visible');
+                    setTimeout(() => returnBtn.classList.add('visible'), 1000);
+                }, 500);
+            });
+        });
     </script>
 </body>
 </html>

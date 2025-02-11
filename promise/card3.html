@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Promise</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&family=Italiana&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,262 +12,342 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --color-background: #0a0a0a;
+            --color-text: #f5f5f5;
+            --color-accent: #B7916C;
+            --color-secondary: #2A2A2A;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background: #0a0a20;
+            background: var(--color-background);
+            font-family: 'Cormorant', serif;
+            color: var(--color-text);
+            overflow-x: hidden;
+        }
+
+        .section {
             min-height: 100vh;
-            font-family: 'Space Grotesk', sans-serif;
-            color: #fff;
-            overflow: hidden;
-        }
-
-        .scene {
-            position: relative;
-            height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            overflow: hidden;
-        }
-
-        .cosmos {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, #1a1a4a 0%, #0a0a20 100%);
-            opacity: 0.8;
-        }
-
-        .storm {
-            position: absolute;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 30% 40%, rgba(138, 43, 226, 0.2), transparent 40%),
-                radial-gradient(circle at 70% 60%, rgba(75, 0, 130, 0.2), transparent 40%);
-            filter: blur(20px);
-            animation: stormPulse 4s ease infinite alternate;
-        }
-
-        .lightning {
-            position: absolute;
-            inset: 0;
-            background: transparent;
-            opacity: 0;
-            animation: lightning 8s infinite;
-        }
-
-        .stars {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                radial-gradient(1px 1px at 20px 30px, white, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0));
-            background-repeat: repeat;
-            animation: twinkle 8s ease infinite;
-            opacity: 0.5;
-        }
-
-        .screen {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            display: none;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
             padding: 2rem;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            position: relative;
         }
 
-        .screen.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .monologue {
+        .message {
             max-width: 600px;
             text-align: center;
-            line-height: 1.8;
             margin: 2rem 0;
             opacity: 0;
             transform: translateY(20px);
-            animation: slideUp 1s ease forwards;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: all 1.5s var(--transition-smooth);
         }
 
-        .game-space {
-            position: relative;
-            width: 100%;
-            height: 60vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            line-height: 1.8;
             margin: 2rem 0;
         }
 
-        .avatar-container {
-            position: relative;
+        .nav-button {
+            padding: 1rem 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--color-accent);
+            background: transparent;
+            border: 1px solid var(--color-accent);
+            cursor: pointer;
+            transition: all 0.6s var(--transition-smooth);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .nav-button.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-button:hover {
+            background: rgba(183, 145, 108, 0.1);
+            letter-spacing: 0.3em;
+        }
+
+        .game-container {
             width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20%;
+            max-width: 400px;
+            height: 500px;
+            background: var(--color-secondary);
+            border: 1px solid rgba(183, 145, 108, 0.3);
+            margin: 4rem 0;
+            position: relative;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s var(--transition-smooth);
+            overflow: hidden;
+        }
+
+        .game-container.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .avatar {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(183, 145, 108, 0.1);
+            border: 2px solid var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s var(--transition-smooth);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+        }
+
+        .you-avatar {
+            top: 20%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+        }
+
+        .me-avatar {
+            top: 20%;
+            right: 20%;
+            transform: translate(-50%, -50%);
+        }
+
+        .us-avatar {
+            top: 20%;
+            right: 20%;
+            transform: translate(-50%, -50%) scale(0);
             width: 80px;
             height: 80px;
-            border-radius: 50%;
-            background: rgba(0, 243, 255, 0.1);
-            border: 2px solid #00f3ff;
-            position: relative;
-            z-index: 2;
-        }
-
-        .static-field {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 40%;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
-            animation: staticFlicker 0.5s infinite;
-        }
-
-        .game-placeholder {
-            color: rgba(0, 243, 255, 0.6);
-            text-align: center;
-            padding: 2rem;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0, 243, 255, 0.05);
-            border-radius: 15px;
-            border: 1px solid rgba(0, 243, 255, 0.2);
-        }
-
-        .continue-btn {
-            padding: 1rem 2rem;
-            background: transparent;
-            border: 1px solid #00f3ff;
-            color: #00f3ff;
-            border-radius: 25px;
-            font-family: 'Space Grotesk', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
             opacity: 0;
-            animation: fadeIn 0.5s ease 1s forwards;
+            z-index: 2;
+            background: rgba(183, 145, 108, 0.2);
+            border: 2px solid var(--color-accent);
         }
 
-        .continue-btn:hover {
-            background: rgba(0,243,255,0.1);
-            transform: translateY(-2px);
+        .us-avatar.visible {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        @keyframes slideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        .move-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 1rem 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            background: transparent;
+            border: 1px solid var(--color-accent);
+            cursor: pointer;
+            transition: all 0.6s var(--transition-smooth);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            z-index: 3;
+        }
+
+        .move-button:hover {
+            background: rgba(183, 145, 108, 0.1);
+            letter-spacing: 0.3em;
+        }
+
+        .heart {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 1.2em;
+            transform: translateY(1px);
+        }
+
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px var(--color-accent),
+                           0 0 20px var(--color-accent),
+                           0 0 30px var(--color-accent);
             }
-        }
-
-        @keyframes fadeIn {
             to {
-                opacity: 1;
+                box-shadow: 0 0 20px var(--color-accent),
+                           0 0 30px var(--color-accent),
+                           0 0 40px var(--color-accent);
             }
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.5; }
-        }
-
-        @keyframes stormPulse {
-            0% { opacity: 0.2; }
-            100% { opacity: 0.4; }
-        }
-
-        @keyframes lightning {
-            0%, 100% { opacity: 0; background: transparent; }
-            48%, 52% { opacity: 0; }
-            50% { opacity: 0.3; background: white; }
-        }
-
-        @keyframes staticFlicker {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.7; }
         }
 
         @media (max-width: 768px) {
-            .monologue {
-                font-size: 0.9rem;
-                padding: 0 1rem;
+            .text {
+                font-size: 1.2rem;
             }
-            .game-space {
-                height: 40vh;
+
+            .nav-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.8rem;
             }
-            .avatar-container {
-                padding: 0 10%;
+
+            .game-container {
+                height: 400px;
+            }
+
+            .avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 0.7rem;
+            }
+
+            .us-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="scene">
-        <div class="cosmos">
-            <div class="storm"></div>
-            <div class="lightning"></div>
-            <div class="stars"></div>
+    <section class="section" id="opening">
+        <div class="message" id="openingMessage">
+            <p class="text">Love is not just in the easy moments. It's in the trials, in the storms we weather together. Through every challenge, we choose each other again and again.</p>
         </div>
+        <button class="nav-button" id="startGameBtn">Begin Journey</button>
+    </section>
 
-        <div class="screen active" id="screen1">
-            <div class="monologue">
-                Love is not just in the easy moments. It's in the trials. The nights of doubt, the ache of mistakes, the fear of losing something irreplaceable. There was a time when fear took over, when I didn't know if I could trust, if I could stay. And yet… you held on. You chose to fight for me when I couldn't fight for myself.
-            </div>
-            <button class="continue-btn" onclick="nextScreen(2)">Continue</button>
+    <section class="section" id="game">
+        <div class="game-container" id="gameContainer">
+            <div class="avatar you-avatar" id="youAvatar">you</div>
+            <div class="avatar me-avatar" id="meAvatar">me</div>
+            <div class="avatar us-avatar" id="usAvatar">us<span class="heart">♥</span></div>
+            <button class="move-button" id="moveBtn">Move Closer</button>
         </div>
+        <button class="nav-button" id="continueBtn">Continue Story</button>
+    </section>
 
-        <div class="screen" id="screen2">
-            <div class="monologue">
-                Between trust and doubt, between fear and love, there lies a choice...
-            </div>
-            <div class="game-space">
-                <div class="avatar-container">
-                    <div class="avatar"></div>
-                    <div class="static-field"></div>
-                    <div class="avatar"></div>
-                </div>
-                <div class="game-placeholder">
-                    [Game space: Drawing heart that reveals "I Love You"]
-                </div>
-            </div>
-            <button class="continue-btn" onclick="nextScreen(3)">Continue</button>
+    <section class="section" id="closing">
+        <div class="message" id="closingMessage">
+            <p class="text">In choosing each other every day, we built something beautiful. Our love isn't just a feeling—it's a promise we keep with every breath, every moment, every choice.</p>
         </div>
-
-        <div class="screen" id="screen3">
-            <div class="monologue">
-                You didn't let go. And because of that, we stand here today, stronger than ever. Every storm we weathered, every doubt we overcame, led us to this moment—where love isn't just a feeling, but a choice we make every day.
-            </div>
-            <button class="continue-btn" onclick="window.location.href='credits.html'">Our Story Continues...</button>
-        </div>
-    </div>
+        <button class="nav-button" id="returnBtn" onclick="window.location.href='road.html'">Return to Choices</button>
+    </section>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Screen transition logic
-            window.nextScreen = function(num) {
-                document.querySelectorAll('.screen').forEach(screen => {
-                    screen.classList.remove('active');
-                });
-                document.getElementById(`screen${num}`).classList.add('active');
-            };
+            const openingMessage = document.getElementById('openingMessage');
+            const startGameBtn = document.getElementById('startGameBtn');
+            const gameContainer = document.getElementById('gameContainer');
+            const moveBtn = document.getElementById('moveBtn');
+            const youAvatar = document.getElementById('youAvatar');
+            const meAvatar = document.getElementById('meAvatar');
+            const usAvatar = document.getElementById('usAvatar');
+            const continueBtn = document.getElementById('continueBtn');
+            const closingMessage = document.getElementById('closingMessage');
+            const returnBtn = document.getElementById('returnBtn');
+
+            let moveCount = 0;
+            const totalMoves = 4;
+
+            // Initial reveal
+            setTimeout(() => {
+                openingMessage.classList.add('visible');
+                setTimeout(() => startGameBtn.classList.add('visible'), 1000);
+            }, 500);
+
+            // Start game button
+            startGameBtn.addEventListener('click', () => {
+                document.getElementById('game').scrollIntoView();
+                setTimeout(() => {
+                    gameContainer.classList.add('visible');
+                }, 500);
+            });
+
+            moveBtn.addEventListener('click', () => {
+            // Hide button immediately
+            moveBtn.style.opacity = '0';
+            moveBtn.style.pointerEvents = 'none';
+            
+            // Starting position (top left)
+            let progress = 0;
+            const duration = 2000; // 2 seconds for full animation
+            const startTime = Date.now();
+
+            function animate() {
+                const currentTime = Date.now();
+                progress = (currentTime - startTime) / duration;
+
+                if (progress < 1) {
+                    // Calculate U-shaped path position
+                    if (progress < 0.4) {
+                        // Moving down
+                        const downProgress = progress / 0.4;
+                        youAvatar.style.top = `${20 + (60 * downProgress)}%`;
+                    } else if (progress < 0.7) {
+                        // Moving right
+                        const rightProgress = (progress - 0.4) / 0.3;
+                        youAvatar.style.left = `${20 + (60 * rightProgress)}%`;
+                        youAvatar.style.top = '80%';
+                    } else {
+                        // Moving up
+                        const upProgress = (progress - 0.7) / 0.3;
+                        youAvatar.style.left = '80%';
+                        youAvatar.style.top = `${80 - (60 * upProgress)}%`;
+                    }
+                    requestAnimationFrame(animate);
+                } else {
+                    // Final position
+                    youAvatar.style.left = '80%';
+                    youAvatar.style.top = '20%';
+
+                    // Trigger merge animation
+                    setTimeout(() => {
+                        youAvatar.style.opacity = '0';
+                        meAvatar.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            usAvatar.classList.add('visible', 'glow');
+                            setTimeout(() => {
+                                continueBtn.classList.add('visible');
+                            }, 1000);
+                        }, 500);
+                    }, 500);
+                }
+            }
+
+            animate();
+        });
+
+            // Continue button
+            continueBtn.addEventListener('click', () => {
+                document.getElementById('closing').scrollIntoView();
+                setTimeout(() => {
+                    closingMessage.classList.add('visible');
+                    setTimeout(() => returnBtn.classList.add('visible'), 1000);
+                }, 500);
+            });
         });
     </script>
 </body>
