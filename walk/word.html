@@ -2,388 +2,441 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Multiverse of Us</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Word Search Puzzle</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        :root {
-            --text-primary: rgba(255, 255, 255, 0.95);
-            --text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            --bg-primary: #0a0a2a;
-            --bg-secondary: #000;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
+            font-family: Arial, sans-serif;
+            background-color: #fff0f3;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .puzzle-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             width: 100%;
-            height: 100vh;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .title {
+            color: #ff4081;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        #word-grid {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 10px;
+            display: grid;
+            gap: 5px;
+            margin: 0 auto;
+            touch-action: none;
+            justify-content: center;
+            max-width: 100%;
             overflow: hidden;
-            background: #000;
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--text-primary);
+        }
+
+        .word-grid-cell {
+            width: 40px;
+            height: 40px;
             display: flex;
-            justify-content: center;
             align-items: center;
-        }
-
-        #universe {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-        }
-
-        #particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .content-container {
+            justify-content: center;
+            background: white;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            user-select: none;
+            -webkit-user-select: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            touch-action: none;
             position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1;
         }
 
-        .text-overlay {
-            position: absolute;
-            width: min(90%, 800px);
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        .word-grid-cell.selected {
+            background-color: #ff4081;
+            color: white;
+            transform: scale(0.95);
+        }
+
+        .word-grid-cell.found {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #word-list {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 10px;
+        }
+
+        #word-list h3 {
+            color: #ff4081;
+            margin-bottom: 10px;
             text-align: center;
         }
 
-        .text-overlay.visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
+        #words-to-find {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .text-content {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
-            line-height: 1.6;
-            font-weight: 300;
-            text-shadow: var(--text-shadow);
-            letter-spacing: 0.05em;
-            padding: 2rem;
+        #words-to-find li {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .text-content strong {
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            color: #fff;
+        .word-found {
+            text-decoration: line-through;
+            color: #4CAF50;
+            opacity: 0.7;
         }
 
-        .timeline {
-            position: absolute;
-            bottom: 5vh;
-            left: 50%;
-            transform: translateX(-50%);
-            width: min(90%, 600px);
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .timeline-progress {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0.5), #fff);
-            box-shadow: 0 0 20px rgba(255,255,255,0.8);
-            transition: width 0.5s linear;
-        }
-
-        .quantum-particle {
-            position: absolute;
-            width: min(1vw, 4px);
-            height: min(1vw, 4px);
-            background: #fff;
-            border-radius: 50%;
-            opacity: 0;
-            filter: blur(1px);
-            box-shadow: 0 0 10px rgba(255,255,255,0.8);
-        }
-
-        #start-button {
-            position: absolute;
+        .success-modal {
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px 40px;
-            font-family: 'Cinzel', serif;
-            font-size: 1.5rem;
+            background: #ff4081;
             color: white;
-            background: transparent;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: center;
+            font-size: 1.2rem;
+            max-width: 90%;
+            width: 400px;
+            z-index: 1000;
+            animation: fadeIn 0.5s;
+        }
+
+        .close-button {
+            background: white;
+            color: #ff4081;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 2;
+            margin-top: 15px;
+            font-size: 1rem;
         }
 
-        #start-button:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translate(-50%, -50%) scale(1.05);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -40%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
         }
 
-        @media (max-width: 768px) {
-            .text-content {
-                font-size: clamp(1.2rem, 5vw, 1.8rem);
-                padding: 1rem;
+        @media (max-width: 480px) {
+            .word-grid-cell {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+
+            .title {
+                font-size: 1.5rem;
+            }
+
+            .puzzle-container {
+                padding: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <div id="universe">
-        <div id="particles"></div>
-        <button id="start-button">Begin Journey</button>
-        <div class="content-container">
-            <div class="text-overlay" id="text1">
-                <div class="text-content">
-                    In quantum mechanics, <strong>Schrödinger</strong> proposed that until observed, 
-                    a particle exists in all possible states simultaneously...
-                </div>
-            </div>
-            <div class="text-overlay" id="text2">
-                <div class="text-content">
-                    But what if it wasn't just particles? What if our <strong>choices</strong>, our 
-                    <strong>decisions</strong>, our very lives existed in multiple states...
-                </div>
-            </div>
-            <div class="text-overlay" id="text3">
-                <div class="text-content">
-                    Creating infinite branches of reality, endless possibilities of what could be...
-                </div>
-            </div>
-        </div>
-        <div class="timeline">
-            <div class="timeline-progress" id="progress"></div>
+    <div class="puzzle-container">
+        <h1 class="title">Our Love Journey</h1>
+        <p class="subtitle">Find all our special places...</p>
+        <div id="word-grid"></div>
+        <div id="word-list">
+            <h3>Words to Find:</h3>
+            <ul id="words-to-find"></ul>
         </div>
     </div>
 
     <script>
-        class AudioEngine {
+        class WordSearchPuzzle {
             constructor() {
-                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                this.masterGain = this.audioContext.createGain();
-                this.masterGain.connect(this.audioContext.destination);
-                this.reverb = this.audioContext.createConvolver();
-                this.createReverb();
-            }
+                this.words = ['LULU', 'CALICUT', 'MUMBAI', 'MATHERAN', 'CUTIE', 'KOLLAM', 'ERNAKULAM', 'CUSAT'];
+                this.size = 12;
+                this.grid = Array(this.size).fill().map(() => Array(this.size).fill(''));
+                this.selectedCells = [];
+                this.foundWords = new Set();
+                this.isSelecting = false;
+                this.touchStarted = false;
 
-            async createReverb() {
-                const reverbTime = 3;
-                const rate = this.audioContext.sampleRate;
-                const length = rate * reverbTime;
-                const impulse = this.audioContext.createBuffer(2, length, rate);
-                const left = impulse.getChannelData(0);
-                const right = impulse.getChannelData(1);
-
-                for (let i = 0; i < length; i++) {
-                    const decay = Math.exp(-i / rate);
-                    left[i] = (Math.random() * 2 - 1) * decay;
-                    right[i] = (Math.random() * 2 - 1) * decay;
-                }
-
-                this.reverb.buffer = impulse;
-                this.reverb.connect(this.masterGain);
-            }
-
-            createCosmicAmbience() {
-                // Deep bass drone
-                const drone = this.audioContext.createOscillator();
-                const droneGain = this.audioContext.createGain();
-                drone.type = 'sine';
-                drone.frequency.setValueAtTime(55, this.audioContext.currentTime);
-                droneGain.gain.setValueAtTime(0.1, this.audioContext.currentTime);
-                drone.connect(droneGain);
-                droneGain.connect(this.reverb);
-
-                // Cosmic pad
-                const pad = this.audioContext.createOscillator();
-                const padGain = this.audioContext.createGain();
-                pad.type = 'sine';
-                pad.frequency.setValueAtTime(220, this.audioContext.currentTime);
-                padGain.gain.setValueAtTime(0.05, this.audioContext.currentTime);
-                pad.connect(padGain);
-                padGain.connect(this.reverb);
-
-                // Sparkle effects
-                setInterval(() => {
-                    if (Math.random() > 0.9) {
-                        const sparkle = this.audioContext.createOscillator();
-                        const sparkleGain = this.audioContext.createGain();
-                        sparkle.type = 'sine';
-                        sparkle.frequency.setValueAtTime(1000 + Math.random() * 2000, this.audioContext.currentTime);
-                        sparkleGain.gain.setValueAtTime(0, this.audioContext.currentTime);
-                        sparkleGain.gain.linearRampToValueAtTime(0.02, this.audioContext.currentTime + 0.1);
-                        sparkleGain.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.3);
-                        sparkle.connect(sparkleGain);
-                        sparkleGain.connect(this.reverb);
-                        sparkle.start();
-                        sparkle.stop(this.audioContext.currentTime + 0.3);
-                    }
-                }, 1000);
-
-                // Slow cosmic swooshes
-                setInterval(() => {
-                    if (Math.random() > 0.7) {
-                        const swoosh = this.audioContext.createOscillator();
-                        const swooshGain = this.audioContext.createGain();
-                        const filter = this.audioContext.createBiquadFilter();
-                        filter.type = 'lowpass';
-                        filter.frequency.setValueAtTime(200, this.audioContext.currentTime);
-                        filter.frequency.linearRampToValueAtTime(2000, this.audioContext.currentTime + 2);
-                        swoosh.type = 'sawtooth';
-                        swoosh.frequency.setValueAtTime(100, this.audioContext.currentTime);
-                        swooshGain.gain.setValueAtTime(0, this.audioContext.currentTime);
-                        swooshGain.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 1);
-                        swooshGain.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 3);
-                        swoosh.connect(filter);
-                        filter.connect(swooshGain);
-                        swooshGain.connect(this.reverb);
-                        swoosh.start();
-                        swoosh.stop(this.audioContext.currentTime + 3);
-                    }
-                }, 5000);
-
-                drone.start();
-                pad.start();
-
-                return { drone, pad, droneGain, padGain };
-            }
-        }
-
-        class CosmicVoice {
-            constructor() {
-                this.synth = window.speechSynthesis;
-            }
-
-            speak(text) {
-                return new Promise(resolve => {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.rate = 0.7;
-                    utterance.pitch = 0.6;
-                    utterance.volume = 0.9;
-
-                    const voices = this.synth.getVoices();
-                    const deepVoice = voices.find(voice => 
-                        voice.name.toLowerCase().includes('male') || 
-                        voice.name.toLowerCase().includes('deep')
-                    );
-
-                    if (deepVoice) {
-                        utterance.voice = deepVoice;
-                    }
-
-                    utterance.onend = resolve;
-                    this.synth.speak(utterance);
-                });
-            }
-        }
-
-        class CosmicIntro {
-            constructor() {
-                this.currentTextIndex = 0;
-                this.texts = document.querySelectorAll('.text-overlay');
-                this.progress = document.getElementById('progress');
-                this.particles = [];
-                this.isPlaying = false;
-                this.audioEngine = new AudioEngine();
-                this.cosmicVoice = new CosmicVoice();
-                this.startButton = document.getElementById('start-button');
+                this.initializeGame();
                 this.setupEventListeners();
             }
 
-            setupEventListeners() {
-                this.startButton.addEventListener('click', () => this.start());
+            initializeGame() {
+                this.placeWords();
+                this.fillEmptyCells();
+                this.renderGrid();
+                this.renderWordList();
             }
 
-            start() {
-                this.startButton.style.display = 'none';
-                this.isPlaying = true;
-                this.setupParticles();
-                this.startSequence();
-                this.animateParticles();
-                this.ambience = this.audioEngine.createCosmicAmbience();
-            }
-
-            setupParticles() {
-                const particleCount = window.innerWidth < 768 ? 50 : 100;
-                const particlesContainer = document.getElementById('particles');
-                
-                for(let i = 0; i < particleCount; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'quantum-particle';
-                    particle.style.left = Math.random() * 100 + 'vw';
-                    particle.style.top = Math.random() * 100 + 'vh';
-                    particlesContainer.appendChild(particle);
-                    this.particles.push(particle);
-                    this.animateParticle(particle);
-                }
-            }
-
-            async startSequence() {
-                const texts = [
-                    "In quantum mechanics, Schrödinger proposed that until observed, a particle exists in all possible states simultaneously...",
-                    "But what if it wasn't just particles? What if our choices, our decisions, our very lives existed in multiple states...",
-                    "Creating infinite branches of reality, endless possibilities of what could be..."
+            placeWords() {
+                const directions = [
+                    [0, 1],   // right
+                    [1, 0],   // down
+                    [1, 1],   // diagonal right
+                    [-1, 1],  // diagonal up
                 ];
 
-                for(let i = 0; i < texts.length; i++) {
-                    if(!this.isPlaying) break;
-                    
-                    if(i > 0) {
-                        this.texts[i-1].classList.remove('visible');
+                this.words.forEach(word => {
+                    let placed = false;
+                    while (!placed) {
+                        const direction = directions[Math.floor(Math.random() * directions.length)];
+                        const [dx, dy] = direction;
+                        const x = Math.floor(Math.random() * this.size);
+                        const y = Math.floor(Math.random() * this.size);
+
+                        if (this.canPlaceWord(word, x, y, dx, dy)) {
+                            this.placeWord(word, x, y, dx, dy);
+                            placed = true;
+                        }
                     }
-                    
-                    this.texts[i].classList.add('visible');
-                    this.progress.style.width = (i / (texts.length - 1) * 100) + '%';
-                    
-                    await this.cosmicVoice.speak(texts[i]);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                });
+            }
+
+            canPlaceWord(word, x, y, dx, dy) {
+                if (x + dx * (word.length - 1) >= this.size || 
+                    x + dx * (word.length - 1) < 0 || 
+                    y + dy * (word.length - 1) >= this.size ||
+                    y + dy * (word.length - 1) >= this.size) {
+                    return false;
+                }
+
+                for (let i = 0; i < word.length; i++) {
+                    const currentX = x + dx * i;
+                    const currentY = y + dy * i;
+                    if (this.grid[currentX][currentY] !== '' && 
+                        this.grid[currentX][currentY] !== word[i]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            placeWord(word, x, y, dx, dy) {
+                for (let i = 0; i < word.length; i++) {
+                    this.grid[x + dx * i][y + dy * i] = word[i];
                 }
             }
 
-            animateParticle(particle) {
-                const duration = 3000 + Math.random() * 2000;
-                particle.style.transition = `opacity ${duration}ms ease`;
-                
-                const animate = () => {
-                    if (!this.isPlaying) return;
-                    
-                    particle.style.opacity = '0';
-                    setTimeout(() => {
-                        if (!this.isPlaying) return;
-                        
-                        particle.style.left = Math.random() * 100 + 'vw';
-                        particle.style.top = Math.random() * 100 + 'vh';
-                        particle.style.opacity = '1';
-                        setTimeout(() => animate(), duration);
-                    }, duration);
-                };
-                
-                animate();
+            fillEmptyCells() {
+                const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                for (let i = 0; i < this.size; i++) {
+                    for (let j = 0; j < this.size; j++) {
+                        if (this.grid[i][j] === '') {
+                            this.grid[i][j] = letters[Math.floor(Math.random() * letters.length)];
+                        }
+                    }
+                }
             }
 
-            animateParticles() {
-                if (!this.isPlaying) return;
+            renderGrid() {
+                const gridElement = document.getElementById('word-grid');
+                gridElement.style.gridTemplateColumns = `repeat(${this.size}, auto)`;
+                gridElement.innerHTML = '';
 
-                requestAnimationFrame(() => this.animateParticles());
-                this.particles.forEach(particle => {
-                    const rect = particle.getBoundingClientRect();
-                    if(rect.top < 0 || rect.left < 0 || 
-                       rect.right
+                for (let i = 0; i < this.size; i++) {
+                    for (let j = 0; j < this.size; j++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'word-grid-cell';
+                        cell.dataset.row = i;
+                        cell.dataset.col = j;
+                        cell.textContent = this.grid[i][j];
+                        gridElement.appendChild(cell);
+                    }
+                }
+            }
+
+            renderWordList() {
+                const list = document.getElementById('words-to-find');
+                list.innerHTML = '';
+                this.words.forEach(word => {
+                    const li = document.createElement('li');
+                    li.textContent = word;
+                    li.dataset.word = word;
+                    list.appendChild(li);
+                });
+            }
+
+            setupEventListeners() {
+                const grid = document.getElementById('word-grid');
+
+                // Touch events
+                grid.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
+                grid.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+                grid.addEventListener('touchend', () => this.handleTouchEnd(), { passive: false });
+
+                // Mouse events
+                grid.addEventListener('mousedown', (e) => this.handleMouseStart(e));
+                grid.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+                document.addEventListener('mouseup', () => this.handleMouseEnd());
+
+                // Prevent zooming
+                document.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 1) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            }
+
+            getCellFromTouch(touch) {
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (element && element.classList.contains('word-grid-cell')) {
+                    return element;
+                }
+                return null;
+            }
+
+            handleTouchStart(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const cell = this.getCellFromTouch(touch);
+                if (cell) {
+                    this.touchStarted = true;
+                    this.selectedCells = [cell];
+                    cell.classList.add('selected');
+                }
+            }
+
+            handleTouchMove(e) {
+                e.preventDefault();
+                if (!this.touchStarted) return;
+
+                const touch = e.touches[0];
+                const cell = this.getCellFromTouch(touch);
+                if (cell && !this.selectedCells.includes(cell)) {
+                    this.selectedCells.push(cell);
+                    cell.classList.add('selected');
+                }
+            }
+
+            handleTouchEnd() {
+                if (this.touchStarted) {
+                    this.checkSelection();
+                    this.selectedCells.forEach(cell => {
+                        if (!cell.classList.contains('found')) {
+                            cell.classList.remove('selected');
+                        }
+                    });
+                    this.selectedCells = [];
+                    this.touchStarted = false;
+                }
+            }
+
+            handleMouseStart(e) {
+                const cell = e.target;
+                if (cell.classList.contains('word-grid-cell')) {
+                    this.isSelecting = true;
+                    this.selectedCells = [cell];
+                    cell.classList.add('selected');
+                }
+            }
+
+            handleMouseMove(e) {
+                if (!this.isSelecting) return;
+
+                const cell = e.target;
+                if (cell.classList.contains('word-grid-cell') && !this.selectedCells.includes(cell)) {
+                    this.selectedCells.push(cell);
+                    cell.classList.add('selected');
+                }
+            }
+
+            handleMouseEnd() {
+                if (this.isSelecting) {
+                    this.checkSelection();
+                    this.selectedCells.forEach(cell => {
+                        if (!cell.classList.contains('found')) {
+                            cell.classList.remove('selected');
+                        }
+                    });
+                    this.selectedCells = [];
+                    this.isSelecting = false;
+                }
+            }
+
+            checkSelection() {
+                const word = this.selectedCells
+                    .map(cell => cell.textContent)
+                    .join('');
+                
+                const reversedWord = word.split('').reverse().join('');
+                
+                if (this.words.includes(word) || this.words.includes(reversedWord)) {
+                    const foundWord = this.words.includes(word) ? word : reversedWord;
+                    if (!this.foundWords.has(foundWord)) {
+                        this.foundWords.add(foundWord);
+                        document.querySelector(`li[data-word="${foundWord}"]`).classList.add('word-found');
+                        
+                        this.selectedCells.forEach(cell => {
+                            cell.classList.add('found');
+                            cell.classList.remove('selected');
+                        });
+
+                        if (this.foundWords.size === this.words.length) {
+                            this.showSuccessMessage();
+                        }
+                    }
+                }
+            }
+
+            showSuccessMessage() {
+                const message = document.createElement('div');
+                message.className = 'success-modal';
+                message.innerHTML = `
+                    <div style="margin-bottom: 20px">
+                        Ente manduse read the news well get ur surprise,<br>
+                        enne thallaruth okey bye and i never broke the promise,<br>
+                        umaaaah 💝
+                    </div>
+                    <button class="close-button" onclick="this.parentElement.remove()">
+                        Close
+                    </button>
+                `;
+                document.body.appendChild(message);
+            }
+        }
+
+        // Initialize the puzzle when the page loads
+        window.addEventListener('load', () => {
+            new WordSearchPuzzle();
+        });
+    </script>
+</body>
+</html>
