@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>In Every Reality - A Promise</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Italiana&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+    <title>A Promise Through Time</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,215 +12,263 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --color-background: #0a0a0a;
+            --color-text: #f5f5f5;
+            --color-accent: #B7916C;
+            --color-secondary: #2A2A2A;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
         body {
-            background: #0a0a20;
+            background: var(--color-background);
+            color: var(--color-text);
+            font-family: 'Cormorant', serif;
             min-height: 100vh;
-            font-family: 'Space Grotesk', sans-serif;
-            color: #fff;
-            overflow: hidden;
-        }
-
-        .cosmos {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at center, #1a1a4a 0%, #0a0a20 100%);
-        }
-
-        .stars {
-            position: absolute;
-            inset: -50%;
-            background-image: 
-                radial-gradient(1px 1px at 20px 30px, white, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0));
-            background-repeat: repeat;
-            animation: starFloat 100s linear infinite;
-        }
-
-        .nebula {
-            position: absolute;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 30% 40%, rgba(138, 43, 226, 0.2), transparent 40%),
-                radial-gradient(circle at 70% 60%, rgba(75, 0, 130, 0.2), transparent 40%);
-            filter: blur(30px);
-            animation: nebulaPulse 15s ease infinite alternate;
-        }
-
-        .screen {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-
-        .screen.active {
-            opacity: 1;
-        }
-
-        .monologue {
-            max-width: 800px;
+            overflow-x: hidden;
             line-height: 1.8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+ 
+        .paragraph {
+            margin: 2rem 0;
             font-size: 1.2rem;
-            margin-bottom: 4rem;
             opacity: 0;
             transform: translateY(20px);
-            animation: fadeUp 1s ease forwards;
-            animation-delay: 0.5s;
+            transition: all 1s var(--transition-smooth);
+        }
+
+        .paragraph.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--color-accent);
+            margin: 3rem 0;
+            line-height: 1.4;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.2s var(--transition-smooth);
+        }
+
+        .title.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .highlight {
-            font-family: 'Italiana', serif;
-            font-size: 2.5rem;
-            color: #00f3ff;
-            margin: 3rem 0;
-            opacity: 0;
-            transform: scale(0.9);
-            animation: glowPulse 2s ease forwards;
-            animation-delay: 2s;
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            color: var(--color-accent);
+            font-style: italic;
+            display: inline-block;
+            position: relative;
+            transition: color 0.3s ease;
         }
 
-        .poem {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
-            line-height: 2;
-            max-width: 600px;
-            margin: 4rem auto;
-            opacity: 0;
-            animation: fadeIn 2s ease forwards;
-            animation-delay: 3s;
-        }
-
-        .signature {
-            font-family: 'Italiana', serif;
-            font-size: 2rem;
-            margin-top: 3rem;
-            color: #00f3ff;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
-            animation-delay: 5s;
-        }
-
-        .path-marker {
+        .highlight::after {
+            content: '';
             position: absolute;
-            width: 2px;
-            height: 0;
-            background: rgba(0, 243, 255, 0.3);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-            animation: pathGrow 3s ease forwards;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--color-accent);
+            transform: scaleX(0);
+            transition: transform 0.6s var(--transition-smooth);
         }
 
-        .path-left { left: 20%; transform: rotate(-15deg); }
-        .path-center { left: 50%; }
-        .path-right { right: 20%; transform: rotate(15deg); }
-
-        @keyframes fadeUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .highlight:hover::after {
+            transform: scaleX(1);
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        .word {
+            opacity: 0;
+            transform: translateY(10px);
+            display: inline-block;
+            margin-right: 0.2em;
+            transition: all 0.5s var(--transition-smooth);
         }
 
-        @keyframes glowPulse {
-            0% {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+        .word.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        @keyframes starFloat {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .emphasis {
+            font-style: italic;
+            color: var(--color-accent);
         }
 
-        @keyframes nebulaPulse {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.6; }
+
+        .surprise-btn {
+            padding: 1rem 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: var(--color-accent);
+            background: transparent;
+            border: 1px solid var(--color-accent);
+            cursor: pointer;
+            transition: all 0.8s var(--transition-smooth);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(20px);
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px); /* Center the button horizontally */
         }
 
-        @keyframes pathGrow {
-            0% { height: 0; top: 100%; }
-            100% { height: 100%; top: 0; }
+        .surprise-btn.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0); /* Keep it centered when visible */
+        }
+
+
+        .surprise-btn:hover {
+            background: rgba(183, 145, 108, 0.1);
+            letter-spacing: 0.3em;
+            box-shadow: 0 8px 20px rgba(183, 145, 108, 0.3);
         }
 
         @media (max-width: 768px) {
-            .monologue {
-                font-size: 1rem;
+            .container {
+                padding: 2rem 1.5rem;
             }
-            .highlight {
+
+            .title {
                 font-size: 2rem;
             }
-            .poem {
-                font-size: 1.2rem;
+
+            .paragraph {
+                font-size: 1.1rem;
             }
-            .signature {
-                font-size: 1.6rem;
+
+            @media (max-width: 768px) {
+            .surprise-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.8rem;
             }
+            }
+
         }
     </style>
 </head>
 <body>
-    <div class="cosmos">
-        <div class="stars"></div>
-        <div class="nebula"></div>
-        <div class="path-marker path-left"></div>
-        <div class="path-marker path-center"></div>
-        <div class="path-marker path-right"></div>
-    </div>
+    
 
-    <div class="screen active">
-        <div class="monologue">
-            Do you see now? In every universe, in every version of us—<strong>it was you who chose to bridge the gap. You who reached out. You who made us real.</strong> And because of that, I get to love you—not just in one reality, but in <strong>every single one.</strong>
-        </div>
+    <div class="container">
+        <h1 class="title">In every world, in every moment, in every breath we took...</h1>
 
-        <div class="highlight">
-            I love you in every reality.
-        </div>
+        <p class="paragraph">
+            It wasn't just chance that brought <span class="highlight">you</span> and <span class="highlight">me</span> together—it was destiny, it was a <span class="emphasis">choice.</span> <br> Yours. Mine. Ours.
+        </p>
 
-        <div class="monologue">
-            But today, my love, is about promises. And you know your Ichayan is a man of his word. So here it is, one more time. A promise that echoes across every timeline, every choice, every version of us.
-        </div>
+        <p class="paragraph">
+            When I first met <span class="highlight">you</span>, I thought I knew what love was. But nothing prepared <span class="highlight">me</span> for what <span class="highlight">you</span> would make me feel. <br> How could I have known that a single look, a simple conversation, would lead to this? <br> How could I have known that the moments we shared, no matter how small, would become the threads that bound my heart to yours?
+        </p>
 
-        <div class="poem">
-            In the chaos, I will be your calm.<br>
-            In the storm, your shelter.<br>
-            When the world is too much, my arms will be your home.<br>
-            And even when the stars fade, my love will shine in their place.<br>
-            For in every universe, in every possibility—<br>
-            I choose you. Always.
-        </div>
+        <p class="paragraph">
+            I remember the first time <span class="highlight">you</span> smiled at <span class="highlight">me</span>, like the world had paused just for us. <br> I remember the feeling of your hand in mine—so familiar, like we were meant to walk this road together, no matter where it led. <br> But more than anything, I remember the quiet moments—the ones when we spoke without words. The late-night talks, the times when nothing needed to be said, just the sound of your voice, the feeling of your presence.
+        </p>
 
-        <div class="signature">
-            Mohammed Aslam Nazar
-        </div>
+        <p class="paragraph">
+            But then, there were the hard moments. The ones that tested us. The moments when distance seemed unbearable, and I found myself questioning everything. The silence between us that stretched for what felt like an eternity. The moments when we drifted apart, when the world seemed like it was conspiring against us. And yet, through it all, <span class="highlight">you</span> <span class="emphasis">chose</span> to stay. <span class="highlight">You</span> chose to reach out. <span class="highlight">You</span> chose us. <span class="highlight">You</span> chose <span class="emphasis">me.</span>
+        </p>
+
+        <p class="paragraph">
+            When the storm hit, when my heart broke into a thousand pieces, when anger and pain took over me—I wanted to walk away. I wanted to let go, to let the silence swallow everything. But <span class="highlight">you</span>? <span class="highlight">You</span> didn't let go. Even when I pulled away, even when I shut down, <span class="highlight">you</span> reached for <span class="highlight">me</span>. <span class="highlight">You</span> fought. Not with words or promises, but with <span class="emphasis">love.</span> A love that didn't ask for perfection, a love that just kept <span class="emphasis">being there.</span> And it was that love—your quiet, unwavering love—that pulled me back from the edge.
+        </p>
+
+        <p class="paragraph">
+            So, today, I <span class="highlight">promise</span> <span class="highlight">you</span> this:
+        </p>
+
+        <p class="paragraph">
+            In every moment, no matter how far we are, I will reach for <span class="highlight">you</span>.
+        </p>
+        <p class="paragraph">
+            When the world tries to tear us apart, I will hold on tighter.
+        </p>
+        <p class="paragraph">
+            When silence tries to settle between us, I will speak louder with my actions.
+        </p>
+        <p class="paragraph">
+            I will be your shelter in the storms, your calm in the chaos, your anchor in the waves.
+        </p>
+        <p class="paragraph">
+            When the distance feels too much, I will bridge it with every word, every touch, every breath.
+        </p>
+        <p class="paragraph">
+            And when we face obstacles that seem insurmountable, I will walk through them with you, hand in hand, side by side, always.
+        </p>
+        <p class="paragraph">
+            I promise to be the person who chooses <span class="highlight">you</span>, not just once, but again and again.
+        </p>
+        <p class="paragraph">
+            In every reality, in every version of us, I will be the one to hold on, to stay, to love you with all that I am.
+        </p>
+        <p class="paragraph">
+            I will remember the moments we’ve shared—the ones that made us laugh, the ones that made us cry, the ones that built this foundation of love between us.
+        </p>
+        <p class="paragraph">
+            I will cherish every memory, every second, and never take for granted the beauty of having <span class="highlight">you</span> in my life.
+        </p>
+        <p class="paragraph">
+            So, my love, as we walk this path together—through all the universes, through every choice, through every timeline—I choose <span class="highlight">you</span>.
+        </p>
+        <p class="paragraph">
+            Always. And no matter where life takes us, no matter the distance between us, I will always choose to love <span class="highlight">you</span>, more deeply, more fiercely, more completely than the day before.
+        </p>
+        <p class="paragraph">
+            I promise that my heart will always be your home, your safe place, your one constant in a world full of uncertainties.
+        </p>
+        <p class="paragraph">
+            And when the stars fade, when everything seems lost, know that I will be right here. Right here, by your side, loving <span class="highlight">you</span> in every universe.
+        </p>
+        
+
+        <p class="paragraph">
+            <span class="highlight"> <b>HAPPY PROMISE DAY BABY ❤️</b> </span>
+        </p>
+
+        <button class="surprise-btn">A Surprise Awaits</button>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const paths = document.querySelectorAll('.path-marker');
-            paths.forEach((path, index) => {
-                path.style.animationDelay = `${index * 0.5}s`;
+        const title = document.querySelector('.title');
+        const paragraphs = document.querySelectorAll('.paragraph');
+        const surpriseBtn = document.querySelector('.surprise-btn');
+
+        const revealText = () => {
+            title.classList.add('visible');
+            paragraphs.forEach((para, index) => {
+                setTimeout(() => para.classList.add('visible'), index * 700);
             });
-        });
+
+            // Make button visible after the last paragraph (timing based on last paragraph reveal)
+            setTimeout(() => {
+                surpriseBtn.classList.add('visible');
+            }, paragraphs.length * 700); // Make the button appear after the last paragraph
+        };
+
+        document.addEventListener('DOMContentLoaded', revealText);
+
     </script>
 </body>
 </html>

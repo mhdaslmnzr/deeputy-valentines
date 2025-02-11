@@ -57,9 +57,10 @@
 
         .text {
             font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            line-height: 1.8;
+            font-size: 1rem;
+            line-height: 1.4;
             margin: 2rem 0;
+            text-align: left;
         }
 
         .nav-button {
@@ -233,7 +234,25 @@
 <body>
     <section class="section" id="opening">
         <div class="message" id="openingMessage">
-            <p class="text">Love is not just in the easy moments. It's in the trials, in the storms we weather together. Through every challenge, we choose each other again and again.</p>
+            <p class="text">
+                <b>Earth 407 – The Distance and The Storm</b> <br><br>                
+
+                The miles between us were never just space—they were walls. <br><br>
+                
+                When everything fell apart, I felt it in the silence. The silence that was deafening, loud with all the things we never said.<br><br>
+                
+                Pain hit like a tidal wave, pulling me under. Anger burned in my veins, sharp and all-consuming.<br><br>
+                
+                How could i let it go this far? <br><br>
+                How could you let us drift like this when I needed you most?<br><br>
+                
+                I wanted to scream, to shatter everything that once held us together.<br><br>
+                
+                But instead, I shut down. I pulled away. The distance between us was no longer just numbers on a map—it was a chasm.<br><br>
+                
+                What if this was it? <br><br> What if we never found our way back?<br><br>What if the space between us was more than just miles—it was the end?<br><br>
+                
+            </p>
         </div>
         <button class="nav-button" id="startGameBtn">Begin Journey</button>
     </section>
@@ -243,16 +262,44 @@
             <div class="avatar you-avatar" id="youAvatar">you</div>
             <div class="avatar me-avatar" id="meAvatar">me</div>
             <div class="avatar us-avatar" id="usAvatar">us<span class="heart">♥</span></div>
-            <button class="move-button" id="moveBtn">Move Closer</button>
+            <button class="move-button" id="moveBtn">Click to Move Closer</button>
         </div>
         <button class="nav-button" id="continueBtn">Continue Story</button>
     </section>
 
     <section class="section" id="closing">
         <div class="message" id="closingMessage">
-            <p class="text">In choosing each other every day, we built something beautiful. Our love isn't just a feeling—it's a promise we keep with every breath, every moment, every choice.</p>
+            <p class="text">
+                <b>Earth 407 – The Reach Across the Ruins<br><br></b>                
+                
+                But then, in the midst of the silence, you reached for me.<br><br>
+                
+                Not with words, not with excuses—but with something raw, something desperate.<br><br>
+                
+                With a quiet love, unspoken but felt in every gesture, every attempt to make things right.<br><br>
+                
+                You saw the wreckage—the shattered trust, the broken pieces—and still, you didn’t turn away.<br><br>
+                
+                You fought, not with grand gestures, but with the smallest of steps.<br><br>
+                
+                Each one, a sign that you weren’t giving up on us.<br><br>
+                
+                And somewhere, in the middle of all the hurt, I saw you again. Not as the source of my pain, but as the one who refused to let go, who still believed in us.<br><br>
+                
+                It wasn’t perfect. It wasn’t clean. But it was real.<br><br>
+                
+                And in that rawness, I started to understand—love isn’t about being perfect. It’s about reaching through the wreckage, through the pain, and still choosing to stay.<br><br>
+                
+                Some wounds aren’t healed with time alone. Some can only be healed with the will to rebuild, even when everything is broken.<br><br>
+                
+                It took everything in me to let go of the hurt and the anger. But you didn’t let go. You stayed.<br><br>
+                
+                Maybe that’s what love really is—showing up, even when it’s hard. Even when you’re both broken and unsure.<br><br>
+                
+                And maybe, just maybe, that’s when I realized—that love isn’t just a feeling. It’s a choice. A choice to fight, to heal, and to rebuild, no matter how far apart we are.<br><br>
+            </p>
         </div>
-        <button class="nav-button" id="returnBtn" onclick="window.location.href='road.html'">Return to Choices</button>
+        <button class="nav-button" id="returnBtn" onclick="window.location.href='credits.html'"> Click Here For The Finale </button>
     </section>
 
     <script>
@@ -292,7 +339,7 @@
             
             // Starting position (top left)
             let progress = 0;
-            const duration = 2000; // 2 seconds for full animation
+            const duration = 4000; // 2 seconds for full animation
             const startTime = Date.now();
 
             function animate() {
