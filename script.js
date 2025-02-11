@@ -23,7 +23,7 @@ const daysData = [
     {
         name: 'Promise Day',
         image: 'images/5.jpg',
-        message: 'I, Mohammed Aslam, hereby solemnly promise to:\n\n1. Love you unconditionally\n2. Always make you smile\n3. Be your strength in tough times\n4. Never give up on us\n5. Keep you happy forever\n\nSigned with love ❤️'
+        message:'Promises are meant to be kept, yet they are also born from choices—choices that define who we are. Today, no puzzle awaits you, but a quest to understand the essence of what has made us, us. A journey that begins with a single step, <a href="promise/index.html" style="color: #ff4081; text-decoration: underline;">click here to start your quest</a>.'
     },
     {
         name: 'Hug Day',
@@ -49,7 +49,7 @@ function createDayCards() {
     const today = new Date();
     
     daysData.forEach((day, index) => {
-        const cardDate = new Date(2025, 1, 7 + index, 16, 0, 0); // Feb 7-14, 2025
+        const cardDate = new Date(2025, 1, 7 + index, 12, 0, 0); // Feb 7-14, 2025
         const isActive = DEV_MODE ? true : today >= cardDate;
         
         const card = document.createElement('div');

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Games</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-background: #0a0a0a;
+            --color-text: #f5f5f5;
+            --color-accent: #B7916C;
+            --color-secondary: #2A2A2A;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: var(--color-background);
+            font-family: 'Cormorant', serif;
+            color: var(--color-text);
+            overflow-x: hidden;
+        }
+
+
+
+        .cards-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+
+
+        /* === EXACTLY from card1.html === */
+        .game-container {
+            width: 400px;
+            height: 500px;
+            background: var(--color-secondary);
+            border: 1px solid rgba(183, 145, 108, 0.3);
+            margin: 4rem 0;
+            position: relative;
+            display: block;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s var(--transition-smooth);
+            overflow: hidden;
+            opacity: 0.3; /* Dim inactive games */
+            transition: opacity 0.5s ease;
+        }
+
+        .game-container.visible {
+            display: inline-block;
+            margin: 20px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .game-container.active {
+    opacity: 1;
+}
+
+        .avatar {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(183, 145, 108, 0.1);
+            border: 2px solid var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s var(--transition-smooth);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+        }
+
+        #avatar-top {
+            top: 10%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #avatar-bottom {
+            bottom: 10%;
+            left: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        .merged-avatar {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(183, 145, 108, 0.2);
+            border: 2px solid var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.8s var(--transition-smooth);
+        }
+
+        .merged-avatar.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* === EXACTLY from card2.html === */
+        .car {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            z-index: 3;
+        }
+
+        .car-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--color-accent);
+            border-radius: 5px;
+        }
+
+        .car-top {
+            position: absolute;
+            width: 60%;
+            height: 70%;
+            background: var(--color-accent);
+            border-radius: 5px;
+            top: -60%;
+            left: 20%;
+        }
+
+        .city-marker {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(183, 145, 108, 0.1);
+            border: 2px solid var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            z-index: 2;
+        }
+
+        #kochi {
+            bottom: 10%;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+
+        #calicut {
+            top: 10%;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+
+
+
+        /* === EXACTLY from card3.html === */
+        .you-avatar {
+            top: 20%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+        }
+
+        .me-avatar {
+            top: 20%;
+            right: 10%;
+            transform: translate(-50%, -50%);
+        }
+
+        .us-avatar {
+            top: 20%;
+            right: 10%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 100px;
+            height: 100px;
+            opacity: 0;
+            z-index: 2;
+            background: rgba(183, 145, 108, 0.2);
+            border: 2px solid var(--color-accent);
+        }
+
+        .us-avatar.visible {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px var(--color-accent),
+                           0 0 20px var(--color-accent),
+                           0 0 30px var(--color-accent);
+            }
+            to {
+                box-shadow: 0 0 20px var(--color-accent),
+                           0 0 30px var(--color-accent),
+                           0 0 40px var(--color-accent);
+            }
+        }
+
+        .heart {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 1.2em;
+            transform: translateY(1px);
+        }
+
+        /* Intro and Final Sections */
+        .message {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.5s var(--transition-smooth);
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .i-path {
+    position: absolute;
+    width: 4px;
+    background-color: #B7916C; /* accent color */
+    left: 50%;
+    top: 10%;
+    transform: translateX(-50%);
+    height: 0;
+    opacity: 0;
+    transition: height 1s ease, opacity 1s ease;
+}
+
+    </style>
+</head>
+<body>
+   
+        <div class="intro-text message">Any idea why you played those games, baby? Let's look at it...</div>
+    
+
+    <!-- EXACTLY from card1.html -->
+    <div class="cards-wrapper">
+        <div class="game-container" id="game1Container">
+            <div class="i-path" id="iPath"></div>
+            <div class="avatar" id="avatar-top">you</div>
+            <div class="avatar" id="avatar-bottom">me</div>
+            <div class="merged-avatar" id="mergedAvatar">us<span class="heart">♥</span></div>
+        </div>
+  
+
+    <!-- EXACTLY from card2.html -->
+    
+        <div class="game-container" id="game2Container">
+            <div class="city-marker" id="calicut">Kochi</div>
+            <div class="city-marker" id="kochi">Calicut</div>
+            <div class="car" id="car">
+                <div class="car-body"></div>
+                <div class="car-top"></div>
+            </div>
+        </div>
+
+
+    <!-- EXACTLY from card3.html -->
+  
+        <div class="game-container" id="game3Container">
+            <div class="avatar you-avatar" id="youAvatar">you</div>
+            <div class="avatar me-avatar" id="meAvatar">me</div>
+            <div class="avatar us-avatar" id="usAvatar">us<span class="heart">♥</span></div>
+        </div>
+    </div>
+
+    <div class="final-text message">
+        <div>I love you in all realities ❤️</div>
+        <div style="font-size: 1rem; margin-top: 2rem;">Copyright by Ichayan</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const game1 = document.getElementById('game1Container');
+    const game2 = document.getElementById('game2Container');
+    const game3 = document.getElementById('game3Container');
+
+    // Game 1 Elements
+    const avatarTop = document.getElementById('avatar-top');
+    const avatarBottom = document.getElementById('avatar-bottom');
+    const mergedAvatar = document.getElementById('mergedAvatar');
+
+    // Game 2 Elements
+    const car = document.getElementById('car');
+
+    // Game 3 Elements
+    const youAvatar = document.getElementById('youAvatar');
+    const meAvatar = document.getElementById('meAvatar');
+    const usAvatar = document.getElementById('usAvatar');
+
+    // Start sequence
+    setTimeout(() => {
+        // Start Game 1
+        game1.classList.add('active');
+        
+        // Exact Game 1 Logic from card1.html
+        setTimeout(() => {
+            const endTop = 90;
+            const progress = 1;
+            const newTop = 10 + (endTop - 10) * progress;
+            avatarTop.style.top = `${newTop}%`;
+
+
+            setTimeout(() => {
+                avatarTop.style.opacity = '0';
+                avatarBottom.style.opacity = '0';
+                
+                setTimeout(() => {
+                    mergedAvatar.style.top = '90%';
+                    mergedAvatar.style.left = '50%';
+                    mergedAvatar.style.transform = 'translate(-50%, -50%)';
+                    mergedAvatar.classList.add('visible', 'glow');
+                    const iPath = document.getElementById('iPath');
+                    iPath.style.height = '80%';  // Extend to full height
+                    iPath.style.opacity = '1';    // Make visible
+
+                    
+                    // Start Game 2 after Game 1 completes
+                    setTimeout(() => {
+                        game1.classList.remove('active');
+                        game2.classList.add('active');
+                        
+                        // Exact Game 2 Logic from card2.html
+                        car.style.left = '50%';
+                        car.style.top = 'auto';
+                        car.style.bottom = '80%';
+                        car.style.transform = 'translate(-50%, -50%)';
+
+                        function moveAlongPath(progress) {
+                            const containerWidth = game2.offsetWidth;
+                            const containerHeight = game2.offsetHeight;
+                            
+                            const t = progress * 2 * Math.PI;
+                            
+                            const x = 16 * Math.pow(Math.sin(t), 3);
+                            const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+                            
+                            const scaleFactor = 11;
+                            const posX = x * scaleFactor + containerWidth / 2;
+                            const posY = -y * scaleFactor + containerHeight / 3;
+                            
+                            const nextT = (progress + 0.01) * 2 * Math.PI;
+                            const nextX = 16 * Math.pow(Math.sin(nextT), 3) * scaleFactor + containerWidth / 2;
+                            const nextY = -(13 * Math.cos(nextT) - 5 * Math.cos(2 * nextT) - 2 * Math.cos(3 * nextT) - Math.cos(4 * nextT)) * scaleFactor + containerHeight / 3;
+                            
+                            const angle = Math.atan2(nextY - posY, nextX - posX) * (180 / Math.PI);
+
+                           // Add heart path visualization
+    if (!window.pathVisible) {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.style.position = 'absolute';
+        svg.style.top = '0';
+        svg.style.left = '0';
+        svg.style.zIndex = '1';
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        
+        let pathD = "M";
+        for (let ti = 0; ti <= 2 * Math.PI; ti += 0.1) {
+            const xi = 16 * Math.pow(Math.sin(ti), 3);
+            const yi = 13 * Math.cos(ti) - 5 * Math.cos(2 * ti) - 2 * Math.cos(3 * ti) - Math.cos(4 * ti);
+            
+            const posXi = xi * scaleFactor + containerWidth / 2;
+            const posYi = -yi * scaleFactor + containerHeight / 3;
+            
+            pathD += `${posXi},${posYi} `;
+        }
+
+        path.setAttribute('d', pathD);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#B7916C');
+        path.setAttribute('stroke-width', '3');
+
+        svg.appendChild(path);
+        game2.appendChild(svg);
+        window.pathVisible = true;
+    }
+                            
+                            return { x: posX, y: posY, angle };
+
+                            
+                        }
+
+                        let progress = 0;
+                        const duration = 8000;
+                        const startTime = Date.now();
+
+                        function animate() {
+                            const currentTime = Date.now();
+                            progress = (currentTime - startTime) / duration;
+
+                            if (progress < 1) {
+                                const pos = moveAlongPath(progress);
+                                car.style.left = pos.x + 'px';
+                                car.style.top = pos.y + 'px';
+                                car.style.transform = `translate(-50%, -50%) rotate(${pos.angle}deg)`;
+                                requestAnimationFrame(animate);
+                            } else {
+                                
+                                // Start Game 3 after Game 2 completes
+                                setTimeout(() => {
+                                    game2.classList.remove('active');
+                                    game3.classList.add('active');
+
+                                    // Exact Game 3 Logic from card3.html
+                                    let progress = 0;
+                                    const duration = 4000;
+                                    const startTime = Date.now();
+
+                                    function animateGame3() {
+                                        const currentTime = Date.now();
+                                        progress = (currentTime - startTime) / duration;
+
+                                        // Add trajectory path visualization
+    if (!game3.querySelector('svg')) {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.style.position = 'absolute';
+        svg.style.top = '0';
+        svg.style.left = '0';
+        svg.style.zIndex = '1';
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        
+        const containerWidth = game3.offsetWidth;
+        const containerHeight = game3.offsetHeight;
+
+        // Create a proper U-shape
+        const pathD = `
+            M${containerWidth * 0.2},${containerHeight * 0.2} 
+            L${containerWidth * 0.2},${containerHeight * 0.8} 
+            L${containerWidth * 0.8},${containerHeight * 0.8} 
+            L${containerWidth * 0.8},${containerHeight * 0.2}
+        `;
+
+        path.setAttribute('d', pathD);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#B7916C');
+        path.setAttribute('stroke-width', '3');
+
+        svg.appendChild(path);
+        game3.appendChild(svg);
+    }
+
+                                        if (progress < 1) {
+                                            if (progress < 0.4) {
+                                                const downProgress = progress / 0.4;
+                                                youAvatar.style.top = `${20 + (60 * downProgress)}%`;
+                                            } else if (progress < 0.7) {
+                                                const rightProgress = (progress - 0.4) / 0.3;
+                                                youAvatar.style.left = `${20 + (60 * rightProgress)}%`;
+                                                youAvatar.style.top = '80%';
+                                            } else {
+                                                const upProgress = (progress - 0.7) / 0.3;
+                                                youAvatar.style.left = '80%';
+                                                youAvatar.style.top = `${80 - (60 * upProgress)}%`;
+                                            }
+                                            requestAnimationFrame(animateGame3);
+                                        } else {
+                                            youAvatar.style.left = '80%';
+                                            youAvatar.style.top = '20%';
+
+                                            setTimeout(() => {
+                                                youAvatar.style.opacity = '0';
+                                                meAvatar.style.opacity = '0';
+                                                
+                                                setTimeout(() => {
+                                                    usAvatar.classList.add('visible', 'glow');
+                                                    
+                                                    // Show final text
+                                                    setTimeout(() => {
+                                                        game3.classList.remove('active');
+                                                        document.querySelector('.final-text').classList.add('visible');
+                                                        setTimeout(() => {
+        window.location.href = 'reveal3.html';
+    }, 5000);
+                                                    }, 2000);
+                                                }, 500);
+                                            }, 500);
+                                        }
+                                    }
+
+                                    animateGame3();
+                                }, 1000);
+                            }
+                        }
+
+                        animate();
+                    }, 2000);
+                }, 500);
+            }, 1500);
+        }, 1000);
+    }, 3000);
+});
+    </script>
+
+</body>
+</html>
