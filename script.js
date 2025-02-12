@@ -28,7 +28,7 @@ const daysData = [
     {
         name: 'Hug Day',
         image: 'images/6.jpg',
-        message: 'Your warmth is worth the wait, and no words can ever express how much comfort I find in your embrace. Can\'t wait to hug you tight! 🤗'
+        message: 'Your warmth is worth the wait, and no words can ever express how much comfort I find in your embrace. Can\'t wait to hug you tight! 🤗 <b> Also ente manduse njan inn kiss day aennn ninne pattichu hehe - njan ang ethitt randum akoshich kalayam ketto!'
     },
     {
     name: 'Kiss Day',
