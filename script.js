@@ -33,12 +33,12 @@ const daysData = [
     {
     name: 'Kiss Day',
     image: 'images/7.jpg',
-    message: '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d560.3157030558277!2d72.90082917353578!3d19.13660074197894!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b96d7342853b%3A0x8f9b53237b3212ed!2sIIM%20Mumbai%20Campus%20Entry%20Gate!5e0!3m2!1sen!2sin!4v1738887225051!5m2!1sen!2sin" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
+    message: 'Ooodi vanna oru umma tharam 😌<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d560.3157030558277!2d72.90082917353578!3d19.13660074197894!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b96d7342853b%3A0x8f9b53237b3212ed!2sIIM%20Mumbai%20Campus%20Entry%20Gate!5e0!3m2!1sen!2sin!4v1738887225051!5m2!1sen!2sin" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
     },
     {
         name: 'Valentine\'s Day',
         image: 'images/8.jpg',
-        message: 'My dearest Deeputy,\n\nWords fall short when I try to express how much you mean to me. Every moment spent with you is a treasure, every smile of yours lights up my world. You\'re not just my love, you\'re my best friend, my strength, my inspiration.\n\nI want to spend eternity with you, growing old together, creating countless memories, and falling in love with you more each day. You make my life complete, and I promise to always be there for you, through thick and thin.\n\nI love you more than words can express.\n\nForever yours,\nAslam ❤️'
+        message: 'My dearest Deeputy,\n\nWords fall short when I try to express how much you mean to me. Athukond, prethekich njan onnum parayunnilla. \n\n After i reach home, I want you to click here'
     }
 ];
 
@@ -49,7 +49,7 @@ function createDayCards() {
     const today = new Date();
     
     daysData.forEach((day, index) => {
-        const cardDate = new Date(2025, 1, 7 + index, 16, 0, 0); // Feb 7-14, 2025
+        const cardDate = new Date(2025, 1, 7 + index); // Feb 7-14, 2025
         const isActive = DEV_MODE ? true : today >= cardDate;
         
         const card = document.createElement('div');
