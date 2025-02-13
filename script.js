@@ -33,7 +33,7 @@ const daysData = [
     {
     name: 'Kiss Day',
     image: 'images/7.jpg',
-    message: 'Ooodi vanna oru umma tharam 😌<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d560.3157030558277!2d72.90082917353578!3d19.13660074197894!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b96d7342853b%3A0x8f9b53237b3212ed!2sIIM%20Mumbai%20Campus%20Entry%20Gate!5e0!3m2!1sen!2sin!4v1738887225051!5m2!1sen!2sin" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
+    message: 'Ooodi vanna oru umma tharam 😌<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d560.3157030558277!2d72.90082917353578!3d19.13660074197894!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b96d7342853b%3A0x8f9b53237b3212ed!2sIIM%20Mumbai%20Campus%20Entry%20Gate!5e0!3m2!1sen!2sin!4v1738887225051!5m2!1sen!2sin" width="300" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
     },
     {
         name: 'Valentine\'s Day',
