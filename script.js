@@ -38,7 +38,7 @@ const daysData = [
     {
         name: 'Valentine\'s Day',
         image: 'images/8.jpg',
-        message: 'My dearest Deeputy,\n\nWords fall short when I try to express how much you mean to me. Every moment spent with you is a treasure, every smile of yours lights up my world. You\'re not just my love, you\'re my best friend, my strength, my inspiration.\n\nI want to spend eternity with you, growing old together, creating countless memories, and falling in love with you more each day. You make my life complete, and I promise to always be there for you, through thick and thin.\n\nI love you more than words can express.\n\nForever yours,\nAslam ❤️'
+        message: 'Happy Valentine Week Baby, hope you had a fun time <br> one more kutti surprise awaits you!'
     }
 ];
 
@@ -49,7 +49,7 @@ function createDayCards() {
     const today = new Date();
     
     daysData.forEach((day, index) => {
-        const cardDate = new Date(2025, 1, 7 + index, 16, 0, 0); // Feb 7-14, 2025
+        const cardDate = new Date(2025, 1, 7 + index, 9, 0, 0); // Feb 7-14, 2025
         const isActive = DEV_MODE ? true : today >= cardDate;
         
         const card = document.createElement('div');
